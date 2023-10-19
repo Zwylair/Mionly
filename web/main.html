@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+
+    <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript">
+      eel.expose(func_from_js);  // Expose this function to Python
+      function func_from_js(text_to_say) {
+        alert(text_to_say);
+      }
+
+      eel.func_from_py("it was called from js!");
+    </script>
+  </head>
+
+  <body>
+    Hello, World!
+  </body>
+</html>
