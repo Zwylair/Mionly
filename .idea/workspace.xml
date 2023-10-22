@@ -5,26 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="271edcd6-777e-4d45-a3b0-9a14ecb9746e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/db.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db_operations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loader/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loader/lessons_list.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_funcs/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_funcs/test_checking.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Wider World 0/Unit 0/Test 1/testmode.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/css/testing_ended.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/fonts/ubuntu-regular.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/js/loadLessons.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/js/testing_ended.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/test.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/testing_ended.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/testmode.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/js/testing_ended.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/testing_ended.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/testing_ended.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/testing_ended.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

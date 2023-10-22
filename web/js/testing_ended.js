@@ -1,7 +1,10 @@
 
 document.addEventListener('DOMContentLoaded', async function () {
-    // Here the code to load progress from python and show it
     let progressResults = await eel.get_progress_results()();
+
+    let pointsCounter = document.getElementById("points-counter");
+    let possiblePoints = progressResults['wrong'] + progressResults['right'];
+    pointsCounter.textContent = `${progressResults['right']}/${possiblePoints}`;
 
     Highcharts.chart('chart-container', {
         chart: {
