@@ -1,1 +1,2 @@
 eel[jinja2]==0.16.0
+python_version==3.8.10

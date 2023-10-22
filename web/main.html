@@ -5,17 +5,21 @@
 
     <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
     <script type="text/javascript" src="/eel.js"></script>
-    <script type="text/javascript">
-      eel.expose(func_from_js);  // Expose this function to Python
-      function func_from_js(text_to_say) {
-        alert(text_to_say);
-      }
-
-      eel.func_from_py("it was called from js!");
-    </script>
+    <script type="text/javascript" src="/js/base.js"></script>
+    <script type="text/javascript" src="/js/loadLessons.js"></script>
   </head>
 
   <body>
-    Hello, World!
+    <label for="chosenBookInput">Choose a Wider World book:</label>
+    <input type="text" list="booksList" id="chosenBookInput">
+    <datalist id="booksList"></datalist>
+    <p></p>
+    <label for="chosenUnitInput">Choose an unit:</label>
+    <input type="text" list="unitsList" id="chosenUnitInput">
+    <datalist id="unitsList"></datalist>
+    <p></p>
+    <label for="chosenTestInput">Choose a test:</label>
+    <input type="text" list="testsList" id="chosenTestInput">
+    <datalist id="testsList"></datalist>
   </body>
 </html>

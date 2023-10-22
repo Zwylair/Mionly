@@ -1,0 +1,17 @@
+body {
+    font-family: ubuntu;
+}
+.result-font {
+    font-size: 24px;
+}
+.points-font {
+    font-size: 102px;
+}
+.results-container {
+    position: static;
+    display: flex;
+}
+.container-item {
+    display: inline-block;
+    margin: 0 auto;
+}

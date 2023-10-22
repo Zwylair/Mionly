@@ -1,0 +1,10 @@
+{
+  "name": "Complete the sentence",
+  "test_text": "I am walking with my ___.",
+  "answers": [
+    {"dog": false},
+    {"fly kite": false},
+    {"car": true},
+    {"poop": false}
+  ]
+}
