@@ -74,11 +74,6 @@ async function sendSubmit() {
         await eel.submit_action(answersList)();
         window.location.href = await eel.load_next_test()();
     }
-
-    // let testTitle = document.getElementById("test_title");
-    // let testText = document.getElementById("test_text");
-    // let answersContainer = document.getElementById("answers_container");
-
 }
 
 

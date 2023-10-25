@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello, World!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick the test</title>
 
     <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
     <script type="text/javascript" src="/eel.js"></script>
-    <script type="text/javascript" src="/js/base.js"></script>
-    <script type="text/javascript" src="/js/loadLessons.js"></script>
+    <script type="text/javascript" src="/js/main-wp.js"></script>
   </head>
 
   <body>
@@ -21,5 +22,7 @@
     <label for="chosenTestInput">Choose a test:</label>
     <input type="text" list="testsList" id="chosenTestInput">
     <datalist id="testsList"></datalist>
+    <p></p>
+    <button onclick="quickStart()">dev: quickstart</button>
   </body>
 </html>

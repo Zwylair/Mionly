@@ -64,6 +64,10 @@ async function loadBooks() {
 
 }
 
+async function quickStart() {
+    let firstTestUrl = await eel.start_testing('Wider World 0', 'Unit 0', 'Test 1')();
+    window.location.href = firstTestUrl;
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     loadBooks()

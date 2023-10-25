@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'ubuntu';
+    src: url('/fonts/ubuntu-regular.woff2') format('woff2')
+}
 body {
     font-family: ubuntu;
 }

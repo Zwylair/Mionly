@@ -18,10 +18,12 @@ SQL_DB_FN = 'db.sql'
 
 # IMPORTANT TO CHANGE
 TEST_JSON_TO_WEBPAGE = {
-    'testmode.json': '/testmode.html'
+    'testmode.json': '/testmode.html',
+    'drag_testmode.json': '/drag_testmode.html'
 }
 MAX_TEST_REWARDS = {  # 1 point per 1 answer
-    'testmode.json': 1
+    'testmode.json': 1,
+    'drag_testmode.json': 1
 }
 
 # EEL
