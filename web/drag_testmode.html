@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test with dragging answer</title>
+  
     <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="js/base.js"></script>
+    <script type="text/javascript" src="js/drag_testmode.js"></script>
     <link rel="stylesheet" href="css/drag_testmode.css">
-    <script src="js/drag_testmode.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/shaking.css">
   </head>
   <body>
+    <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="test_counter"></p>
     <h3 id="test_title"></h3>
     <div class="container" id="testTextContainer"></div>
     <div id="answers_container" class="container-box"></div>
     <p></p>
-    <button onclick="sendSubmit()">submit</button>
+    <button onclick="sendSubmit()" id="shaking-button">submit</button>
   </body>
 </html>

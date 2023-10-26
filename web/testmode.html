@@ -7,15 +7,17 @@
 
     <!-- Include eel.js - note this file doesn't exist in the 'web' directory -->
     <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="js/base.js"></script>
     <script type="text/javascript" src="/js/test_mode.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/shaking.css">
     <link rel="stylesheet" type="text/css" href="/css/test_mode.css">
   </head>
-
   <body>
+    <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="test_counter"></p>
     <h3 id="test_title"></h3>
     <p id="test_text"></p>
     <div id="answers_container" class="answers_container"></div>
     <p></p>
-    <button onclick="sendSubmit()">submit</button>
+    <button onclick="sendSubmit()" id="shaking-button">submit</button>
   </body>
 </html>

@@ -2,21 +2,20 @@
 # curr_test is a json from test_dir_path
 # available_tests = 'test_json;test_json;test_json...'
 # test_rewards = '{test_json: points, ...}'
-SQL_CREATE_SEQUENCES = ["""
+SQL_STORAGE_CREATE_SEQ = """
 CREATE TABLE IF NOT EXISTS "storage" (
     "test_dir_path"	TEXT NOT NULL,
     "curr_test"	TEXT,
     "available_tests"	TEXT,
     "test_rewards"  TEXT DEFAULT '{}'
-)""", """
+)"""
+SQL_PROGRESS_CREATE_SEQ = """
 CREATE TABLE IF NOT EXISTS "progress" (
     "wrong"	INTEGER NOT NULL,
     "right"	INTEGER NOT NULL
-)"""]
-
+)"""
 SQL_DB_FN = 'db.sql'
 
-# IMPORTANT TO CHANGE
 TEST_JSON_TO_WEBPAGE = {
     'testmode.json': '/testmode.html',
     'drag_testmode.json': '/drag_testmode.html'

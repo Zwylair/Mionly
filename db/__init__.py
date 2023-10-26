@@ -3,6 +3,26 @@ import sqlite3
 import settings
 
 
+def wipe_storage():
+    with sqlite3.connect(settings.SQL_DB_FN) as sql:
+        cur = sql.cursor()
+        cur.execute(settings.SQL_STORAGE_CREATE_SEQ)
+
+        # if the previous test was closed, this will reset its progress to zero
+        if cur.execute('SELECT * FROM storage').fetchone():
+            cur.execute('DELETE FROM storage')
+
+
+def wipe_progress():
+    with sqlite3.connect(settings.SQL_DB_FN) as sql:
+        cur = sql.cursor()
+        cur.execute(settings.SQL_PROGRESS_CREATE_SEQ)
+
+        # if the previous test was closed, this will reset its progress to zero
+        if cur.execute('SELECT * FROM progress').fetchone():
+            cur.execute('DELETE FROM progress')
+
+
 def dump_chosen_test(ww_book: str, unit: str, test: str):
     with sqlite3.connect(settings.SQL_DB_FN) as sql:
         cur = sql.cursor()
@@ -82,3 +102,11 @@ def get_progress_result() -> dict:
         wrong, right = cur.execute('SELECT * FROM progress').fetchone()
 
         return {"wrong": wrong, "right": right}
+
+
+def get_completed_tests_count() -> int:
+    with sqlite3.connect(settings.SQL_DB_FN) as sql:
+        cur = sql.cursor()
+        _, _, _, progress = cur.execute('SELECT * FROM storage').fetchone()
+
+        return len(json.loads(progress).keys())

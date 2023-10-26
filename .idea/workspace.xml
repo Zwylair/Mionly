@@ -5,16 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="271edcd6-777e-4d45-a3b0-9a14ecb9746e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/web/css/main.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/css/shaking.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db_operations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loader/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/loader/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_funcs/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_funcs/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_funcs/test_checking.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_funcs/test_checking.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/css/test_mode.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/css/test_mode.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/css/testing_ended.css" beforeDir="false" afterPath="$PROJECT_DIR$/web/css/testing_ended.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/js/loadLessons.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/drag_testmode.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/drag_testmode.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/js/drag_testmode.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/drag_testmode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/js/test_mode.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/test_mode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/js/testing_ended.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/testing_ended.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/test.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/web/testing_ended.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/testing_ended.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/testmode.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/testmode.html" afterDir="false" />
     </list>

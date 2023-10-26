@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', async function () {
     let progressResults = await eel.get_progress_results()();
 

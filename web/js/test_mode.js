@@ -1,12 +1,10 @@
-/**
- * @param {JSON} testInfo
- */
 async function updateTestInfo() {
     const testInfo = await eel.get_test_data()();
 
-    let testTitle = document.getElementById("test_title");
-    let testText = document.getElementById("test_text");
-    let answersContainer = document.getElementById("answers_container");
+    const testCounter = document.getElementById('test_counter');
+    const testTitle = document.getElementById("test_title");
+    const testText = document.getElementById("test_text");
+    const answersContainer = document.getElementById("answers_container");
 
     // get answers
     for (var answerObject of testInfo['answers']) {
@@ -16,26 +14,25 @@ async function updateTestInfo() {
         }
 
         // make a container for answer radio button and label
-        let answerDiv = document.createElement('div');
+        const answerDiv = document.createElement('div');
         answerDiv.classList = ['answer_div'];
 
         //  make answer elements
-        let radio = document.createElement('input');
+        const radio = document.createElement('input');
         radio.type = 'radio';
         radio.name = 'answerButton';
         radio.id = answerText;
 
-        let label = document.createElement('label');
+        const label = document.createElement('label');
         label.textContent = answerText;
 
         answerDiv.appendChild(radio);
         answerDiv.appendChild(label);
         answersContainer.appendChild(answerDiv);
     }
-
-    // update text and desc of test
     testTitle.textContent = testInfo['name'];
     testText.textContent = testInfo['test_text'];
+    testCounter.textContent = `${await eel.get_completed_tests_count()() + 1}/${await eel.get_all_tests_count()()}`;
 }
 
 async function sendSubmit() {
@@ -48,7 +45,8 @@ async function sendSubmit() {
     });
 
     if (!radioButtonsIsChecked.includes(true)) {
-        alert('You arent picked any answer');
+        const button = document.getElementById('shaking-button');
+        button.classList.add('shake');
     } else {
         const testInfo = await eel.get_test_data()();
         let pickedButtonIds = [];
@@ -79,4 +77,10 @@ async function sendSubmit() {
 
 document.addEventListener('DOMContentLoaded', function() {
     updateTestInfo()
+
+    const button = document.getElementById('shaking-button');
+
+    button.addEventListener('animationend', function () {
+        button.classList.remove('shake');
+    });
 });

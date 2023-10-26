@@ -1,6 +1,7 @@
 async function updateTestInfo() {
     const testInfo = await eel.get_test_data()();
 
+    const testCounter = document.getElementById('test_counter');
     const testTitle = document.getElementById("test_title");
     const textContainer = document.getElementById("testTextContainer");
     const answersContainer = document.getElementById("answers_container");
@@ -38,9 +39,8 @@ async function updateTestInfo() {
         answerDiv.appendChild(answerDivText);
         answersContainer.appendChild(answerDiv);
     }
-
-    // update text and desc of test
     testTitle.textContent = testInfo['name'];
+    testCounter.textContent = `${await eel.get_completed_tests_count()() + 1}/${await eel.get_all_tests_count()()}`;
 }
 
 function setDraggables() {
@@ -111,7 +111,8 @@ async function sendSubmit() {
     });
 
     if (!isAnswerDivsFull.includes(true)) {
-        alert('You arent picked answer');
+        const button = document.getElementById('shaking-button');
+        button.classList.add('shake');
     } else {
         const testInfo = await eel.get_test_data()();
         const answers = testInfo['answers'];
@@ -136,4 +137,10 @@ async function sendSubmit() {
 document.addEventListener('DOMContentLoaded', async function () {
     await updateTestInfo();
     setDraggables();
+
+    const button = document.getElementById('shaking-button');
+
+    button.addEventListener('animationend', function () {
+        button.classList.remove('shake');
+    });
 });
