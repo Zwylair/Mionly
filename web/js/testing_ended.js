@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', async function () {
-    let progressResults = await eel.get_progress_results()();
-
-    let pointsCounter = document.getElementById("points-counter");
-    let possiblePoints = progressResults['wrong'] + progressResults['right'];
+    const progressResults = await eel.get_progress_results()();
+    const pointsCounter = document.getElementById('points-counter');
+    const possiblePoints = progressResults['wrong'] + progressResults['right'];
     pointsCounter.textContent = `${progressResults['right']}/${possiblePoints}`;
 
+    // spawn pie chart of wrong/right answers
     Highcharts.chart('chart-container', {
         chart: {
             plotBackgroundColor: null,

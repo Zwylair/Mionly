@@ -22,7 +22,7 @@ def get_available_tests_count() -> int:
 
 @eel.expose
 def start_testing(ww_book: str, unit: str, test: str) -> str:
-    """Starts the test (dump tests path, available and current tests) and returns the url of current test webpage"""
+    """Starts the test (dumps tests path, available and current tests) and returns the url of test webpage"""
 
     db.dump_chosen_test(ww_book, unit, test)
 
@@ -36,7 +36,7 @@ def start_testing(ww_book: str, unit: str, test: str) -> str:
 
 @eel.expose
 def load_next_test() -> str:
-    """Loads the next test. After that dumps available and current tests,
+    """Loads the next test. After dumps available and current tests,
     returns the url of next test webpage or finishes the test if there is no more available tests"""
 
     available_tests = db.get_curr_available_tests()
@@ -55,7 +55,6 @@ def end_testing() -> str:
     """Ends the test. Deletes available and current tests,
         returns the url of end test webpage with congrats with test ending"""
 
-    # here the code that doing various maths
     progress = db.get_progress()
     given_points = sum([i for i in progress.values()])
     max_points = sum([settings.MAX_TEST_REWARDS[i] for i in progress.keys()])

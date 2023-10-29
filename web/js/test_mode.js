@@ -1,10 +1,9 @@
 async function updateTestInfo() {
-    const testInfo = await eel.get_test_data()();
-
+    const testInfo = await getTestData();
     const testCounter = document.getElementById('test_counter');
-    const testTitle = document.getElementById("test_title");
-    const testText = document.getElementById("test_text");
-    const answersContainer = document.getElementById("answers_container");
+    const testTitle = document.getElementById('test_title');
+    const testText = document.getElementById('test_text');
+    const answersContainer = document.getElementById('answers_container');
 
     // get answers
     for (var answerObject of testInfo['answers']) {
@@ -19,9 +18,7 @@ async function updateTestInfo() {
 
         //  make answer elements
         const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'answerButton';
-        radio.id = answerText;
+        Object.assign(radio, { type: 'radio', name: 'answerButton', id: answerText });
 
         const label = document.createElement('label');
         label.textContent = answerText;
@@ -30,42 +27,36 @@ async function updateTestInfo() {
         answerDiv.appendChild(label);
         answersContainer.appendChild(answerDiv);
     }
-    testTitle.textContent = testInfo['name'];
-    testText.textContent = testInfo['test_text'];
+
+    testTitle.textContent = testInfo.name;
+    testText.textContent = testInfo.test_text;
     testCounter.textContent = `${await eel.get_completed_tests_count()() + 1}/${await eel.get_all_tests_count()()}`;
 }
 
 async function sendSubmit() {
-    let answersContainer = document.getElementById("answers_container");
+    let answersContainer = document.getElementById('answers_container');
     let buttons = answersContainer.querySelectorAll('input');
-
-    let radioButtonsIsChecked = [];
-    buttons.forEach(element => {
-        radioButtonsIsChecked.push(element.checked);
-    });
+    let radioButtonsIsChecked = Array.from(buttons).map(element => element.checked);
 
     if (!radioButtonsIsChecked.includes(true)) {
+        // shaking the submit button when there is no picked answer
         const button = document.getElementById('shaking-button');
+
         button.classList.add('shake');
     } else {
-        const testInfo = await eel.get_test_data()();
-        let pickedButtonIds = [];
+        const testInfo = await getTestData();
         let answersList = [];
 
-        buttons.forEach(element => {
-            if (element.checked) {
-                pickedButtonIds.push(element.id);
-            }
-        });
+        // get ids (answerText) of checked buttons
+        const pickedButtonIds = Array.from(buttons)
+            .filter(element => element.checked)
+            .map(element => element.id);
 
-        for (var answerObject of testInfo['answers']) {
-            for (var key in answerObject) {
-                answerText = key;
-                isTrue = answerObject[key];
+        for (const answerObject of testInfo.answers) {
+            const [answerText, isTrue] = Object.entries(answerObject)[0];
 
-                if (pickedButtonIds.includes(answerText)) {
-                    answersList.push({answerText: isTrue})
-                }
+            if (pickedButtonIds.includes(answerText)) {
+                answersList.push({ answerText, isTrue });
             }
         }
 

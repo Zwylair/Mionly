@@ -5,6 +5,7 @@ import db
 # import js-accessible funcs
 import loader
 import test_funcs
+import rot1
 
 db.wipe_storage()
 db.wipe_progress()

@@ -3,22 +3,16 @@
  * @param {string} unit
  */
 async function loadTests(ww_book, unit) {
-    let availableTests = await eel.load_tests_list(ww_book, unit)();
-    const testsDatalist = document.getElementById("testsList");
-    const testInput = document.getElementById("chosenTestInput");
+    const availableTests = await eel.load_tests_list(ww_book, unit)();
+    const testsDatalist = document.getElementById('testsList');
+    const testInput = document.getElementById('chosenTestInput');
 
     availableTests.forEach(element => {
-        let option = document.createElement('option');
-        option.value = element;
-
-        testsDatalist.appendChild(option);
+        testsDatalist.appendChild(new Option(element));
     });
 
-    testInput.addEventListener("input", async function(event) {
-        const inputValue = event.target.value;
-
-        let firstTestUrl = await eel.start_testing(ww_book, unit, inputValue)();
-        window.location.href = firstTestUrl;
+    testInput.addEventListener('input', async function(event) {
+        window.location.href = await eel.start_testing(ww_book, unit, event.target.value)();;
     });
 }
 
@@ -27,48 +21,38 @@ async function loadTests(ww_book, unit) {
  * @param {string} ww_book
  */
 async function loadUnits(ww_book) {
-    let availableUnits = await eel.load_units_list(ww_book)();
-    const unitsDatalist = document.getElementById("unitsList");
-    const unitInput = document.getElementById("chosenUnitInput");
+    const availableUnits = await eel.load_units_list(ww_book)();
+    const unitsDatalist = document.getElementById('unitsList');
+    const unitInput = document.getElementById('chosenUnitInput');
 
     availableUnits.forEach(element => {
-        let option = document.createElement('option');
-        option.value = element;
-
-        unitsDatalist.appendChild(option);
+        unitsDatalist.appendChild(new Option(element));
     });
 
-    unitInput.addEventListener("input", async function(event) {
-        const inputValue = event.target.value;
-        
-        await loadTests(ww_book, inputValue);
+    unitInput.addEventListener('input', async function(event) {
+        await loadTests(ww_book, event.target.value);
     });
 }
 
 async function loadBooks() {
-    let availableWWBooks = await eel.load_ww_book_list()();
-    const booksDatalist = document.getElementById("booksList");
-    const booksInput = document.getElementById("chosenBookInput");
+    const availableWWBooks = await eel.load_ww_book_list()();
+    const booksDatalist = document.getElementById('booksList');
+    const booksInput = document.getElementById('chosenBookInput');
 
     availableWWBooks.forEach(element => {
-        let option = document.createElement('option');
-        option.value = element;
-
-        booksDatalist.appendChild(option);
+        booksDatalist.appendChild(new Option(element));
     });
 
-    booksInput.addEventListener("input", async function(event) {
-        const inputValue = event.target.value;
-        await loadUnits(inputValue);
+    booksInput.addEventListener('input', async function(event) {
+        await loadUnits(event.target.value);
     });
 
 }
 
 async function quickStart() {
-    let firstTestUrl = await eel.start_testing('Wider World 0', 'Unit 0', 'Test 1')();
-    window.location.href = firstTestUrl;
+    window.location.href = await eel.start_testing('Wider World 0', 'Unit 0', 'Test 1')();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadBooks()
+    loadBooks();
 });

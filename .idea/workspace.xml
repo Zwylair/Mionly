@@ -5,23 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="271edcd6-777e-4d45-a3b0-9a14ecb9746e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/web/css/main.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/css/shaking.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coder.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rot1/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db_operations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loader/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/loader/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_funcs/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_funcs/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_funcs/test_checking.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_funcs/test_checking.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/drag_testmode.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/drag_testmode.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Wider World 0/Unit 0/Test 1/drag_testmode.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Wider World 0/Unit 0/Test 1/drag_testmode.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Wider World 0/Unit 0/Test 1/testmode.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Wider World 0/Unit 0/Test 1/testmode.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/js/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/base.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/js/drag_testmode.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/drag_testmode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/js/main-wp.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/main-wp.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/js/test_mode.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/test_mode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/js/testing_ended.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/js/testing_ended.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/testing_ended.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/testing_ended.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/testmode.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/testmode.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +64,27 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
+    <configuration name="coder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="qtProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/coder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="qtProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -110,6 +130,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.coder" />
         <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
