@@ -2,16 +2,22 @@
     font-size: 24px;
 }
 .points-font {
-    font-size: 86px;
+    font-size: 72px;
     margin: 0;
 }
 .result-box {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    bottom: 100px;
+}
+.text-centered {
+    text-align: center;
 }
 #chart-container {
     position: absolute;
     bottom: -12px;
-    left: -85px;
-
-    height: 300px;
+    height: 350px;
+    left: 50%;
+    transform: translateX(-50%);
 }

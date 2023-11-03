@@ -103,10 +103,17 @@ async function sendSubmit() {
 
         // get the original data with got key
         let answersList = {};
+        let keyOrder = [];
+
         answersDivs.forEach(answerDiv => {
             const gotAnswerText = answerDiv.children[0].name;
+            console.log(`answerDiv.children[0].name: ${answerDiv.children[0].name}`);
+            keyOrder.push(gotAnswerText);
             answersList[gotAnswerText] = testInfo.answers[gotAnswerText];
-        })
+        });
+
+        console.log(answersList);
+        console.log(keyOrder);
 
         // dump the progress
         const hasError = await eel.submit_action(answersList)();
@@ -153,7 +160,7 @@ async function sendSubmit() {
                 }
             })
             const rightAnswersKeys = Object.keys(allRightAnswers);
-            const givenAnswersKeys = Object.keys(answersList);
+            const givenAnswersKeys = keyOrder;
 
             for (var i = 0; i < parts.slice(0, -1).length; i += 1) {
                 // spawn underlined text

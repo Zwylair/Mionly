@@ -40,12 +40,10 @@ body {
     display: none;
 }
 .green-underline {
-    text-decoration: underline;
-    text-decoration-color: green;
+    border-bottom: 3px solid green;
 }
 .red-underline {
-    text-decoration: underline;
-    text-decoration-color: red;
+    border-bottom: 3px solid red;
 }
 span {
     margin-right: 5px;

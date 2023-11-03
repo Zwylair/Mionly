@@ -15,22 +15,23 @@ def get_test_data() -> dict:
 
 
 @eel.expose
-def submit_action(picked_answers: dict) -> bool or dict or None:
+def submit_action(picked_answers: dict or str) -> bool or str or dict or None:
     curr_test = db.get_curr_test_json()
     curr_test_data = get_test_data()
+    curr_test_mode = curr_test.split('/')[0]
 
-    if curr_test.split('/')[0] == 'testmode':  # picked_answers = { "answer": True | False }
+    if curr_test_mode == 'testmode':  # picked_answers = { "answer": True | False }
         correct_answer = {k: v for k, v in curr_test_data['answers'].items() if v}
         max_points = curr_test_data['points_per_answer']
 
-        if picked_answers != correct_answer:
-            db.dump_progress(0, max_points)
-            return correct_answer
-        else:
+        if picked_answers == correct_answer:
             db.dump_progress(max_points, max_points)
             return None
+        else:
+            db.dump_progress(0, max_points)
+            return correct_answer
 
-    elif curr_test.split('/')[0] == 'drag_testmode':  # picked_answers = { "answer": [True | False, position], ... }
+    elif curr_test_mode == 'drag_testmode':  # picked_answers = { "answer": [True | False, position], ... }
         test_data = get_test_data()
         per_answer = curr_test_data['points_per_answer']
 
@@ -49,3 +50,17 @@ def submit_action(picked_answers: dict) -> bool or dict or None:
         db.dump_progress(per_answer * right_counter, per_answer * len(picked_answers.keys()))
 
         return right_counter != len(picked_answers.keys())
+
+    elif curr_test_mode == 'write_heard':  # picked_answers = '...'
+        correct_answer = curr_test_data['right_answer']
+        max_points = curr_test_data['points_per_answer']
+
+        # why it doesn't work bruh
+        # os.remove(f'web/{curr_test_data["audio_path"]}')
+
+        if picked_answers == correct_answer:
+            db.dump_progress(max_points, max_points)
+            return None
+        else:
+            db.dump_progress(0, max_points)
+            return correct_answer

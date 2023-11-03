@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // trying to restrict opening devtools & breaking the logics of test loading & checking
+// document.addEventListener('DOMContentLoaded', function() {
+//     // trying to restrict opening devtools & breaking the logics of test loading & checking
 
-    document.addEventListener('contextmenu', e => { e.preventDefault(); });
-    document.addEventListener('keydown', e => { e.preventDefault(); });
-});
+//     document.addEventListener('contextmenu', e => { e.preventDefault(); });
+//     document.addEventListener('keydown', e => { e.preventDefault(); });
+// });
 
 // a simple def against those who know what base64 is, but don't dare to get into the code 🤗
 async function getTestData() {
