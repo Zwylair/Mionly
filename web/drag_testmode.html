@@ -6,17 +6,21 @@
     <title>Test with dragging answer</title>
   
     <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
     <script type="text/javascript" src="js/base.js"></script>
     <script type="text/javascript" src="js/drag_testmode.js"></script>
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/drag_testmode.css">
     <link rel="stylesheet" type="text/css" href="/css/shaking.css">
   </head>
   <body>
     <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="test_counter"></p>
-    <h3 id="test_title"></h3>
+    <h2 id="test_title"></h2>
     <div class="container" id="testTextContainer"></div>
     <div id="answers_container" class="container-box"></div>
     <p></p>
     <button onclick="sendSubmit()" id="shaking-button">submit</button>
+    <div id="bottomDiv" class="answer-container-after-submit hidden"></div>
   </body>
 </html>

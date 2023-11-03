@@ -1,0 +1,55 @@
+@font-face {
+    font-family: 'ubuntu';
+    src: url('/fonts/ubuntu-regular.woff2') format('woff2')
+}
+body {
+    font-family: ubuntu;
+    overflow: hidden;
+}
+
+.answer-container-after-submit {
+    position: absolute;
+    bottom: -105px;
+    width: 94%;
+    height: 80px;
+    border: 3px solid #7af47a;
+    border-radius: 7px;
+    padding: 10px;
+}
+.bottom-div-titlebox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.green-border {
+    border-color: #7af47a;
+}
+.red-border {
+    border-color: #f47a7a;
+}
+.continue-button {
+    position: absolute;
+    border: 3px solid;
+    border-radius: 7px;
+    margin: 10px;
+    padding: 3px;
+    bottom: 0;
+    right: 0;
+}
+.hidden {
+    display: none;
+}
+.green-underline {
+    text-decoration: underline;
+    text-decoration-color: green;
+}
+.red-underline {
+    text-decoration: underline;
+    text-decoration-color: red;
+}
+span {
+    margin-right: 5px;
+}
+h3 {
+    margin: 0;
+}

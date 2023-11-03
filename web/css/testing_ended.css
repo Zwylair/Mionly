@@ -1,22 +1,17 @@
-@font-face {
-    font-family: 'ubuntu';
-    src: url('/fonts/ubuntu-regular.woff2') format('woff2')
-}
-
-body {
-    font-family: ubuntu;
-}
 .result-font {
     font-size: 24px;
 }
 .points-font {
-    font-size: 102px;
+    font-size: 86px;
+    margin: 0;
 }
-.results-container {
-    position: static;
-    display: flex;
+.result-box {
+    align-items: center;
 }
-.container-item {
-    display: inline-block;
-    margin: 0 auto;
+#chart-container {
+    position: absolute;
+    bottom: -12px;
+    left: -85px;
+
+    height: 300px;
 }

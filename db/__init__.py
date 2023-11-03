@@ -13,16 +13,6 @@ def wipe_storage():
             cur.execute('DELETE FROM storage')
 
 
-def wipe_progress():
-    with sqlite3.connect(settings.SQL_DB_FN) as sql:
-        cur = sql.cursor()
-        cur.execute(settings.SQL_PROGRESS_CREATE_SEQ)
-
-        # if the previous test was closed, this will reset its progress to zero
-        if cur.execute('SELECT * FROM progress').fetchone():
-            cur.execute('DELETE FROM progress')
-
-
 def dump_chosen_test(ww_book: str, unit: str, test: str):
     with sqlite3.connect(settings.SQL_DB_FN) as sql:
         cur = sql.cursor()
@@ -31,24 +21,27 @@ def dump_chosen_test(ww_book: str, unit: str, test: str):
 
 def dump_curr_available_tests(curr_test: str, available_tests: list):
     ww_book, unit, test = get_chosen_test()
+    available_tests = ';'.join(available_tests) if available_tests else ''
 
     with sqlite3.connect(settings.SQL_DB_FN) as sql:
         cur = sql.cursor()
         cur.execute(f'UPDATE storage SET available_tests=?, curr_test=? WHERE test_dir_path=?',
-                    (';'.join(available_tests), curr_test, f'{ww_book}/{unit}/{test}'))
+                    (available_tests, curr_test, f'{ww_book}/{unit}/{test}'))
 
 
-def dump_progress(points: int):
+def dump_progress(points: int or float, max_points: int or float):
     curr_test = get_curr_test_json()
 
     with sqlite3.connect(settings.SQL_DB_FN) as sql:
         cur = sql.cursor()
-        test_rewards = cur.execute('SELECT test_rewards FROM storage WHERE curr_test=?', (curr_test,)).fetchone()[0]
-        test_rewards = json.loads(test_rewards)
-        test_rewards.update({curr_test: points})
-        test_rewards = json.dumps(test_rewards)
 
-        cur.execute(f'UPDATE storage SET test_rewards=? WHERE curr_test=?', (test_rewards, curr_test))
+        testing_datas = cur.execute('SELECT testing_datas FROM storage WHERE curr_test=?', (curr_test,)).fetchone()[0]
+        testing_datas = json.loads(testing_datas)
+        testing_datas['max_points'] += max_points
+        testing_datas['got_points'] += points
+        testing_datas = json.dumps(testing_datas)
+
+        cur.execute(f'UPDATE storage SET testing_datas=? WHERE curr_test=?', (testing_datas, curr_test))
 
 
 def dump_progress_results(wrong_answers: int, right_answers: int):
@@ -75,7 +68,7 @@ def get_curr_available_tests() -> list:
         cur = sql.cursor()
         available_tests = cur.execute(f'SELECT available_tests FROM storage WHERE test_dir_path="{ww_book}/{unit}/{test}"').fetchone()[0]
 
-        return available_tests.split(';')
+        return available_tests.split(';') if available_tests else []
 
 
 def get_curr_test_json() -> str:
@@ -95,13 +88,13 @@ def get_progress() -> dict:  # {test_json: points, ...}
 
 
 def get_progress_result() -> dict:
-    """Returns {"wrong": int, "right": int} """
+    """Returns {"max_points": int, "got_points": int} """
 
     with sqlite3.connect(settings.SQL_DB_FN) as sql:
         cur = sql.cursor()
-        wrong, right = cur.execute('SELECT * FROM progress').fetchone()
+        testing_datas = cur.execute('SELECT testing_datas FROM storage').fetchone()
 
-        return {"wrong": wrong, "right": right}
+        return json.loads(testing_datas[0])
 
 
 def get_completed_tests_count() -> int:

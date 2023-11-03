@@ -7,23 +7,9 @@ CREATE TABLE IF NOT EXISTS "storage" (
     "test_dir_path"	TEXT NOT NULL,
     "curr_test"	TEXT,
     "available_tests"	TEXT,
-    "test_rewards"  TEXT DEFAULT '{}'
-)"""
-SQL_PROGRESS_CREATE_SEQ = """
-CREATE TABLE IF NOT EXISTS "progress" (
-    "wrong"	INTEGER NOT NULL,
-    "right"	INTEGER NOT NULL
+    "testing_datas"  TEXT DEFAULT '{"max_points": 0, "got_points": 0}'
 )"""
 SQL_DB_FN = 'db.sql'
-
-TEST_JSON_TO_WEBPAGE = {
-    'testmode.json': '/testmode.html',
-    'drag_testmode.json': '/drag_testmode.html'
-}
-MAX_TEST_REWARDS = {  # 1 point per 1 answer
-    'testmode.json': 1,
-    'drag_testmode.json': 1
-}
 
 # EEL
 EEL_WEB_DIR = 'web'
