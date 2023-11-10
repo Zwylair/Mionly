@@ -52,13 +52,13 @@ def submit_action(picked_answers: dict or str) -> bool or str or dict or None:
         return right_counter != len(picked_answers.keys())
 
     elif curr_test_mode == 'write_heard':  # picked_answers = '...'
-        correct_answer = curr_test_data['right_answer']
+        correct_answer = curr_test_data['right_answer'].lower()
         max_points = curr_test_data['points_per_answer']
 
         # why it doesn't work bruh
         # os.remove(f'web/{curr_test_data["audio_path"]}')
 
-        if picked_answers == correct_answer:
+        if picked_answers.lower() == correct_answer:
             db.dump_progress(max_points, max_points)
             return None
         else:
