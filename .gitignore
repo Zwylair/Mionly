@@ -153,7 +153,9 @@ cython_debug/
 db.sql
 build_venv/
 so/
-web/temp/
+web/temp/*
+main.build/
+main.dist/
 
 # test files
 test.py

@@ -1,4 +1,4 @@
-import os
+import os.path
 import shutil
 import eel
 import settings
@@ -10,6 +10,8 @@ import test_funcs
 import rot1
 
 db.wipe_storage()
+if not os.path.exists('web/temp'):
+	os.mkdir('web/temp')
 shutil.rmtree('web/temp')
 os.mkdir('web/temp')
 
