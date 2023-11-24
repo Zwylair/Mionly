@@ -13,9 +13,12 @@ import rot1
 #
 
 for arg in sys.argv:
-    k, v = arg.split('=')
-    if k == 'browser':
-        settings.EEL_OPTIONS['mode'] = v
+    try:
+        k, v = arg.split('=')
+        if k == 'browser':
+            settings.EEL_OPTIONS['mode'] = v
+    except BaseException:
+        pass
 
 db.wipe_storage()
 if not os.path.exists('web/temp'):
