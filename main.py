@@ -1,4 +1,5 @@
 import os.path
+import sys
 import shutil
 import eel
 import settings
@@ -8,6 +9,13 @@ import db
 import loader
 import test_funcs
 import rot1
+
+#
+
+for arg in sys.argv:
+    k, v = arg.split('=')
+    if k == 'browser':
+        settings.EEL_OPTIONS['mode'] = v
 
 db.wipe_storage()
 if not os.path.exists('web/temp'):
