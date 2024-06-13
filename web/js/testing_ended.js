@@ -1,8 +1,8 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const progressResults = await eel.get_progress_results()();
+document.addEventListener('DOMContentLoaded', async () => {
+    const storage = await fetch('http://127.0.0.1:8000/db/get/storage').then(response => response.json());
     const pointsCounter = document.getElementById('points-counter');
-    const wrongPoints = progressResults['max_points'] - progressResults['got_points']
-    pointsCounter.textContent = `${progressResults['got_points']}/${progressResults['max_points']}`;
+    const wrongPoints = storage['max_points'] - storage['points']
+    pointsCounter.textContent = `${storage['points']}/${storage['max_points']}`;
 
     // spawn pie chart of wrong/right answers
     Highcharts.chart('chart-container', {
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             colorByPoint: true,
             data: [{
                 name: 'Right',
-                y: progressResults['got_points'],
+                y: storage['points'],
                 sliced: true,
                 selected: true
             }, {

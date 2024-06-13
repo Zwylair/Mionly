@@ -1,30 +1,30 @@
-import os.path
-import sys
-import shutil
-import eel
-import settings
+import webbrowser
+from fastapi import FastAPI, Request
+from fastapi.responses import Response
+from fastapi.staticfiles import StaticFiles
+import uvicorn
+
 import db
+from settings import *
+import web_managing
 
-# import js-accessible funcs
-import loader
-import test_funcs
-import rot1
+web_temp_dir = f'{WEB_DIR}/temp'
+app = FastAPI()
 
-#
 
-for arg in sys.argv:
-    try:
-        k, v = arg.split('=')
-        if k == 'browser':
-            settings.EEL_OPTIONS['mode'] = v
-    except BaseException:
-        pass
+@app.middleware('http')
+async def disable_cache_middleware(request: Request, call_next):
+    response: Response = await call_next(request)
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
-db.wipe_storage()
-if not os.path.exists('web/temp'):
-	os.mkdir('web/temp')
-shutil.rmtree('web/temp')
-os.mkdir('web/temp')
 
-eel.init(settings.EEL_WEB_DIR, allowed_extensions=['.js', '.html'])
-eel.start('main.html', suppress_error=True, options=settings.EEL_OPTIONS)
+if __name__ == '__main__':
+    db.setup(app)
+    web_managing.setup(app)
+
+    app.mount('/', StaticFiles(directory=WEB_DIR, html=True), name='web')
+    webbrowser.open_new(f'http://{HOST_URL}:{HOST_PORT}/index.html')
+    uvicorn.run(app, host=HOST_URL, port=HOST_PORT)
