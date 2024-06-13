@@ -1,0 +1,36 @@
+.container-box {
+    width: 700px;
+    height: 50px;
+    margin-top: 30px;
+    border: 3px solid black;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: row;
+}
+.draggable {
+    max-width: 150px;
+    height: 25px;
+    cursor: pointer;
+    margin: auto auto;
+
+    /* center text align */
+    text-align: center;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+}
+.container > * {
+    display: flex;
+    align-items: center;
+}
+.draggable > p {
+    margin: 3px 3px;
+}
+#target {
+    height: 25px;
+    border: 3px solid #4E83DD;
+    border-radius: 7px;
+    margin-left: 3px;
+    margin-right: 3px;
+    display: inline-block;
+}

@@ -3,10 +3,9 @@ from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-
-import db
 from settings import *
 import web_managing
+import db
 
 web_temp_dir = f'{WEB_DIR}/temp'
 app = FastAPI()

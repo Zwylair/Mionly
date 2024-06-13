@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 import fastapi
 from fastapi import FastAPI
 

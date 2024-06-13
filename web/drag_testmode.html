@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mionly: drag testmode</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon32.png">
-    <title>Mionly: testmode</title>
     <script type="text/javascript" src="/js/base.js"></script>
-    <script type="text/javascript" src="/js/testmode.js"></script>
-    <link rel="stylesheet" href="/css/base.css">
+    <script type="text/javascript" src="/js/drag_testmode.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/drag_testmode.css">
     <link rel="stylesheet" type="text/css" href="/css/shaking.css">
-    <link rel="stylesheet" type="text/css" href="/css/testmode.css">
   </head>
   <body>
     <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="test_counter"></p>
     <h2 id="test_title"></h2>
-    <p id="test_text"></p>
-    <div id="answers_container" class="answers_container"></div>
+    <div class="container" id="testTextContainer"></div>
+    <div id="answers_container" class="container-box"></div>
     <p></p>
     <button onclick="sendSubmit()" id="shaking-button">submit</button>
     <div id="bottomDiv" class="answer-container-after-submit hidden"></div>
