@@ -115,7 +115,7 @@ function setDraggables() {
 async function sendSubmit() {
     const testInfo = await fetch('http://127.0.0.1:8000/db/get/round_info').then(response => response.json());
     const iconObject = document.createElement('img');
-    iconObject.style = 'margin-right: 3px;';
+    iconObject.style = 'margin-right: 5px;';
     const button = document.getElementById('shaking-button');
     const bottomDiv = document.getElementById('bottom_div');
     let condition;
@@ -204,12 +204,15 @@ async function sendSubmit() {
             const correctAnswer = Object.keys(checkingResults)[0];
             const didIAnsweredCorrectly = checkingResults[correctAnswer]; 
 
-            const underlineText = document.createElement('b');
+            const underlineTextFull = document.createElement('b');
+            const underlineText = document.createElement('u');
+            underlineTextFull.appendChild(underlineText);
+            
             underlineText.textContent = correctAnswer;
             underlineText.classList.add(didIAnsweredCorrectly ? 'green-underline' : 'red-underline');
 
             textTag.appendChild(document.createTextNode(parts[0]));
-            textTag.appendChild(underlineText);
+            textTag.appendChild(underlineTextFull);
             textTag.appendChild(document.createTextNode(parts[1]));
         }
         else if (testInfo['round_type'] == 'drag_testmode') {
@@ -224,12 +227,14 @@ async function sendSubmit() {
                 let [rightAnswer, isMyAnswerRight] = rightData;
 
                 // spawn underlined text
-                const targetAnswerContainer = document.createElement('b');
+                const targetAnswerContainerFull = document.createElement('b');
+                const targetAnswerContainer = document.createElement('u');
+                targetAnswerContainerFull.appendChild(targetAnswerContainer);
                 targetAnswerContainer.textContent = rightAnswer;
                 targetAnswerContainer.classList.add(isMyAnswerRight ? 'green-underline' : 'red-underline');
 
                 textTag.appendChild(document.createTextNode(parts[0]));
-                textTag.appendChild(targetAnswerContainer);
+                textTag.appendChild(targetAnswerContainerFull);
                 parts.shift();
             }
             textTag.appendChild(document.createTextNode(parts[0]));

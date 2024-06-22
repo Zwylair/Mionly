@@ -95,10 +95,12 @@
     display: none;
 }
 .green-underline {
-    border-bottom: 3px solid green;
+    text-decoration-color: green;
+    text-decoration-thickness: 3px;
 }
 .red-underline {
-    border-bottom: 3px solid red;
+    text-decoration-color: red;
+    text-decoration-thickness: 3px;
 }
 span {
     margin-right: 5px;
