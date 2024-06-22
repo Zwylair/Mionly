@@ -1,8 +1,8 @@
 import json
-import base64
+# import base64
 import os.path
 from fastapi import FastAPI
-import rot
+# import rot
 import db
 
 
@@ -34,6 +34,7 @@ def get_round_info() -> dict:
         points_per_correct_answer: int = 1
 
     Returned round info:
+        round_type: str
         title: str
         round_text: str
         randomize_answers: bool
@@ -41,6 +42,7 @@ def get_round_info() -> dict:
     """
     content = get_full_round_info()
     return_content = {
+        'round_type': db.STORAGE.round_type,
         'title': content.get('title'),
         'round_text': content.get('round_text'),
         'randomize_answers': db.STORAGE.randomize_answers,
