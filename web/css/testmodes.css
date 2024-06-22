@@ -60,3 +60,49 @@
     margin-right: 3px;
     display: inline-block;
 }
+
+.answer-container-after-submit {
+    position: absolute;
+    bottom: -105px;
+    width: 94%;
+    height: 80px;
+    border: 3px solid #7af47a;
+    border-radius: 7px;
+    padding: 10px;
+}
+.bottom-div-titlebox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.green-border {
+    border-color: #7af47a;
+}
+.red-border {
+    border-color: #f47a7a;
+}
+.continue-button {
+    position: absolute;
+    margin: 10px;
+    padding: unset;
+    bottom: -5px;
+    right: 0px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.hidden {
+    display: none;
+}
+.green-underline {
+    border-bottom: 3px solid green;
+}
+.red-underline {
+    border-bottom: 3px solid red;
+}
+span {
+    margin-right: 5px;
+}
+h3 {
+    margin: 0;
+}

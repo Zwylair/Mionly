@@ -187,8 +187,8 @@ async function sendSubmit() {
         const bottomDivHeaderText = document.createElement('h3');
         bottomDivHeaderText.textContent = isAllRight ? 'Awesome!' : 'Incorrect';
         bottomDivHeader.classList.add('bottom-div-titlebox');
-        bottomDivHeader.appendChild(bottomDivHeaderText);
         bottomDivHeader.appendChild(iconObject);
+        bottomDivHeader.appendChild(bottomDivHeaderText);
         bottomDiv.appendChild(bottomDivHeader);
         bottomDiv.classList.add(isAllRight ? 'green-border' : 'red-border');
         bottomDiv.classList.remove('hidden');
@@ -237,7 +237,9 @@ async function sendSubmit() {
 
         // "next" button
         const continueButton = document.createElement('button');
-        continueButton.textContent = '➤';
+        const nextIconObject = document.createElement('img');
+        nextIconObject.src = '/images/next.svg';
+        continueButton.appendChild(nextIconObject);
         continueButton.classList.add('continue-button');
         continueButton.addEventListener('click', async () => {
             window.location.href = await fetch('http://127.0.0.1:8000/db/next_round').then(response => response.json());
