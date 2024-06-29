@@ -12,12 +12,21 @@
     <link rel="stylesheet" type="text/css" href="/css/testmodes.css">
   </head>
   <body>
-    <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="test_counter"></p>
-    <h2 id="test_title"></h2>
-    <div class="container" id="test_text"></div>
+    <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="round_counter"></p>
+    <h2 id="round_title"></h2>
+    <div class="container" id="round_text"></div>
     <div id="answers_container" class="container-box"></div>
     <p></p>
-    <button onclick="sendSubmit()" id="shaking-button">submit</button>
-    <div id="bottom_div" class="answer-container-after-submit hidden"></div>
+    <button onclick="sendAnswers()" id="submit-button">submit</button>
+    <div id="bottom_div" class="answer-container-after-submit hidden">
+      <div class="bottom-div-titlebox">
+        <img class="bottom-div-title-icon" id="bottom-div-title-icon">
+        <h3 id="bottom-div-title-text" style="margin: 0;"></h3>
+      </div>
+      <pa id="bottom-div-round-text"></pa>
+      <button id="continue-button" class="continue-button" onclick="nextRound()">
+        <img id="continue-button-image">
+      </button>
+    </div>
   </body>
 </html>

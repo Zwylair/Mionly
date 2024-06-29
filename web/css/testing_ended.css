@@ -19,9 +19,19 @@ h1 {
     text-align: center;
 }
 #chart-container {
-    position: absolute;
-    bottom: -12px;
     height: 350px;
-    left: 50%;
-    transform: translateX(-50%);
+}
+.back-button {
+    position: absolute;
+    padding: unset;
+    bottom: 12px;
+    left: 12px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.back-button-image {
+    transform: scale(-1, 1);
+    height: 48px;
+    width: 48px;
 }

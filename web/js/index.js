@@ -1,5 +1,10 @@
+async function fetchJson(url) {
+    const response = await fetch(url);
+    return response.json();
+}
+
 async function loadTests() {
-    const availableTests = await fetch('http://127.0.0.1:8000/db/get/available_tests').then(response => response.json());
+    const availableTests = await fetchJson('http://127.0.0.1:8000/db/get/available_tests');
     const testsDatalist = document.getElementById('test_list');
     const testInput = document.getElementById('chosen_test');
 

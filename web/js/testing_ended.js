@@ -1,3 +1,7 @@
+function toMainMenu() {
+    window.location.href = 'http://127.0.0.1:8000/index.html';
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const storage = await fetch('http://127.0.0.1:8000/db/get/storage').then(response => response.json());
     const pointsCounter = document.getElementById('points-counter');
@@ -39,4 +43,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }]
         }]
     })
-})
+
+    const highchartsCredits = document.getElementsByClassName('highcharts-credits');
+    for (let element of highchartsCredits) {
+        element.remove();
+    }
+});

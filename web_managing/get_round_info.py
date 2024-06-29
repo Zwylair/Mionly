@@ -39,6 +39,7 @@ def get_round_info() -> dict:
         round_text: str
         randomize_answers: bool
         answers: ['answer1', 'answer2', ...]
+        round_counter_text: str
     """
     content = get_full_round_info()
     return_content = {
@@ -46,18 +47,11 @@ def get_round_info() -> dict:
         'title': content.get('title'),
         'round_text': content.get('round_text'),
         'randomize_answers': db.STORAGE.randomize_answers,
-        'answers': list(content.get('answers').keys())
+        'answers': list(content.get('answers').keys()),
+        'round_counter_text': f'{db.STORAGE.opened_rounds_count}/{db.STORAGE.total_rounds_count}',
     }
 
     return return_content
-
-
-def get_opened_rounds_count() -> int:
-    return db.STORAGE.opened_rounds_count
-
-
-def get_total_rounds_count() -> int:
-    return db.STORAGE.total_rounds_count
 
 
 def is_this_round_completed() -> bool:
@@ -66,6 +60,4 @@ def is_this_round_completed() -> bool:
 
 def setup(app: FastAPI):
     app.get('/db/get/round_info')(get_round_info)
-    app.get('/db/get/opened_rounds_count')(get_opened_rounds_count)
-    app.get('/db/get/total_rounds_count')(get_total_rounds_count)
     app.get('/db/get/is_this_round_completed')(is_this_round_completed)

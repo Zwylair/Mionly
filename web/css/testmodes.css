@@ -102,9 +102,6 @@
     text-decoration-color: red;
     text-decoration-thickness: 3px;
 }
-span {
+.bottom-div-title-icon {
     margin-right: 5px;
-}
-h3 {
-    margin: 0;
 }
