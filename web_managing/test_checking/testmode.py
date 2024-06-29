@@ -14,21 +14,32 @@ def check(got_answer: str):
         'picked_answer1'
 
     Return info:
-        {'correct_answer1': do you picked correctly (true/false)}
+        correct_answers: {'correct_answer1': do you picked correctly (true/false)}
+        got_points: int
+        max_points: int
     """
 
     round_info = get_full_round_info()
     answers: dict[str, bool] = round_info.get('answers')
     points_per_correct_answer: int = round_info.get('points_per_correct_answer')
-    return_info = {}
+
+    correct_answers = {}
+    got_round_points = 0
 
     db.STORAGE.max_points += points_per_correct_answer
 
     if answers[got_answer]:  # got_answer = correct_answer
-        return_info[got_answer] = True
+        correct_answers[got_answer] = True
         db.STORAGE.points += points_per_correct_answer
+        got_round_points += points_per_correct_answer
     else:
         correct_answer = {v: k for k, v in answers.items()}[True]
-        return_info[correct_answer] = False
+        correct_answers[correct_answer] = False
+
+    return_info = {
+        'correct_answers': correct_answers,
+        'got_points': got_round_points,
+        'max_points': points_per_correct_answer,
+    }
 
     return return_info

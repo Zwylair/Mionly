@@ -145,8 +145,8 @@ async function processTestModeAnswers(roundInfo) {
     const parts = roundInfo.round_text.split('___');
 
     // insert an <b> with correct answer into test text
-    const correctAnswer = Object.keys(checkingResults)[0];
-    const didIAnsweredCorrectly = checkingResults[correctAnswer]; 
+    const correctAnswer = Object.keys(checkingResults.correct_answers)[0];
+    const didIAnsweredCorrectly = checkingResults.correct_answers[correctAnswer]; 
 
     const underlineTextFull = document.createElement('b');
     const underlineText = document.createElement('u');
@@ -159,7 +159,10 @@ async function processTestModeAnswers(roundInfo) {
     textTag.appendChild(underlineTextFull);
     textTag.appendChild(document.createTextNode(parts[1]));
 
-    return checkingResults;
+    const gotPointsText = document.getElementById('got-points-text');
+    gotPointsText.textContent = `got points: ${checkingResults.got_points}/${checkingResults.max_points}`;
+
+    return checkingResults.correct_answers;
 }
 
 async function processDragTestModeAnswers(roundInfo) {
@@ -189,7 +192,7 @@ async function processDragTestModeAnswers(roundInfo) {
     const parts = roundInfo.round_text.split('/');
 
     // sort right answers by position
-    var items = Object.keys(checkingResults).map((key) => [key, checkingResults[key]]);
+    var items = Object.keys(checkingResults.correct_answers).map((key) => [key, checkingResults.correct_answers[key]]);
     items.sort((first, second) => first[1] - second[1]);
 
     // insert right answers into bottomDiv text
@@ -209,7 +212,10 @@ async function processDragTestModeAnswers(roundInfo) {
     }
     textTag.appendChild(document.createTextNode(parts[0]));
 
-    return checkingResults;
+    const gotPointsText = document.getElementById('got-points-text');
+    gotPointsText.textContent = `got points: ${checkingResults.got_points}/${checkingResults.max_points}`;
+
+    return checkingResults.correct_answers;
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -279,6 +285,14 @@ async function sendAnswers() {
 async function fetchJson(url) {
     const response = await fetch(url);
     return response.json();
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
 async function nextRound() {

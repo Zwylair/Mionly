@@ -105,3 +105,9 @@
 .bottom-div-title-icon {
     margin-right: 5px;
 }
+.got-points-text {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    color: #757575;
+}
