@@ -8,25 +8,25 @@ def check(got_answers: dict[str, int]):
         title: str
         round_text: str
         answers: {'answer1': [true/false, position], 'answer2': [true/false, position], ...}
-        points_per_correct_answer: int
+        points_per_correct_answer: float
 
     Got answers:
         {'picked_answer1': position, 'picked_answer2': position, ...}
 
     Return info:
         correct_answers: {'correct_answer1': true/false, 'correct_answer2': true/false, ...}
-        got_points: int
-        max_points: int
+        got_points: float
+        max_points: float
     """
 
     round_info = get_full_round_info()
     answers: dict[str, list[bool, int]] = round_info.get('answers')
-    points_per_correct_answer: int = round_info.get('points_per_correct_answer')
+    points_per_correct_answer: float = round_info.get('points_per_correct_answer')
     position_to_correct_answer: dict[int, str] = {v[1]: k for k, v in answers.items() if v[1] != 0}
 
     correct_answers = {}
-    max_round_points = 0
-    got_round_points = 0
+    max_round_points = 0.0
+    got_round_points = 0.0
 
     for got_answer, got_position in got_answers.items():
         max_round_points += points_per_correct_answer

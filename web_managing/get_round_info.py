@@ -31,7 +31,7 @@ def get_round_info() -> dict:
         title: str
         round_text: str
         answers: dict['answer1': ..., 'answer2': ...]
-        points_per_correct_answer: int = 1
+        points_per_correct_answer: float = 1.0
 
     Returned round info:
         round_type: str

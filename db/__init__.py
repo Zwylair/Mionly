@@ -14,8 +14,8 @@ class Storage:
     allowed_round_types: tuple
     total_rounds_count: int
     last_submitted_round: str | None
-    points: int = 0
-    max_points: int = 0
+    points: float = 0
+    max_points: float = 0
     opened_rounds_count: int = 0
 
 

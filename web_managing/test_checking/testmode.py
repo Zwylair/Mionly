@@ -8,23 +8,23 @@ def check(got_answer: str):
         title: str
         round_text: str
         answers: {'answer1': true/false, 'answer2': true/false, ...}
-        points_per_correct_answer: int
+        points_per_correct_answer: float
 
     Got answers:
         'picked_answer1'
 
     Return info:
         correct_answers: {'correct_answer1': do you picked correctly (true/false)}
-        got_points: int
-        max_points: int
+        got_points: float
+        max_points: float
     """
 
     round_info = get_full_round_info()
     answers: dict[str, bool] = round_info.get('answers')
-    points_per_correct_answer: int = round_info.get('points_per_correct_answer')
+    points_per_correct_answer: float = round_info.get('points_per_correct_answer')
 
     correct_answers = {}
-    got_round_points = 0
+    got_round_points = 0.0
 
     db.STORAGE.max_points += points_per_correct_answer
 
