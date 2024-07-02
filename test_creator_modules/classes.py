@@ -5,6 +5,10 @@ import dearpygui.dearpygui as dpg
 class Round:
     test_creator_registry_id: str
 
+    @staticmethod
+    def init_empty():
+        pass
+
     def preview(self, parent_item_tag: str | int):
         pass
 
@@ -18,6 +22,10 @@ class Test:
     dpg_window_for_round_previews: str | int
     hidden_round_creators: dict[str | int, str]  # dpg_tag: round_id
     restricted_parent_children_to_remove: list[str | int]
+
+    @staticmethod
+    def init_empty():
+        return Test([], '', {}, [])
 
     def update_round_list(self):
         children = dpg.get_item_children(self.dpg_window_for_round_previews)[1]
