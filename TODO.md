@@ -13,4 +13,3 @@
 - quickstart test from test creator by link http://127.0.0.1/index.html?testname=
 - change locale support
 - edit existing test
-- remove round

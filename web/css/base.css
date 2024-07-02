@@ -5,7 +5,8 @@
     src:
         url("/fonts/Nunito/Nunito-Regular.ttf") format("truetype"),
         url("/fonts/Nunito/Nunito-Bold.ttf") format("truetype"),
-        url("/fonts/Nunito/Nunito-Italic.ttf") format("truetype");
+        url("/fonts/Nunito/Nunito-Italic.ttf") format("truetype"),
+        url("/fonts/Nunito/Nunito-BoldItalic.ttf") format("truetype");
 }
 
 * {

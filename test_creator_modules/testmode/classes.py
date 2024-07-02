@@ -2,6 +2,7 @@ import json
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from test_creator_modules import classes
+from cyrillic_support import decode_string
 
 
 @dataclass
@@ -108,9 +109,9 @@ class TestModeRound(classes.Round):
             points_per_correct_answer: float = 1.0
         """
         return json.dumps({
-            'title': self.title,
-            'round_text': self.round_text,
-            'answers': {answer: answer == self.answers[self.correct_answer_index] for answer in self.answers},
+            'title': decode_string(self.title),
+            'round_text': decode_string(self.round_text),
+            'answers': {decode_string(answer): answer == self.answers[self.correct_answer_index] for answer in self.answers},
             'points_per_correct_answer': self.points_per_correct_answer,
         })
 

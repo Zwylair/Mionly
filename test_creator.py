@@ -5,6 +5,7 @@ import dearpygui.dearpygui as dpg
 import screeninfo
 from test_creator_modules import testmode, drag_testmode, classes
 from test_creator_modules.warning import spawn_warning
+from cyrillic_support import CyrillicSupport, FontPreset, decode_string
 
 monitor = screeninfo.get_monitors()[0]
 monitor_size = (monitor.width, monitor.height)
@@ -19,14 +20,13 @@ dpg.create_viewport(
     y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
 )
 
+fonts = [
+    # FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=28, id='nunito_titles', bind_font_as_default=False),
+    FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=24, id='nunito', bind_font_as_default=True),
+]
 with dpg.font_registry():
-    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 24, default_font=True, id='nunito'):
-        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-
-    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 28, default_font=True, id='nunito_titles'):
-        dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
-
-dpg.bind_font('nunito')
+    for font in fonts:
+        CyrillicSupport(font)
 
 with dpg.value_registry():
     dpg.add_string_value(tag='test_creator_test_name', default_value='my test')
@@ -36,6 +36,7 @@ with dpg.value_registry():
 
 def save():
     test_name = dpg.get_value('test_creator_test_name')
+    test_name = decode_string(test_name)
 
     if test_name in os.listdir('tests'):
         spawn_warning('Test with the same name already exists!')
