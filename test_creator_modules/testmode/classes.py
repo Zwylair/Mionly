@@ -114,8 +114,31 @@ class TestModeRound(classes.Round):
             'points_per_correct_answer': self.points_per_correct_answer,
         })
 
+    def remove(self, remove_round_window: str | int):
+        this_round_in_test_object = self.test_object.find_round_with_id(self.test_creator_registry_id)
+        reversed_round_creators = {v: k for k, v in self.test_object.hidden_round_creators.items()}
+        dpg_round_creator_window = reversed_round_creators[self.test_creator_registry_id]
+
+        dpg.delete_item(dpg_round_creator_window)
+        dpg.delete_item(remove_round_window)
+        self.test_object.rounds.remove(this_round_in_test_object)
+        self.test_object.hidden_round_creators.pop(dpg_round_creator_window)
+        self.test_object.update_round_list()
+
     def show_remove_request(self):
-        pass
+        width, height = (300, 120)
+
+        pos = (
+            int(dpg.get_viewport_width() / 2 - width / 2),
+            int(dpg.get_viewport_height() / 2 - height / 2)
+        )
+
+        with dpg.window(label='Round deletion', no_resize=True, width=width, height=height, pos=pos) as remove_round_window:
+            dpg.add_text(default_value='Are you sure to delete this round?')
+
+            with dpg.group(horizontal=True):
+                dpg.add_button(label='Yes', callback=lambda: self.remove(remove_round_window))
+                dpg.add_button(label='No', callback=lambda: dpg.delete_item(remove_round_window))
 
     def move_up_this_test(self):
         if not self.test_object.is_there_saved_round_with_id(self.test_creator_registry_id):
