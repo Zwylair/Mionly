@@ -25,19 +25,28 @@ with dpg.value_registry():
 
 
 def save():
-    pass
-    # test_name = dpg.get_value('test_creator_test_name')
-    #
-    # if test_name in os.listdir('tests'):
-    #     return
-    #
-    # os.makedirs(f'tests/{test_name}')
-    #
-    # rounds_by_type = {}
-    #
-    # for test_round in test_object.rounds:
-    #     rounds_by_type[modules_classes[test_round.__class__]] =
+    test_name = dpg.get_value('test_creator_test_name')
 
+    if test_name in os.listdir('tests'):
+        return
+
+    os.makedirs(f'tests/{test_name}', exist_ok=True)
+
+    rounds_by_type = {}
+
+    for test_round in test_object.rounds:
+        round_type = modules_classes[test_round.__class__]
+
+        if rounds_by_type.get(round_type) is None:
+            rounds_by_type[round_type] = []
+        rounds_by_type[round_type].append(test_round)
+
+    for test_round_type, rounds in rounds_by_type.items():
+        os.makedirs(f'tests/{test_name}/{test_round_type}', exist_ok=True)
+
+        for index, test_round in enumerate(rounds):
+            with open(f'tests/{test_name}/{test_round_type}/{index}.json', 'w') as file:
+                file.write(test_round.dump())
 
 
 with dpg.window(no_title_bar=True, no_resize=True, no_close=True, no_move=True) as window:
