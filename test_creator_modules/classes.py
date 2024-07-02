@@ -38,3 +38,6 @@ class Test:
     def show_hidden_round_creator(dpg_tag: str | int):
         if not dpg.is_item_shown(dpg_tag):
             dpg.show_item(dpg_tag)
+
+    def find_round_with_id(self, round_id: str):
+        return [i for i in self.rounds if i.test_creator_registry_id == round_id][0]

@@ -10,10 +10,10 @@ dpg.create_context()
 dpg.create_viewport(title='Mionly: test creator', large_icon='icon.ico', width=633, height=500)
 
 with dpg.font_registry():
-    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 20, default_font=True, id='nunito'):
+    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 18, default_font=True, id='nunito'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
-    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 26, default_font=True, id='nunito_titles'):
+    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 24, default_font=True, id='nunito_titles'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 dpg.bind_font('nunito')

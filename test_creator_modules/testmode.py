@@ -32,6 +32,7 @@ class TestModeRound(classes.Round):
     def preview(self, parent_item_tag: str | int):
         with dpg.group(parent=parent_item_tag):
             title_object = dpg.add_text(self.title)
+
             dpg.add_text(self.round_text)
             dpg.add_spacer(height=7)
             dpg.add_text('answers: ' + ', '.join(self.answers))
@@ -50,8 +51,12 @@ class TestModeRound(classes.Round):
                 label='Edit',
                 callback=lambda: test_object.show_hidden_round_creator(self.dpg_window_creator_tag)
             )
+            arrow_button_up = dpg.add_button(arrow=True, direction=dpg.mvDir_Up, callback=self.move_up_this_test)
+            arrow_button_down = dpg.add_button(arrow=True, direction=dpg.mvDir_Down, callback=self.move_down_this_test)
 
+            dpg.bind_item_font(title_object, 'nunito_titles')
             dpg.render_dearpygui_frame()
+
             last_object_pos = dpg.get_item_pos(last_object)
             last_object_size = dpg.get_item_rect_size(last_object)
             title_object_pos = dpg.get_item_pos(title_object)
@@ -61,22 +66,32 @@ class TestModeRound(classes.Round):
 
             dpg.configure_item(
                 debug_text,
-                pos=[dpg.get_viewport_width() - 20 - debug_text_size[0], last_object_pos[1] - 22]
+                pos=[dpg.get_viewport_width() - 37 - debug_text_size[0], last_object_pos[1] - last_object_size[1] * 1.5]
             )
             dpg.configure_item(
                 edit_button,
-                pos=[dpg.get_viewport_width() - 20 - edit_button_size[0], title_object_pos[1]]
+                pos=[dpg.get_viewport_width() - 37 - edit_button_size[0], title_object_pos[1]]
             )
 
             dpg.configure_item(
                 correct_answer_object,
-                pos=[correct_answer_object_pos[0], correct_answer_object_pos[1] - (last_object_size[1] / 2)]
+                pos=[correct_answer_object_pos[0], correct_answer_object_pos[1] - last_object_size[1] + 5]
             )
 
             dpg.render_dearpygui_frame()
 
+            edit_button_pos = dpg.get_item_pos(edit_button)
+
+            dpg.configure_item(
+                arrow_button_up,
+                pos=[edit_button_pos[0], edit_button_pos[1] + 30]
+            )
+            dpg.configure_item(
+                arrow_button_down,
+                pos=[edit_button_pos[0], edit_button_pos[1] + 60]
+            )
+
         dpg.add_separator(parent=parent_item_tag)
-        dpg.bind_item_font(title_object, 'nunito_titles')
 
     def dump(self) -> str:
         """
@@ -92,6 +107,44 @@ class TestModeRound(classes.Round):
             'answers': {answer: answer == self.answers[self.correct_answer_index] for answer in self.answers},
             'points_per_correct_answer': self.points_per_correct_answer,
         })
+
+    def move_up_this_test(self):
+        if not test_object.is_there_saved_round_with_id(self.test_creator_registry_id):
+            return
+
+        round_in_test_object = test_object.find_round_with_id(self.test_creator_registry_id)
+        round_index = test_object.rounds.index(round_in_test_object)
+
+        if round_index == 0:
+            return
+
+        test_object.rounds.insert(round_index - 1, round_in_test_object)
+        test_object.rounds.pop(round_index + 1)
+        test_object.update_round_list()
+
+    def move_down_this_test(self):
+        if not test_object.is_there_saved_round_with_id(self.test_creator_registry_id):
+            return
+
+        dummy = TestModeRound('', '', '', [], 0, 0, 0)
+        round_in_test_object = test_object.find_round_with_id(self.test_creator_registry_id)
+        round_index = test_object.rounds.index(round_in_test_object)
+        test_object.rounds.append(dummy)
+
+        try:
+            test_object.rounds[round_index + 2]
+        except IndexError:
+            test_object.rounds.remove(dummy)
+            return
+        except ValueError:
+            test_object.rounds.append(round_in_test_object)
+            test_object.rounds.pop(round_index)
+        else:
+            test_object.rounds.insert(round_index + 2, round_in_test_object)
+            test_object.rounds.pop(round_index)
+
+        test_object.rounds.remove(dummy)
+        test_object.update_round_list()
 
 
 def gen_random_id():
@@ -182,6 +235,7 @@ def open_round_creator():
             same_round_index = test_object.rounds.index(same_round[0])
             test_object.rounds[same_round_index] = round_object
         test_object.update_round_list()
+        hide()
 
     def hide():
         test_object.hidden_round_creators[round_creator_window] = round_object.test_creator_registry_id
