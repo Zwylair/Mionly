@@ -1,6 +1,6 @@
-from test_creator_modules.testmode.classes import *
-from test_creator_modules.testmode.round_creator import *
-from test_creator_modules import classes
+from test_creator.modules.testmode.classes import *
+from test_creator.modules.testmode.round_creator import *
+from test_creator import classes
 
 
 def setup(test_obj: classes.Test):

@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
-from test_creator_modules import classes
+from test_creator import classes
 from cyrillic_support import decode_string
 
 

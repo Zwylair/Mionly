@@ -1,8 +1,8 @@
 import string
 import random
 import dearpygui.dearpygui as dpg
-from test_creator_modules import classes
-from test_creator_modules.messageboxes import spawn_warning
+from test_creator import classes
+from test_creator.messageboxes import spawn_warning
 
 test_object: classes.Test | None = None
 
@@ -12,7 +12,7 @@ def gen_random_id():
 
 
 def open_round_creator():
-    from test_creator_modules.testmode import TestModeRound
+    from test_creator.modules.testmode import TestModeRound
 
     # get not submitted rounds and show one of them
     for dpg_window_tag, round_id in test_object.hidden_round_creators.items():

@@ -8,6 +8,6 @@ setup(
     description='',
     executables=[
         Executable('main.py'),
-        Executable('test_creator.py', base='Win32GUI'),
+        Executable('test_maker.py', base='Win32GUI'),
     ],
 )
