@@ -2,7 +2,7 @@ import string
 import random
 import dearpygui.dearpygui as dpg
 from test_creator_modules import classes
-from test_creator_modules.warning import spawn_warning
+from test_creator_modules.messageboxes import spawn_warning
 
 test_object: classes.Test | None = None
 

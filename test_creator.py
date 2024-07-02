@@ -4,7 +4,7 @@ import dearpygui.dearpygui as dpg
 # import drag_and_drop_setup
 import screeninfo
 from test_creator_modules import testmode, drag_testmode, classes
-from test_creator_modules.warning import spawn_warning
+from test_creator_modules.messageboxes import spawn_warning, spawn_info
 from cyrillic_support import CyrillicSupport, FontPreset, decode_string
 
 monitor = screeninfo.get_monitors()[0]
@@ -36,13 +36,13 @@ with dpg.value_registry():
 
 def save():
     test_name = dpg.get_value('test_creator_test_name')
-    test_name = decode_string(test_name)
+    test_name_decoded = decode_string(test_name)
 
     if test_name in os.listdir('tests'):
         spawn_warning('Test with the same name already exists!')
         return
 
-    os.makedirs(f'tests/{test_name}', exist_ok=True)
+    os.makedirs(f'tests/{test_name_decoded}', exist_ok=True)
 
     rounds_by_type = {}
 
@@ -54,11 +54,13 @@ def save():
         rounds_by_type[round_type].append(test_round)
 
     for test_round_type, rounds in rounds_by_type.items():
-        os.makedirs(f'tests/{test_name}/{test_round_type}', exist_ok=True)
+        os.makedirs(f'tests/{test_name_decoded}/{test_round_type}', exist_ok=True)
 
         for index, test_round in enumerate(rounds):
-            with open(f'tests/{test_name}/{test_round_type}/{index}.json', 'w') as file:
+            with open(f'tests/{test_name_decoded}/{test_round_type}/{index}.json', 'w') as file:
                 file.write(test_round.dump())
+
+    spawn_info(f'{test_name} was saved!')
 
 
 with dpg.window(no_title_bar=True, no_resize=True, no_close=True, no_move=True) as window:
