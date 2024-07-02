@@ -2,18 +2,28 @@ import os
 import dearpygui.dearpygui as dpg
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
+import screeninfo
 from test_creator_modules import testmode, drag_testmode, classes
 from test_creator_modules.warning import spawn_warning
 
+monitor = screeninfo.get_monitors()[0]
+monitor_size = (monitor.width, monitor.height)
+viewport_size = (833, 700)
+
 dpg.create_context()
 # dpg_dnd.initialize()
-dpg.create_viewport(title='Mionly: test creator', large_icon='icon.ico', width=633, height=500)
+dpg.create_viewport(
+    title='Mionly: test creator', large_icon='icon.ico',
+    width=viewport_size[0], height=viewport_size[1],
+    x_pos=int(monitor_size[0] / 2 - viewport_size[0] / 2),
+    y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
+)
 
 with dpg.font_registry():
-    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 18, default_font=True, id='nunito'):
+    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 24, default_font=True, id='nunito'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
-    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 24, default_font=True, id='nunito_titles'):
+    with dpg.font('web/fonts/nunito/nunito-Regular.ttf', 28, default_font=True, id='nunito_titles'):
         dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
 
 dpg.bind_font('nunito')

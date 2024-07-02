@@ -127,22 +127,33 @@ def open_round_creator():
         dpg.add_string_value(tag=f'{registry_prefix}_remove_answer')
         round_object.answers = ['wings', 'claws', 'meat']
 
-    with dpg.window(label='Testmode', no_title_bar=True, width=420, height=300) as round_creator_window:
-        dpg.add_input_text(hint='Round title', source=f'{registry_prefix}_title', width=250)
-        dpg.add_input_text(source=f'{registry_prefix}_round_text', multiline=True, width=250, height=50)
+    window_size = (620, 370)
+    viewport_size = (dpg.get_viewport_width(), dpg.get_viewport_height())
+
+    with dpg.window(
+        label='Add testmode round', on_close=hide,
+        width=window_size[0], height=window_size[1],
+        pos=[
+            int(viewport_size[0] / 2 - window_size[0] / 2),
+            int(viewport_size[1] / 2 - window_size[1] / 2 - 50)
+        ]
+    ) as round_creator_window:
+
+        dpg.add_input_text(hint='Round title', source=f'{registry_prefix}_title', width=350)
+        dpg.add_input_text(source=f'{registry_prefix}_round_text', multiline=True, width=350, height=70)
 
         with dpg.group(horizontal=True):
             dpg.add_button(label='Add answer field', callback=insert_answer_field)
-            dpg.add_text('only 1 answer field allowed in this round', color=(140, 140, 140))
+            dpg.add_text('only 1 answer field (___) allowed in this round', color=(140, 140, 140))
 
         dpg.add_separator()
 
         with dpg.group(horizontal=True):
-            dpg.add_input_text(source=f'{registry_prefix}_new_answer', width=125)
+            dpg.add_input_text(source=f'{registry_prefix}_new_answer', width=225)
             dpg.add_button(label='Add answer', callback=add_answer)
 
         with dpg.group(horizontal=True):
-            dpg.add_combo(items=round_object.answers, tag=f'{registry_prefix}_answer_combo', source=f'{registry_prefix}_remove_answer', width=125)
+            dpg.add_combo(items=round_object.answers, tag=f'{registry_prefix}_answer_combo', source=f'{registry_prefix}_remove_answer', width=225)
             dpg.add_button(label='Remove answer', callback=remove_answer)
 
         with dpg.group(horizontal=True):
@@ -151,12 +162,10 @@ def open_round_creator():
 
         with dpg.group(horizontal=True):
             dpg.add_text('Points per correct answer: ')
-            dpg.add_input_float(source=f'{registry_prefix}_points_per_correct_answer', width=150, format='%.2f')
+            dpg.add_input_float(source=f'{registry_prefix}_points_per_correct_answer', width=250, format='%.2f')
 
         dpg.add_separator()
-
         save_button = dpg.add_button(label='Save', callback=save)
-        close_button = dpg.add_button(label='X', tag=f'{registry_prefix}_close_button', callback=hide)
 
         dpg.render_dearpygui_frame()
 
@@ -166,9 +175,4 @@ def open_round_creator():
                 dpg.get_item_rect_size(round_creator_window)[0] - 8 - dpg.get_item_rect_size(save_button)[0],
                 dpg.get_item_rect_size(round_creator_window)[1] - 8 - dpg.get_item_rect_size(save_button)[1]
             ]
-        )
-
-        dpg.configure_item(
-            close_button,
-            pos=[dpg.get_item_rect_size(round_creator_window)[0] - 8 - dpg.get_item_rect_size(close_button)[0], 7]
         )

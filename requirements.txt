@@ -5,3 +5,4 @@ pydantic~=2.7.4
 python-magic-bin==0.4.14
 dearpygui==1.11.1
 DearPyGui-DragAndDrop==1.0.0
+screeninfo==0.8.1

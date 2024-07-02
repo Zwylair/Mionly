@@ -41,6 +41,7 @@ class TestModeRound(classes.Round):
                 label='Edit',
                 callback=lambda: self.test_object.show_hidden_round_creator(self.dpg_window_creator_tag)
             )
+            remove_button = dpg.add_button(label='Delete', callback=self.show_remove_request)
             arrow_button_up = dpg.add_button(arrow=True, direction=dpg.mvDir_Up, callback=self.move_up_this_test)
             arrow_button_down = dpg.add_button(arrow=True, direction=dpg.mvDir_Down, callback=self.move_down_this_test)
 
@@ -53,6 +54,7 @@ class TestModeRound(classes.Round):
             debug_text_size = dpg.get_item_rect_size(debug_text)
             edit_button_size = dpg.get_item_rect_size(edit_button)
             correct_answer_object_pos = dpg.get_item_pos(correct_answer_object)
+            remove_button_size = dpg.get_item_rect_size(remove_button)
 
             dpg.configure_item(
                 debug_text,
@@ -60,7 +62,12 @@ class TestModeRound(classes.Round):
             )
             dpg.configure_item(
                 edit_button,
-                pos=[dpg.get_viewport_width() - 37 - edit_button_size[0], title_object_pos[1]]
+                pos=[dpg.get_viewport_width() - 37 - edit_button_size[0] - remove_button_size[0] - 5, title_object_pos[1]]
+            )
+
+            dpg.configure_item(
+                remove_button,
+                pos=[dpg.get_viewport_width() - 37 - remove_button_size[0], title_object_pos[1]]
             )
 
             dpg.configure_item(
@@ -70,15 +77,24 @@ class TestModeRound(classes.Round):
 
             dpg.render_dearpygui_frame()
 
+            remove_button_pos = dpg.get_item_pos(remove_button)
             edit_button_pos = dpg.get_item_pos(edit_button)
+            remove_button_size = dpg.get_item_rect_size(remove_button)
+            arrow_button_size = dpg.get_item_rect_size(arrow_button_up)
 
             dpg.configure_item(
                 arrow_button_up,
-                pos=[edit_button_pos[0], edit_button_pos[1] + 30]
+                pos=[
+                    edit_button_pos[0] + edit_button_size[0] + 5 + remove_button_size[0] - arrow_button_size[0],
+                    remove_button_pos[1] + 30 + 7
+                ]
             )
             dpg.configure_item(
                 arrow_button_down,
-                pos=[edit_button_pos[0], edit_button_pos[1] + 60]
+                pos=[
+                    edit_button_pos[0] + edit_button_size[0] + 5 + remove_button_size[0] - arrow_button_size[0],
+                    remove_button_pos[1] + 60 + 7 + 5
+                ]
             )
 
         dpg.add_separator(parent=parent_item_tag)
@@ -97,6 +113,9 @@ class TestModeRound(classes.Round):
             'answers': {answer: answer == self.answers[self.correct_answer_index] for answer in self.answers},
             'points_per_correct_answer': self.points_per_correct_answer,
         })
+
+    def show_remove_request(self):
+        pass
 
     def move_up_this_test(self):
         if not self.test_object.is_there_saved_round_with_id(self.test_creator_registry_id):
