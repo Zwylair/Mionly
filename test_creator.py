@@ -1,9 +1,9 @@
 import os
-
 import dearpygui.dearpygui as dpg
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
 from test_creator_modules import testmode, drag_testmode, classes
+from test_creator_modules.warning import spawn_warning
 
 dpg.create_context()
 # dpg_dnd.initialize()
@@ -28,6 +28,7 @@ def save():
     test_name = dpg.get_value('test_creator_test_name')
 
     if test_name in os.listdir('tests'):
+        spawn_warning('Test with the same name already exists!')
         return
 
     os.makedirs(f'tests/{test_name}', exist_ok=True)

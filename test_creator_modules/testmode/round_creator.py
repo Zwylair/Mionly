@@ -2,6 +2,7 @@ import string
 import random
 import dearpygui.dearpygui as dpg
 from test_creator_modules import classes
+from test_creator_modules.warning import spawn_warning
 
 test_object: classes.Test | None = None
 
@@ -44,7 +45,11 @@ def open_round_creator():
     def add_answer():
         new_answer = dpg.get_value(f'{registry_prefix}_new_answer')
 
+        if not new_answer:
+            return
+
         if new_answer in round_object.answers:
+            spawn_warning('Cannot add two identical answers!')
             return
 
         round_object.answers.append(new_answer)
@@ -57,6 +62,10 @@ def open_round_creator():
 
     def remove_answer():
         answer_to_remove = dpg.get_value(f'{registry_prefix}_remove_answer')
+
+        if not answer_to_remove:
+            return
+
         round_object.answers.remove(answer_to_remove)
         dpg.configure_item(f'{registry_prefix}_answer_combo', items=round_object.answers)
         dpg.configure_item(f'{registry_prefix}_correct_answer_combo', items=round_object.answers)
@@ -76,9 +85,15 @@ def open_round_creator():
         round_text = dpg.get_value(f'{registry_prefix}_round_text')
         correct_answer = dpg.get_value(f'{registry_prefix}_correct_answer')
 
+        if len(round_object.answers) == 0:
+            spawn_warning('You have not added any answers!')
+            return
+
         try:
             correct_answer_index = round_object.answers.index(correct_answer)
         except ValueError:
+            # will never happen. correct answer autosets with first added answer
+            spawn_warning('You have not selected correct answer!')
             return
 
         points_per_correct_answer = dpg.get_value(f'{registry_prefix}_points_per_correct_answer')
