@@ -1,8 +1,9 @@
+import copy
 import string
 import random
+from typing import Any
 import dearpygui.dearpygui as dpg
-from test_creator import classes
-from test_creator.messageboxes import spawn_warning
+from test_creator import classes, spawn_warning
 
 test_object: classes.Test | None = None
 
@@ -11,29 +12,43 @@ def gen_random_id():
     return ''.join([random.choice(string.hexdigits) for _ in range(9)])
 
 
-def open_round_creator():
-    from test_creator.modules.testmode import TestModeRound
+def open_round_creator(from_round: Any = None, silent: bool = False):
+    from test_creator import TestModeRound
+    from_round: TestModeRound | None | int
+
+    # dearpygui argument
+    if isinstance(from_round, int):
+        from_round = None
 
     # get not submitted rounds and show one of them
+    new_hidden_round_creators = copy.deepcopy(test_object.hidden_round_creators)
     for dpg_window_tag, round_id in test_object.hidden_round_creators.items():
         if not test_object.is_there_saved_round_with_id(round_id):
-            dpg.show_item(dpg_window_tag)
-            return
+            try:
+                dpg.show_item(dpg_window_tag)
+                return
+            except SystemError:
+                new_hidden_round_creators.pop(dpg_window_tag)
+    test_object.hidden_round_creators = new_hidden_round_creators
 
     # opening multiple round creators causes conflicts in the registry. using id avoids this
     registry_id = gen_random_id()
     registry_prefix = f'testmode_{registry_id}'
 
-    round_object = TestModeRound(
-        test_creator_registry_id=registry_id,
-        test_object=test_object,
-        title='',
-        round_text='',
-        answers=[],
-        correct_answer_index=None,
-        points_per_correct_answer=1.0,
-        dpg_window_creator_tag=None,
-    )
+    if from_round is None:
+        round_object = TestModeRound(
+            test_creator_registry_id=registry_id,
+            test_object=test_object,
+            title='Choose the correct answer:',
+            round_text='A bee flies and has: ___.',
+            answers=['wings', 'claws', 'meat'],
+            correct_answer_index=0,
+            points_per_correct_answer=1.0,
+            dpg_window_creator_tag=None,
+        )
+    else:
+        registry_prefix = f'testmode_{from_round.test_creator_registry_id}'
+        round_object = from_round
 
     def insert_answer_field():
         round_text = dpg.get_value(f'{registry_prefix}_round_text')
@@ -102,7 +117,6 @@ def open_round_creator():
         round_object.round_text = round_text
         round_object.correct_answer_index = correct_answer_index
         round_object.points_per_correct_answer = points_per_correct_answer
-        round_object.dpg_window_creator_tag = round_creator_window
 
         # check if round already in test (user edits existing round)
         same_round = [i for i in test_object.rounds if i.test_creator_registry_id == round_object.test_creator_registry_id]
@@ -118,14 +132,14 @@ def open_round_creator():
         test_object.hidden_round_creators[round_creator_window] = round_object.test_creator_registry_id
         dpg.hide_item(round_creator_window)
 
-    with dpg.value_registry():
-        dpg.add_string_value(tag=f'{registry_prefix}_title', default_value='Choose the correct answer:')
-        dpg.add_string_value(tag=f'{registry_prefix}_round_text', default_value='A bee flies and has: ___.')
-        dpg.add_string_value(tag=f'{registry_prefix}_correct_answer', default_value='wings')
-        dpg.add_float_value(tag=f'{registry_prefix}_points_per_correct_answer', default_value=round_object.points_per_correct_answer)
-        dpg.add_string_value(tag=f'{registry_prefix}_new_answer')
-        dpg.add_string_value(tag=f'{registry_prefix}_remove_answer')
-        round_object.answers = ['wings', 'claws', 'meat']
+    if not dpg.does_alias_exist(f'{registry_prefix}_title'):
+        with dpg.value_registry():
+            dpg.add_string_value(tag=f'{registry_prefix}_title', default_value=round_object.title)
+            dpg.add_string_value(tag=f'{registry_prefix}_round_text', default_value=round_object.round_text)
+            dpg.add_string_value(tag=f'{registry_prefix}_correct_answer', default_value=round_object.answers[round_object.correct_answer_index])
+            dpg.add_float_value(tag=f'{registry_prefix}_points_per_correct_answer', default_value=round_object.points_per_correct_answer)
+            dpg.add_string_value(tag=f'{registry_prefix}_new_answer')
+            dpg.add_string_value(tag=f'{registry_prefix}_remove_answer')
 
     window_size = (620, 370)
     viewport_size = (dpg.get_viewport_width(), dpg.get_viewport_height())
@@ -136,7 +150,8 @@ def open_round_creator():
         pos=[
             int(viewport_size[0] / 2 - window_size[0] / 2),
             int(viewport_size[1] / 2 - window_size[1] / 2 - 50)
-        ]
+        ],
+        show=not silent,
     ) as round_creator_window:
 
         dpg.add_input_text(hint='Round title', source=f'{registry_prefix}_title', width=350)
@@ -165,14 +180,9 @@ def open_round_creator():
             dpg.add_input_float(source=f'{registry_prefix}_points_per_correct_answer', width=250, format='%.2f')
 
         dpg.add_separator()
-        save_button = dpg.add_button(label='Save', callback=save)
+        dpg.add_button(label='Save', callback=save)
 
         dpg.render_dearpygui_frame()
 
-        dpg.configure_item(
-            save_button,
-            pos=[
-                dpg.get_item_rect_size(round_creator_window)[0] - 8 - dpg.get_item_rect_size(save_button)[0],
-                dpg.get_item_rect_size(round_creator_window)[1] - 8 - dpg.get_item_rect_size(save_button)[1]
-            ]
-        )
+        round_object.dpg_window_creator_tag = round_creator_window
+        round_object.test_object.update_round_creator(round_object.test_creator_registry_id, round_creator_window)

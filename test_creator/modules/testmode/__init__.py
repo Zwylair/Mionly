@@ -1,5 +1,5 @@
 from test_creator.modules.testmode.classes import *
-from test_creator.modules.testmode.round_creator import *
+from test_creator.modules.testmode import round_creator
 from test_creator import classes
 
 
@@ -9,4 +9,4 @@ def setup(test_obj: classes.Test):
 
 
 def spawn_round_creator_button():
-    dpg.add_button(label='Add testmode round', callback=open_round_creator)
+    dpg.add_button(label='Add testmode round', callback=round_creator.open_round_creator)
