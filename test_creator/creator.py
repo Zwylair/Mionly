@@ -1,11 +1,11 @@
 import os
 from typing import Type
+import screeninfo
 import dearpygui.dearpygui as dpg
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
-import screeninfo
-from test_creator.modules import testmode, drag_testmode, classes
-from test_creator.messageboxes import spawn_warning, spawn_info
+from test_creator.modules import testmode, drag_testmode
+from test_creator import spawn_warning, spawn_info, classes
 from cyrillic_support import CyrillicSupport, FontPreset, decode_string
 
 test_object = classes.Test()
@@ -96,7 +96,7 @@ def open_test_maker():
         test_object.dpg_window_for_round_previews = window
         modules = {
             'testmode': testmode.setup,
-            'drag_testmode':  drag_testmode.setup,
+            'drag_testmode': drag_testmode.setup,
         }
         modules_classes = {
             testmode.TestModeRound: 'testmode',
@@ -111,7 +111,7 @@ def open_test_maker():
         dpg.add_separator()
 
         for initialiser in modules.values():
-            initialiser(test_object)
+            initialiser(test_object_getter)
 
         dpg.add_separator()
         test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]

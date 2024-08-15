@@ -3,8 +3,8 @@ from test_creator.modules.testmode.round_creator import *
 from test_creator import classes
 
 
-def setup(test_obj: classes.Test):
-    round_creator.test_object = test_obj
+def setup(test_object_getter_func: Callable[[], classes.Test]):
+    round_creator.test_object_getter = test_object_getter_func
     spawn_round_creator_button()
 
 

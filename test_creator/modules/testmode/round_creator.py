@@ -1,11 +1,11 @@
 import string
 import random
-from typing import Any
+from typing import Any, Callable
 import dearpygui.dearpygui as dpg
 from test_creator import classes
 from test_creator.messageboxes import spawn_warning
 
-test_object: classes.Test | None = None
+test_object_getter: Callable[[], classes.Test] | None = None
 
 
 def gen_random_id():
@@ -21,6 +21,7 @@ def delete_all_item_children(item_tag: str | int):
 
 def open_round_creator(from_round: Any = None):
     from test_creator.modules.testmode import TestModeRound
+    test_object = test_object_getter()
 
     if from_round is None:
         # get not submitted rounds and show one of them
@@ -33,7 +34,7 @@ def open_round_creator(from_round: Any = None):
         registry_id = gen_random_id()
         round_object = TestModeRound(
             registry_id=registry_id,
-            test_object=test_object,
+            test_object_getter=test_object_getter,
             title='Choose the correct answer:',
             round_text='A bee flies and has: ___.',
             answers=['wings', 'claws', 'meat'],

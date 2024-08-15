@@ -23,4 +23,3 @@ def spawn_info(text: str):
 
     with dpg.window(label='Info', no_resize=True, pos=pos):
         dpg.add_text(default_value=text, color=(190, 230, 255))
-

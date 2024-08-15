@@ -1,4 +1,5 @@
 import json
+from typing import Callable
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from test_creator import classes
@@ -8,7 +9,7 @@ from cyrillic_support import decode_string
 @dataclass
 class TestModeRound(classes.Round):
     registry_id: str
-    test_object: classes.Test
+    test_object_getter: Callable[[], classes.Test]
     title: str
     round_text: str
     answers: list[str]
@@ -22,6 +23,7 @@ class TestModeRound(classes.Round):
 
     def preview(self, parent_item_tag: str | int):
         with dpg.group(parent=parent_item_tag):
+            test_object = self.test_object_getter()
             title_object = dpg.add_text(self.title)
 
             dpg.add_text(self.round_text)
@@ -39,11 +41,11 @@ class TestModeRound(classes.Round):
             remove_button = dpg.add_button(label='Delete', callback=self.show_remove_request)
             arrow_button_up = dpg.add_button(
                 arrow=True, direction=dpg.mvDir_Up,
-                callback=lambda: self.test_object.move_up_round_with_id(self.registry_id)
+                callback=lambda: test_object.move_up_round_with_id(self.registry_id)
             )
             arrow_button_down = dpg.add_button(
                 arrow=True, direction=dpg.mvDir_Down,
-                callback=lambda: self.test_object.move_down_round_with_id(self.registry_id)
+                callback=lambda: test_object.move_down_round_with_id(self.registry_id)
             )
 
             dpg.bind_item_font(title_object, 'nunito_titles')
@@ -108,24 +110,25 @@ class TestModeRound(classes.Round):
         Template:
             title: str
             round_text: str
-            answers: dict['answer1': ..., 'answer2': ...]
+            answers: dict['answer1': True|False, 'answer2': True|False]
             points_per_correct_answer: float = 1.0
         """
         return json.dumps({
             'title': decode_string(self.title),
             'round_text': decode_string(self.round_text),
-            'answers': {decode_string(answer): answer == self.answers[self.correct_answer_index] for answer in self.answers},
+            'answers': {decode_string(answer): index == self.correct_answer_index for index, answer in enumerate(self.answers)},
             'points_per_correct_answer': self.points_per_correct_answer,
         })
 
     def remove(self, remove_round_window: str | int):
         """Deletes this round from test"""
 
-        this_round_in_test_object = self.test_object.get_round_with_id(self.registry_id)
+        test_object = self.test_object_getter()
+        this_round_in_test_object = test_object.get_round_with_id(self.registry_id)
 
         dpg.delete_item(remove_round_window)
-        self.test_object.rounds.remove(this_round_in_test_object)
-        self.test_object.regenerate_round_previews()
+        test_object.rounds.remove(this_round_in_test_object)
+        test_object.regenerate_round_previews()
 
     def show_remove_request(self):
         width, height = (300, 120)
