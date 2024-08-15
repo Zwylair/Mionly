@@ -1,7 +1,14 @@
 import dearpygui.dearpygui as dpg
+from settings import *
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(format=LOGGING_FORMAT)
+logger.setLevel(LOGGING_LEVEL)
 
 
 def spawn_warning(text: str):
+    logger.debug(f'Spawning warning with text: {text}')
+
     width, height = [300, 70]
 
     pos = (
@@ -14,6 +21,8 @@ def spawn_warning(text: str):
 
 
 def spawn_info(text: str):
+    logger.debug(f'Spawning info with text: {text}')
+
     width, height = [300, 70]
 
     pos = (

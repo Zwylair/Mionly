@@ -1,6 +1,11 @@
 from typing import Callable, Any
 from dataclasses import dataclass, field
 import dearpygui.dearpygui as dpg
+from settings import *
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(format=LOGGING_FORMAT)
+logger.setLevel(LOGGING_LEVEL)
 
 
 class Round:
@@ -23,6 +28,8 @@ class Test:
     unsaved_rounds: dict[str, str | int] = field(default_factory=lambda: {})  # creator_tag: dpg_tag
 
     def regenerate_round_previews(self):
+        logger.debug('Regenerating previews...')
+
         children = dpg.get_item_children(self.dpg_window_for_round_previews)[1]
         children = [i for i in children if i not in self.restricted_parent_children_to_remove]
 
@@ -36,9 +43,12 @@ class Test:
         return next(iter([i for i in self.rounds if i.registry_id == round_id]), None)
 
     def add_round(self, round_object: Round):
+        logger.debug(f'Round added: {round_object.registry_id}')
         self.rounds.append(round_object)
 
     def refresh_round(self, round_object: Round):
+        logger.debug(f'Refreshing round: {round_object.registry_id}')
+
         same_round = self.get_round_with_id(round_object.registry_id)
         if same_round is None:
             self.add_round(round_object)
@@ -54,6 +64,7 @@ class Test:
         if round_index == 0:
             return
 
+        logger.debug(f'Moving round up: {round_id}')
         self.rounds.insert(round_index - 1, round_in_test_object)
         self.rounds.pop(round_index + 1)
         self.regenerate_round_previews()
@@ -64,6 +75,7 @@ class Test:
         round_index = self.rounds.index(round_in_test_object)
         self.rounds.append(dummy)
 
+        logger.debug(f'Trying to move round ({round_id}) down')
         try:
             self.rounds[round_index + 2]
         except IndexError:

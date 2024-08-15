@@ -10,7 +10,11 @@ import dearpygui.dearpygui as dpg
 from test_creator.modules import testmode, drag_testmode
 from test_creator import spawn_warning, spawn_info, classes, backupper
 from cyrillic_support import CyrillicSupport, FontPreset, decode_string
+from settings import *
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(format=LOGGING_FORMAT)
+logger.setLevel(LOGGING_LEVEL)
 test_object = classes.Test()
 LOCK_FILENAME = 'test_creator.lock'
 
@@ -20,17 +24,19 @@ def test_object_getter():
 
 
 def save(modules_classes: dict[Type[classes.Round], str]):
+    logger.debug('Save test function called')
     test_name = dpg.get_value('test_creator_test_name')
     test_name_decoded = decode_string(test_name)
 
     if test_name in os.listdir('tests'):
+        logger.debug('There is another test with same name.')
         spawn_warning('Test with the same name already exists!')
         return
 
     os.makedirs(f'tests/{test_name_decoded}', exist_ok=True)
+    logger.debug('Filtering rounds by its type...')
 
     rounds_by_type = {}
-
     for test_round in test_object.rounds:
         round_type = modules_classes[test_round.__class__]
 
@@ -38,6 +44,7 @@ def save(modules_classes: dict[Type[classes.Round], str]):
             rounds_by_type[round_type] = []
         rounds_by_type[round_type].append(test_round)
 
+    logger.debug('Creating round types folders and dumping them...')
     for test_round_type, rounds in rounds_by_type.items():
         os.makedirs(f'tests/{test_name_decoded}/{test_round_type}', exist_ok=True)
 
@@ -46,13 +53,18 @@ def save(modules_classes: dict[Type[classes.Round], str]):
                 file.write(test_round.dump())
 
     spawn_info(f'{test_name} was saved!')
+    logger.debug(f'Test {test_name_decoded} was saved.')
 
 
 def load_backup(backup_filepath: str, load_backup_window: str | int):
+    logger.debug(f'Load backup func called. Backup path: {backup_filepath}')
     global test_object
 
     if backup_filepath is None:
+        logger.debug('Backup file is not picked.')
         return
+
+    logger.debug('Loading backup...')
 
     restricted_parent_children_to_remove = test_object.restricted_parent_children_to_remove
     dpg_window_for_round_previews = test_object.dpg_window_for_round_previews
@@ -66,11 +78,14 @@ def load_backup(backup_filepath: str, load_backup_window: str | int):
     test_object.dpg_window_for_round_previews = dpg_window_for_round_previews
     test_object.regenerate_round_previews()
     dpg.delete_item(load_backup_window)
+    logger.debug('Backup loaded.')
 
 
 def open_test_maker():
     def change_test_name(new_test_name: str):
         test_object.name = new_test_name
+
+    logger.debug('Open test maker func called')
 
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
@@ -85,6 +100,7 @@ def open_test_maker():
         y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
     )
 
+    logger.debug('Initializing fonts and cyrillic support')
     fonts = [
         # FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=28, id='nunito_titles', bind_font_as_default=False),
         FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=24, id='nunito', bind_font_as_default=True),
@@ -93,9 +109,11 @@ def open_test_maker():
         for font in fonts:
             CyrillicSupport(font)
 
+    logger.debug('Creating registry...')
     with dpg.value_registry():
         dpg.add_string_value(tag='test_creator_load_backup_mtime')
 
+    logger.debug('Setting up themes...')
     with dpg.theme() as global_theme:
         with dpg.theme_component(dpg.mvButton, enabled_state=False):
             dpg.add_theme_color(dpg.mvThemeCol_Button, (48, 48, 50), category=dpg.mvThemeCat_Core)
@@ -137,6 +155,7 @@ def open_test_maker():
 
         dpg.add_separator()
 
+        logger.debug('Initializing modules')
         for initialiser in modules.values():
             initialiser(test_object_getter)
 
@@ -144,6 +163,8 @@ def open_test_maker():
         test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]
 
         # check for unexpected creator crush and propose to load backup
+        logger.debug(f'Checking for unexpected creator crush (checking for {LOCK_FILENAME})')
+
         load_backup_window = None
         if os.path.exists(LOCK_FILENAME):
             backups_dict = {time.ctime(os.path.getmtime(f'backups/{i}')): i for i in reversed(os.listdir('backups'))}
@@ -151,6 +172,7 @@ def open_test_maker():
                 int(dpg.get_viewport_width() / 2 - 500 / 2),
                 int(dpg.get_viewport_height() / 2 - 300 / 2)
             )
+            logger.debug(f'Creator crush found. Propose to load one of these backups: {list(backups_dict.values())}')
 
             with dpg.window(
                     label='Unexpected crush', no_resize=True, pos=pos,
@@ -174,7 +196,9 @@ def open_test_maker():
                 dpg.add_button(label='No, thanks', callback=lambda: dpg.delete_item(load_backup_window))
 
     dpg.set_primary_window(window, True)
+    # logger.debug('Setting up dearpygui drag&drop')
     # drag_and_drop_setup.setup()
+    logger.debug('Setting up backupper and starting thread.')
     backupper.setup()
     auto_backup_thread = threading.Thread(
         target=lambda: backupper.test_auto_backupper(test_object_getter, load_backup_window),
@@ -182,11 +206,14 @@ def open_test_maker():
     )
     auto_backup_thread.start()
 
+    logger.debug(f'Creating and locking lockfile ({LOCK_FILENAME})')
     file = open(LOCK_FILENAME, 'w')
 
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
+    logger.debug('Destroying context. Closing.')
     dpg.destroy_context()
+    logger.debug(f'Unlocking {LOCK_FILENAME}. Deleting.')
     file.close()
     os.remove(LOCK_FILENAME)

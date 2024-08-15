@@ -4,6 +4,11 @@ from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from test_creator import classes
 from cyrillic_support import decode_string
+from settings import *
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(format=LOGGING_FORMAT)
+logger.setLevel(LOGGING_LEVEL)
 
 
 @dataclass
@@ -17,10 +22,13 @@ class TestModeRound(classes.Round):
     points_per_correct_answer: float
 
     def open_round_editor(self):
+        logger.debug(f'[Registry ID: {self.registry_id}] Clicked "Edit" button. Opening editor.')
         from test_creator.modules.testmode.round_creator import open_round_creator
         open_round_creator(self)
 
     def preview(self, parent_item_tag: str | int):
+        logger.debug(f'[Registry ID: {self.registry_id}] Setting up round preview.')
+
         with dpg.group(parent=parent_item_tag):
             test_object = self.test_object_getter()
             title_object = dpg.add_text(self.title)
@@ -112,6 +120,8 @@ class TestModeRound(classes.Round):
             answers: dict['answer1': True|False, 'answer2': True|False]
             points_per_correct_answer: float = 1.0
         """
+        logger.debug(f'[Registry ID: {self.registry_id}] Dumping round.')
+
         return json.dumps({
             'title': decode_string(self.title),
             'round_text': decode_string(self.round_text),
@@ -121,6 +131,7 @@ class TestModeRound(classes.Round):
 
     def remove(self, remove_round_window: str | int):
         """Deletes this round from test"""
+        logger.debug(f'[Registry ID: {self.registry_id}] Round was removed from test.')
 
         test_object = self.test_object_getter()
         this_round_in_test_object = test_object.get_round_with_id(self.registry_id)
@@ -130,6 +141,7 @@ class TestModeRound(classes.Round):
         test_object.regenerate_round_previews()
 
     def show_remove_request(self):
+        logger.debug(f'[Registry ID: {self.registry_id}] Showed remove request.')
         width, height = (300, 120)
 
         pos = (
