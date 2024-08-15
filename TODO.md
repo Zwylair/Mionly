@@ -10,4 +10,3 @@
 ### test creator
 
 - quickstart test from test creator by link http://127.0.0.1/index.html?testname={}&rand-rounds=1&rand-answers=1
-- support for changing locale

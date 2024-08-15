@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from test_creator import classes
 from cyrillic_support import decode_string
+from test_creator.language import loc
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -41,17 +42,17 @@ class TestModeRound(classes.Round):
 
             dpg.add_text(self.round_text)
             dpg.add_spacer(height=7)
-            dpg.add_text('answers: ' + ', '.join(self.answers))
-            correct_answer_object = dpg.add_text('correct answer: ' + self.answers[self.correct_answer_index])
+            dpg.add_text(loc('testmode.rc.answers') + ', '.join(self.answers))
+            correct_answer_object = dpg.add_text(loc('testmode.classes.correct_answer') + self.answers[self.correct_answer_index])
             dpg.add_spacer(height=7)
             last_object = dpg.add_text(
-                default_value=f'[{self.points_per_correct_answer} points per correct answer]',
+                default_value=loc('testmode.classes.points_for_correct_answer_hint').format(self.points_per_correct_answer),
                 color=(210, 210, 210)
             )
 
             debug_text = dpg.add_text(default_value=f'[testmode] [{self.registry_id}]', color=(140, 140, 140))
-            edit_button = dpg.add_button(label='Edit', callback=self.open_round_editor)
-            remove_button = dpg.add_button(label='Delete', callback=self.show_remove_request)
+            edit_button = dpg.add_button(label=loc('testmode.classes.edit'), callback=self.open_round_editor)
+            remove_button = dpg.add_button(label=loc('testmode.classes.delete'), callback=self.show_remove_request)
             arrow_button_up = dpg.add_button(
                 arrow=True, direction=dpg.mvDir_Up,
                 callback=lambda: test_object.move_up_round_with_id(self.registry_id)
@@ -89,7 +90,7 @@ class TestModeRound(classes.Round):
 
             dpg.configure_item(
                 correct_answer_object,
-                pos=[correct_answer_object_pos[0], correct_answer_object_pos[1] - last_object_size[1] + 5]
+                pos=[correct_answer_object_pos[0], correct_answer_object_pos[1] - last_object_size[1] + 7]
             )
 
             dpg.render_dearpygui_frame()
@@ -173,18 +174,21 @@ class TestModeRound(classes.Round):
 
     def show_remove_request(self):
         logger.debug(f'[Registry ID: {self.registry_id}] Showed remove request.')
-        width, height = (300, 120)
 
-        pos = (
-            int(dpg.get_viewport_width() / 2 - width / 2),
-            int(dpg.get_viewport_height() / 2 - height / 2)
-        )
-
-        with dpg.window(label='Round deletion', no_resize=True, width=width, height=height, pos=pos) as remove_round_window:
-            dpg.add_text(default_value='Are you sure to delete this round?')
+        with dpg.window(label=loc('testmode.classes.round_deletion_label'), no_resize=True) as remove_round_window:
+            dpg.add_text(default_value=loc('testmode.classes.round_deletion_text'))
 
             with dpg.group(horizontal=True):
-                yes_button = dpg.add_button(label='Yes', callback=lambda: self.remove(remove_round_window))
-                no_button = dpg.add_button(label='No', callback=lambda: dpg.delete_item(remove_round_window))
+                yes_button = dpg.add_button(label=loc('testmode.classes.yes'), callback=lambda: self.remove(remove_round_window))
+                no_button = dpg.add_button(label=loc('testmode.classes.no'), callback=lambda: dpg.delete_item(remove_round_window))
                 dpg.bind_item_theme(yes_button, 'red_button_theme')
                 dpg.bind_item_theme(no_button, 'green_button_theme')
+
+            dpg.render_dearpygui_frame()
+            dpg.set_item_pos(
+                remove_round_window,
+                pos=[
+                    int(dpg.get_viewport_width() / 2 - dpg.get_item_width(remove_round_window) / 2),
+                    int(dpg.get_viewport_height() / 2 - dpg.get_item_height(remove_round_window) / 2)
+                ]
+            )

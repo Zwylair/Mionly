@@ -4,6 +4,7 @@ from typing import Any, Callable
 import dearpygui.dearpygui as dpg
 from test_creator import classes
 from test_creator.messageboxes import spawn_warning
+from test_creator.language import loc
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -76,7 +77,7 @@ def open_round_creator(from_round: Any = None):
             return
 
         if new_answer in round_object.answers:
-            spawn_warning('Cannot add two identical answers!')
+            spawn_warning(loc('testmode.rc.repeating_answers'))
             return
 
         round_object.answers.append(new_answer)
@@ -100,7 +101,7 @@ def open_round_creator(from_round: Any = None):
 
         if len(round_object.answers) == 0:
             logger.debug('Nah, there are no answers.')
-            spawn_warning('You have not added any answers!')
+            spawn_warning(loc('testmode.rc.empty_answers'))
             return
 
         round_object.title = title
@@ -137,17 +138,15 @@ def open_round_creator(from_round: Any = None):
         delete_all_item_children(round_creator_window)
 
         with dpg.group(parent=round_creator_window):
-            dpg.add_input_text(hint='Round title', source=f'{registry_prefix}_title', width=350)
+            dpg.add_input_text(hint=loc('testmode.rc.round_title'), source=f'{registry_prefix}_title', width=350)
             dpg.add_input_text(source=f'{registry_prefix}_round_text', multiline=True, width=350, height=70)
-
-            with dpg.group(horizontal=True):
-                dpg.add_button(label='Add field for answer', callback=insert_answer_field)
-                dpg.add_text('only 1 field for answer (___) allowed in this round', color=(140, 140, 140))
+            dpg.add_button(label=loc('testmode.rc.add_answer_field'), callback=insert_answer_field)
+            dpg.add_text(loc('testmode.rc.answer_field_hint'), color=(140, 140, 140))
 
             dpg.add_separator()
 
             # spawn answer items
-            dpg.add_text('Answers:')
+            dpg.add_text(loc('testmode.rc.answers'))
 
             for answer_index, answer_text in enumerate(round_object.answers):
                 with dpg.group(horizontal=True):
@@ -181,7 +180,7 @@ def open_round_creator(from_round: Any = None):
                     )
 
                     dpg.add_button(
-                        label='Marked as correct answer' if marked_as_correct else 'Mark as correct answer',
+                        label=loc('testmode.rc.marked_as_correct' if marked_as_correct else 'testmode.rc.mark_as_correct'),
                         enabled=not marked_as_correct,
                         callback=create_mark_button_callback(answer_index)
                     )
@@ -191,16 +190,15 @@ def open_round_creator(from_round: Any = None):
 
             with dpg.group(horizontal=True):
                 dpg.add_input_text(source=f'{registry_prefix}_new_answer', width=250)
-                dpg.add_button(label='Add', callback=add_answer)
+                dpg.add_button(label=loc('testmode.rc.add'), callback=add_answer)
 
-            with dpg.group(horizontal=True):
-                dpg.add_text('Correct answer reward points: ')
-                dpg.add_input_float(source=f'{registry_prefix}_points_per_correct_answer', width=250, format='%.2f')
+            dpg.add_text(loc('testmode.rc.points_for_correct_answer_hint'))
+            dpg.add_input_float(source=f'{registry_prefix}_points_per_correct_answer', width=250, format='%.2f')
 
             dpg.add_separator()
 
             with dpg.group(horizontal=True):
-                dpg.add_button(label='Save', callback=save)
+                dpg.add_button(label=loc('testmode.rc.save'), callback=save)
 
     logger.debug('Setting up registry...')
     with dpg.value_registry(tag=f'{registry_prefix}_registry'):
@@ -211,11 +209,11 @@ def open_round_creator(from_round: Any = None):
         dpg.add_string_value(tag=f'{registry_prefix}_new_answer')
         dpg.add_string_value(tag=f'{registry_prefix}_remove_answer')
 
-    window_size = (620, 370)
+    window_size = (630, 370)
     viewport_size = (dpg.get_viewport_width(), dpg.get_viewport_height())
 
     with dpg.window(
-            label='Add testmode round', on_close=hide,
+            label=loc('testmode.rc.add_round'), on_close=hide,
             width=window_size[0], height=window_size[1],
             pos=[
                 int(viewport_size[0] / 2 - window_size[0] / 2),

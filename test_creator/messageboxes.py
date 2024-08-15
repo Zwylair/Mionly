@@ -1,4 +1,5 @@
 import dearpygui.dearpygui as dpg
+from test_creator.language import loc
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -9,26 +10,28 @@ logger.setLevel(LOGGING_LEVEL)
 def spawn_warning(text: str):
     logger.debug(f'Spawning warning with text: {text}')
 
-    width, height = [300, 70]
-
-    pos = (
-        int(dpg.get_viewport_width() / 2 - width / 2),
-        int(dpg.get_viewport_height() / 2 - height / 2)
-    )
-
-    with dpg.window(label='Warning', no_resize=True, pos=pos):
+    with dpg.window(label=loc('messageboxes.warning')) as window:
         dpg.add_text(default_value=text, color=(255, 190, 190))
+        dpg.render_dearpygui_frame()
+        dpg.set_item_pos(
+            window,
+            pos=[
+                int(dpg.get_viewport_width() / 2 - dpg.get_item_width(window) / 2),
+                int(dpg.get_viewport_height() / 2 - dpg.get_item_height(window) / 2)
+            ]
+        )
 
 
 def spawn_info(text: str):
     logger.debug(f'Spawning info with text: {text}')
 
-    width, height = [300, 70]
-
-    pos = (
-        int(dpg.get_viewport_width() / 2 - width / 2),
-        int(dpg.get_viewport_height() / 2 - height / 2)
-    )
-
-    with dpg.window(label='Info', no_resize=True, pos=pos):
+    with dpg.window(label=loc('messageboxes.info')) as window:
         dpg.add_text(default_value=text, color=(190, 230, 255))
+        dpg.render_dearpygui_frame()
+        dpg.set_item_pos(
+            window,
+            pos=[
+                int(dpg.get_viewport_width() / 2 - dpg.get_item_width(window) / 2),
+                int(dpg.get_viewport_height() / 2 - dpg.get_item_height(window) / 2)
+            ]
+        )
