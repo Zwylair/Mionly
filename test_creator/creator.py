@@ -17,6 +17,14 @@ logging.basicConfig(format=LOGGING_FORMAT)
 logger.setLevel(LOGGING_LEVEL)
 test_object = classes.Test()
 LOCK_FILENAME = 'test_creator.lock'
+MODULES = {
+    'testmode': testmode.setup,
+    'drag_testmode': drag_testmode.setup,
+}
+MODULES_CLASSES = {
+    testmode.TestModeRound: 'testmode',
+    drag_testmode.DragTestModeRound: 'drag_testmode',
+}
 
 
 def test_object_getter():
@@ -50,10 +58,40 @@ def save(modules_classes: dict[Type[classes.Round], str]):
 
         for index, test_round in enumerate(rounds):
             with open(f'tests/{test_name_decoded}/{test_round_type}/{index}.json', 'w') as file:
-                file.write(test_round.dump())
+                file.write(test_round.dumps())
 
     spawn_info(f'{test_name} was saved!')
     logger.debug(f'Test {test_name_decoded} was saved.')
+
+
+def load_test():
+    global test_object
+
+    test_name = dpg.get_value('test_creator_test_name_to_open')
+
+    if not test_name:
+        return
+
+    round_types = os.listdir(f'tests/{test_name}/')
+
+    if not round_types:
+        spawn_warning('Chosen test is empty!')
+        return
+
+    logger.debug(f'Opening test "{test_name}"')
+    dpg.set_value('test_creator_test_name', test_name)
+    sync_test_name_with_dpg()
+    reversed_modules_classes = {v: k for k, v in MODULES_CLASSES.items()}
+
+    for round_type in round_types:
+        for round_name in os.listdir(f'tests/{test_name}/{round_type}/'):
+            if round_type not in reversed_modules_classes:
+                logger.info(f'Unknown round mode: {round_type} ("{test_name}" test)')
+                break
+
+            with open(f'tests/{test_name}/{round_type}/{round_name}', 'r') as file:
+                test_object.add_round(reversed_modules_classes[round_type].loads(file.read(), test_object_getter))
+    test_object.regenerate_round_previews()
 
 
 def load_backup(backup_filepath: str, load_backup_window: str | int):
@@ -81,12 +119,12 @@ def load_backup(backup_filepath: str, load_backup_window: str | int):
     logger.debug('Backup loaded.')
 
 
+def sync_test_name_with_dpg():
+    test_object.name = dpg.get_value('test_creator_test_name')
+    logger.debug(f'Test name synced with dearpygui: {test_object.name}')
+
+
 def open_test_maker():
-    def change_test_name(new_test_name: str):
-        test_object.name = new_test_name
-
-    logger.debug('Open test maker func called')
-
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
     viewport_size = (833, 700)
@@ -94,13 +132,13 @@ def open_test_maker():
     dpg.create_context()
     # dpg_dnd.initialize()
     dpg.create_viewport(
-        title='Mionly: test creator', large_icon='icon.ico',
+        title='Mionly v1.0: test creator', large_icon='icon.ico',
         width=viewport_size[0], height=viewport_size[1],
         x_pos=int(monitor_size[0] / 2 - viewport_size[0] / 2),
         y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
     )
 
-    logger.debug('Initializing fonts and cyrillic support')
+    logger.debug('Initializing fonts')
     fonts = [
         # FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=28, id='nunito_titles', bind_font_as_default=False),
         FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=24, id='nunito', bind_font_as_default=True),
@@ -109,11 +147,13 @@ def open_test_maker():
         for font in fonts:
             CyrillicSupport(font)
 
-    logger.debug('Creating registry...')
+    logger.debug('Creating registry')
     with dpg.value_registry():
         dpg.add_string_value(tag='test_creator_load_backup_mtime')
+        dpg.add_string_value(tag='test_creator_test_name_to_open')
+        dpg.add_string_value(tag='test_creator_test_name', default_value=test_object.name)
 
-    logger.debug('Setting up themes...')
+    logger.debug('Setting up themes')
     with dpg.theme() as global_theme:
         with dpg.theme_component(dpg.mvButton, enabled_state=False):
             dpg.add_theme_color(dpg.mvThemeCol_Button, (48, 48, 50), category=dpg.mvThemeCat_Core)
@@ -139,24 +179,21 @@ def open_test_maker():
 
     with dpg.window(no_title_bar=True, no_resize=True, no_close=True, no_move=True) as window:
         test_object.dpg_window_for_round_previews = window
-        modules = {
-            'testmode': testmode.setup,
-            'drag_testmode': drag_testmode.setup,
-        }
-        modules_classes = {
-            testmode.TestModeRound: 'testmode',
-            drag_testmode.DragTestModeRound: 'drag_testmode',
-        }
+
+        with dpg.group(horizontal=True):
+            dpg.add_text('Open existing test: ')
+            dpg.add_combo(items=os.listdir('tests'), width=350, source='test_creator_test_name_to_open')
+            dpg.add_button(label='Open', callback=lambda: load_test())
 
         with dpg.group(horizontal=True):
             dpg.add_text('Name of your test: ')
-            dpg.add_input_text(default_value=test_object.name, width=150, callback=lambda _, new_name: change_test_name(new_name))
-            dpg.add_button(label='Save', callback=lambda: save(modules_classes))
+            dpg.add_input_text(source='test_creator_test_name', width=350, callback=lambda: sync_test_name_with_dpg())
+            dpg.add_button(label='Save', callback=lambda: save(MODULES_CLASSES))
 
         dpg.add_separator()
 
         logger.debug('Initializing modules')
-        for initialiser in modules.values():
+        for initialiser in MODULES.values():
             initialiser(test_object_getter)
 
         dpg.add_separator()
@@ -198,7 +235,7 @@ def open_test_maker():
     dpg.set_primary_window(window, True)
     # logger.debug('Setting up dearpygui drag&drop')
     # drag_and_drop_setup.setup()
-    logger.debug('Setting up backupper and starting thread.')
+    logger.debug('Setting up backupper and starting thread')
     backupper.setup()
     auto_backup_thread = threading.Thread(
         target=lambda: backupper.test_auto_backupper(test_object_getter, load_backup_window),
@@ -212,8 +249,8 @@ def open_test_maker():
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
-    logger.debug('Destroying context. Closing.')
+    logger.debug('Destroying context. Closing')
     dpg.destroy_context()
-    logger.debug(f'Unlocking {LOCK_FILENAME}. Deleting.')
+    logger.debug(f'Unlocking {LOCK_FILENAME}. Deleting')
     file.close()
     os.remove(LOCK_FILENAME)

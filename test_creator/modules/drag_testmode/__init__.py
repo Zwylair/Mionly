@@ -12,4 +12,6 @@ def spawn_round_creator_button():
 
 
 class DragTestModeRound(classes.Round):
-    pass
+    @staticmethod
+    def loads(a, b):
+        ...

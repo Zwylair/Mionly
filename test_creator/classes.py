@@ -43,6 +43,10 @@ class Test:
         return next(iter([i for i in self.rounds if i.registry_id == round_id]), None)
 
     def add_round(self, round_object: Round):
+        if round_object is None:
+            logger.info('Attempt to add None object to the rounds has been ignored')
+            return
+
         logger.debug(f'Round added: {round_object.registry_id}')
         self.rounds.append(round_object)
 

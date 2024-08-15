@@ -1,4 +1,6 @@
 import json
+import string
+import random
 from typing import Callable
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
@@ -9,6 +11,10 @@ from settings import *
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOGGING_FORMAT)
 logger.setLevel(LOGGING_LEVEL)
+
+
+def gen_random_id():
+    return ''.join([random.choice(string.hexdigits) for _ in range(9)])
 
 
 @dataclass
@@ -110,7 +116,7 @@ class TestModeRound(classes.Round):
 
         dpg.add_separator(parent=parent_item_tag)
 
-    def dump(self) -> str:
+    def dumps(self) -> str:
         """
         Exports this round into json object (used on saving test)
 
@@ -128,6 +134,31 @@ class TestModeRound(classes.Round):
             'answers': {decode_string(answer): index == self.correct_answer_index for index, answer in enumerate(self.answers)},
             'points_per_correct_answer': self.points_per_correct_answer,
         })
+
+    @staticmethod
+    def loads(file_entry: str, test_object_getter: Callable[[], classes.Test]):
+        """Loads round from json-like object (reversed dumps())
+
+        Template:
+            title: str
+            round_text: str
+            answers: dict['answer1': True|False, 'answer2': True|False]
+            points_per_correct_answer: float = 1.0"""
+
+        registry_id = gen_random_id()
+        logger.debug(f'[Registry ID: {registry_id}] Loading round from file entry...')
+        loaded_round: dict = json.loads(file_entry)
+        round_object = TestModeRound(
+            registry_id=registry_id,
+            test_object_getter=test_object_getter,
+            title=loaded_round.get('title'),
+            round_text=loaded_round.get('round_text'),
+            answers=list(loaded_round.get('answers').keys()),
+            correct_answer_index=next(iter([index for index, is_correct in enumerate(loaded_round.get('answers').values()) if is_correct]), None),
+            points_per_correct_answer=loaded_round.get('points_per_correct_answer'),
+        )
+        logger.debug(f'Loaded round data: {round_object}')
+        return round_object
 
     def remove(self, remove_round_window: str | int):
         """Deletes this round from test"""
