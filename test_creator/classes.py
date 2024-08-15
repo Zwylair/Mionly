@@ -1,11 +1,9 @@
-from typing import Any
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 
 
 class Round:
     test_creator_registry_id: str
-    test_object: Any
 
     @staticmethod
     def init_empty():
@@ -51,16 +49,3 @@ class Test:
 
     def find_round_with_id(self, round_id: str):
         return [i for i in self.rounds if i.test_creator_registry_id == round_id][0]
-
-    def remove_test_object_link_from_rounds(self):
-        for i in self.rounds:
-            i.test_object = None
-
-    def link_test_object_with_rounds(self):
-        for i in self.rounds:
-            i.test_object = self
-
-    def update_round_creator(self, round_creator_id: str, round_creator_window_tag: str | int):
-        reversed_hidden_round_creators = {v: k for k, v in self.hidden_round_creators.items()}
-        reversed_hidden_round_creators[round_creator_id] = round_creator_window_tag
-        self.hidden_round_creators = {v: k for k, v in reversed_hidden_round_creators.items()}

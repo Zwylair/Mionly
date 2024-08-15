@@ -1,5 +1,4 @@
 import json
-import time
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from test_creator import classes
@@ -22,11 +21,6 @@ class TestModeRound(classes.Round):
         return TestModeRound('', classes.Test.init_empty(), '', '', [], 0, 0, 0)
 
     def preview(self, parent_item_tag: str | int):
-        # round was loaded and there is no round creator
-        if not dpg.does_item_exist(self.dpg_window_creator_tag):
-            from test_creator.modules.testmode import round_creator
-            round_creator.open_round_creator(self, True)
-
         with dpg.group(parent=parent_item_tag):
             title_object = dpg.add_text(self.title)
 
