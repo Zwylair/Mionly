@@ -7,7 +7,7 @@ from cyrillic_support import decode_string
 
 @dataclass
 class TestModeRound(classes.Round):
-    test_creator_registry_id: str
+    registry_id: str
     test_object: classes.Test
     title: str
     round_text: str
@@ -16,9 +16,9 @@ class TestModeRound(classes.Round):
     points_per_correct_answer: float
     dpg_window_creator_tag: str | int | None
 
-    @staticmethod
-    def init_empty():
-        return TestModeRound('', classes.Test.init_empty(), '', '', [], 0, 0, 0)
+    def open_round_editor(self):
+        from test_creator.modules.testmode.round_creator import open_round_creator
+        open_round_creator(self)
 
     def preview(self, parent_item_tag: str | int):
         with dpg.group(parent=parent_item_tag):
@@ -34,22 +34,16 @@ class TestModeRound(classes.Round):
                 color=(210, 210, 210)
             )
 
-            debug_text = dpg.add_text(
-                default_value=f'[testmode] [{self.test_creator_registry_id}]',
-                color=(140, 140, 140)
-            )
-            edit_button = dpg.add_button(
-                label='Edit',
-                callback=lambda: self.test_object.show_hidden_round_creator(self.dpg_window_creator_tag)
-            )
+            debug_text = dpg.add_text(default_value=f'[testmode] [{self.registry_id}]', color=(140, 140, 140))
+            edit_button = dpg.add_button(label='Edit', callback=self.open_round_editor)
             remove_button = dpg.add_button(label='Delete', callback=self.show_remove_request)
             arrow_button_up = dpg.add_button(
                 arrow=True, direction=dpg.mvDir_Up,
-                callback=lambda: self.test_object.move_up_test_with_id(self.test_creator_registry_id)
+                callback=lambda: self.test_object.move_up_round_with_id(self.registry_id)
             )
             arrow_button_down = dpg.add_button(
                 arrow=True, direction=dpg.mvDir_Down,
-                callback=lambda: self.test_object.move_down_test_with_id(self.test_creator_registry_id)
+                callback=lambda: self.test_object.move_down_round_with_id(self.registry_id)
             )
 
             dpg.bind_item_font(title_object, 'nunito_titles')
@@ -108,6 +102,8 @@ class TestModeRound(classes.Round):
 
     def dump(self) -> str:
         """
+        Exports this round into json object (used on saving test)
+
         Template:
             title: str
             round_text: str
@@ -122,15 +118,13 @@ class TestModeRound(classes.Round):
         })
 
     def remove(self, remove_round_window: str | int):
-        this_round_in_test_object = self.test_object.find_round_with_id(self.test_creator_registry_id)
-        reversed_round_creators = {v: k for k, v in self.test_object.hidden_round_creators.items()}
-        dpg_round_creator_window = reversed_round_creators[self.test_creator_registry_id]
+        """Deletes this round from test"""
 
-        dpg.delete_item(dpg_round_creator_window)
+        this_round_in_test_object = self.test_object.get_round_with_id(self.registry_id)
+
         dpg.delete_item(remove_round_window)
         self.test_object.rounds.remove(this_round_in_test_object)
-        self.test_object.hidden_round_creators.pop(dpg_round_creator_window)
-        self.test_object.update_round_list()
+        self.test_object.regenerate_round_previews()
 
     def show_remove_request(self):
         width, height = (300, 120)

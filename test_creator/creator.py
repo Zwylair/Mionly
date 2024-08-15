@@ -8,7 +8,7 @@ from test_creator.modules import testmode, drag_testmode, classes
 from test_creator.messageboxes import spawn_warning, spawn_info
 from cyrillic_support import CyrillicSupport, FontPreset, decode_string
 
-test_object = classes.Test.init_empty()
+test_object = classes.Test()
 
 
 def test_object_getter():
@@ -84,6 +84,21 @@ def open_test_maker():
             dpg.add_text('Name of your test: ')
             dpg.add_input_text(source='test_creator_test_name', width=150)
             dpg.add_button(label='Save', callback=lambda: save(modules_classes))
+
+        dpg.add_separator()
+
+        # debug buttons
+        with dpg.group(horizontal=True):
+            dpg.add_button(
+                label='print rounds',
+                callback=lambda: print(f'rounds:\n{test_object.rounds}')
+            )
+            dpg.add_button(
+                label='print unsaved_rounds',
+                callback=lambda: print(f'unsaved_rounds:\n{test_object.unsaved_rounds}')
+            )
+
+        dpg.add_separator()
 
         for initialiser in modules.values():
             initialiser(test_object)

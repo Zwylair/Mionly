@@ -1,5 +1,6 @@
 import string
 import random
+from typing import Any
 import dearpygui.dearpygui as dpg
 from test_creator import classes
 from test_creator.messageboxes import spawn_warning
@@ -11,29 +12,35 @@ def gen_random_id():
     return ''.join([random.choice(string.hexdigits) for _ in range(9)])
 
 
-def open_round_creator():
+def open_round_creator(from_round: Any = None):
     from test_creator.modules.testmode import TestModeRound
 
-    # get not submitted rounds and show one of them
-    for dpg_window_tag, round_id in test_object.hidden_round_creators.items():
-        if not test_object.is_there_saved_round_with_id(round_id):
-            dpg.show_item(dpg_window_tag)
+    if from_round is None:
+        # get not submitted rounds and show one of them
+        unsaved_round_window = test_object.unsaved_rounds.get('testmode')
+
+        if unsaved_round_window is not None:
+            dpg.show_item(unsaved_round_window)
             return
 
-    # opening multiple round creators causes conflicts in the registry. using id avoids this
-    registry_id = gen_random_id()
-    registry_prefix = f'testmode_{registry_id}'
+        registry_id = gen_random_id()
+        registry_prefix = f'testmode_{registry_id}'
+        round_object = TestModeRound(
+            registry_id=registry_id,
+            test_object=test_object,
+            title='Choose the correct answer:',
+            round_text='A bee flies and has: ___.',
+            answers=['wings', 'claws', 'meat'],
+            correct_answer_index=0,
+            points_per_correct_answer=1.0,
+            dpg_window_creator_tag=None,
+        )
+    else:
+        from_round: TestModeRound
 
-    round_object = TestModeRound(
-        test_creator_registry_id=registry_id,
-        test_object=test_object,
-        title='',
-        round_text='',
-        answers=[],
-        correct_answer_index=None,
-        points_per_correct_answer=1.0,
-        dpg_window_creator_tag=None,
-    )
+        round_object = from_round
+        registry_id = round_object.registry_id
+        registry_prefix = f'testmode_{registry_id}'
 
     def insert_answer_field():
         round_text = dpg.get_value(f'{registry_prefix}_round_text')
@@ -104,28 +111,37 @@ def open_round_creator():
         round_object.points_per_correct_answer = points_per_correct_answer
         round_object.dpg_window_creator_tag = round_creator_window
 
-        # check if round already in test (user edits existing round)
-        same_round = [i for i in test_object.rounds if i.test_creator_registry_id == round_object.test_creator_registry_id]
-        if not same_round:
-            test_object.rounds.append(round_object)
-        else:
-            same_round_index = test_object.rounds.index(same_round[0])
-            test_object.rounds[same_round_index] = round_object
-        test_object.update_round_list()
-        hide()
+        # check if round already in test (user edits existing round) and refreshing it
+        same_round = test_object.get_round_with_id(round_object.registry_id)
+        test_object.add_round(round_object) if same_round is None else test_object.refresh_round(round_object)
+        test_object.unsaved_rounds.pop('testmode') if test_object.unsaved_rounds.get('testmode') == round_creator_window else None
+        test_object.regenerate_round_previews()
+        close()
+
+    def close():
+        dpg.delete_item(f'{registry_prefix}_title')
+        dpg.delete_item(f'{registry_prefix}_round_text')
+        dpg.delete_item(f'{registry_prefix}_correct_answer')
+        dpg.delete_item(f'{registry_prefix}_points_per_correct_answer')
+        dpg.delete_item(f'{registry_prefix}_new_answer')
+        dpg.delete_item(f'{registry_prefix}_remove_answer')
+        dpg.delete_item(round_creator_window)
 
     def hide():
-        test_object.hidden_round_creators[round_creator_window] = round_object.test_creator_registry_id
+        if from_round is not None:
+            close()
+            return
+
+        test_object.unsaved_rounds['testmode'] = round_creator_window
         dpg.hide_item(round_creator_window)
 
     with dpg.value_registry():
-        dpg.add_string_value(tag=f'{registry_prefix}_title', default_value='Choose the correct answer:')
-        dpg.add_string_value(tag=f'{registry_prefix}_round_text', default_value='A bee flies and has: ___.')
-        dpg.add_string_value(tag=f'{registry_prefix}_correct_answer', default_value='wings')
+        dpg.add_string_value(tag=f'{registry_prefix}_title', default_value=round_object.title)
+        dpg.add_string_value(tag=f'{registry_prefix}_round_text', default_value=round_object.round_text)
+        dpg.add_string_value(tag=f'{registry_prefix}_correct_answer', default_value=round_object.answers[round_object.correct_answer_index])
         dpg.add_float_value(tag=f'{registry_prefix}_points_per_correct_answer', default_value=round_object.points_per_correct_answer)
         dpg.add_string_value(tag=f'{registry_prefix}_new_answer')
         dpg.add_string_value(tag=f'{registry_prefix}_remove_answer')
-        round_object.answers = ['wings', 'claws', 'meat']
 
     window_size = (620, 370)
     viewport_size = (dpg.get_viewport_width(), dpg.get_viewport_height())

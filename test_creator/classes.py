@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import dearpygui.dearpygui as dpg
 
 
 class Round:
-    test_creator_registry_id: str
+    registry_id: str
 
     @staticmethod
     def init_empty():
@@ -18,16 +18,12 @@ class Round:
 
 @dataclass
 class Test:
-    rounds: list[Round]
-    dpg_window_for_round_previews: str | int
-    hidden_round_creators: dict[str | int, str]  # dpg_tag: round_id
-    restricted_parent_children_to_remove: list[str | int]
+    rounds: list[Round] = field(default_factory=lambda: [])
+    dpg_window_for_round_previews: str | int = field(default_factory=lambda: 0)
+    restricted_parent_children_to_remove: list[str | int] = field(default_factory=lambda: [])
+    unsaved_rounds: dict[str, str | int] = field(default_factory=lambda: {})  # creator_tag: dpg_tag
 
-    @staticmethod
-    def init_empty():
-        return Test([], '', {}, [])
-
-    def update_round_list(self):
+    def regenerate_round_previews(self):
         children = dpg.get_item_children(self.dpg_window_for_round_previews)[1]
         children = [i for i in children if i not in self.restricted_parent_children_to_remove]
 
@@ -37,21 +33,23 @@ class Test:
         for test_round in self.rounds:
             test_round.preview(self.dpg_window_for_round_previews)
 
-    def is_there_saved_round_with_id(self, round_id: str):
-        """Leaves rounds with same id in list.
-        if list not empty (len >= 1) bool would be True. False otherwise"""
-        return bool([i for i in self.rounds if i.test_creator_registry_id == round_id])
+    def get_round_with_id(self, round_id: str) -> Round | None:
+        return next(iter([i for i in self.rounds if i.registry_id == round_id]), None)
 
-    @staticmethod
-    def show_hidden_round_creator(dpg_tag: str | int):
-        if not dpg.is_item_shown(dpg_tag):
-            dpg.show_item(dpg_tag)
+    def add_round(self, round_object: Round):
+        self.rounds.append(round_object)
 
-    def find_round_with_id(self, round_id: str):
-        return [i for i in self.rounds if i.test_creator_registry_id == round_id][0]
+    def refresh_round(self, round_object: Round):
+        same_round = self.get_round_with_id(round_object.registry_id)
+        if same_round is None:
+            self.add_round(round_object)
+            return
 
-    def move_up_test_with_id(self, round_id: str):
-        round_in_test_object = self.find_round_with_id(round_id)
+        same_round_index = self.rounds.index(same_round)
+        self.rounds[same_round_index] = round_object
+
+    def move_up_round_with_id(self, round_id: str):
+        round_in_test_object = self.get_round_with_id(round_id)
         round_index = self.rounds.index(round_in_test_object)
 
         if round_index == 0:
@@ -59,14 +57,11 @@ class Test:
 
         self.rounds.insert(round_index - 1, round_in_test_object)
         self.rounds.pop(round_index + 1)
-        self.update_round_list()
+        self.regenerate_round_previews()
 
-    def move_down_test_with_id(self, round_id: str):
-        if not self.is_there_saved_round_with_id(round_id):
-            return
-
+    def move_down_round_with_id(self, round_id: str):
         dummy = Round()
-        round_in_test_object = self.find_round_with_id(round_id)
+        round_in_test_object = self.get_round_with_id(round_id)
         round_index = self.rounds.index(round_in_test_object)
         self.rounds.append(dummy)
 
@@ -83,4 +78,4 @@ class Test:
             self.rounds.pop(round_index)
 
         self.rounds.remove(dummy)
-        self.update_round_list()
+        self.regenerate_round_previews()

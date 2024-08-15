@@ -9,4 +9,4 @@ def setup(test_obj: classes.Test):
 
 
 def spawn_round_creator_button():
-    dpg.add_button(label='Add testmode round', callback=open_round_creator)
+    dpg.add_button(label='Add testmode round', callback=lambda: open_round_creator())
