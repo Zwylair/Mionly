@@ -1,14 +1,18 @@
 import os
+import time
+import pickle
+import threading
 from typing import Type
 import screeninfo
 import dearpygui.dearpygui as dpg
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
 from test_creator.modules import testmode, drag_testmode
-from test_creator import spawn_warning, spawn_info, classes
+from test_creator import spawn_warning, spawn_info, classes, backupper
 from cyrillic_support import CyrillicSupport, FontPreset, decode_string
 
 test_object = classes.Test()
+LOCK_FILENAME = 'test_creator.lock'
 
 
 def test_object_getter():
@@ -44,7 +48,30 @@ def save(modules_classes: dict[Type[classes.Round], str]):
     spawn_info(f'{test_name} was saved!')
 
 
+def load_backup(backup_filepath: str, load_backup_window: str | int):
+    global test_object
+
+    if backup_filepath is None:
+        return
+
+    restricted_parent_children_to_remove = test_object.restricted_parent_children_to_remove
+    dpg_window_for_round_previews = test_object.dpg_window_for_round_previews
+    test_object = pickle.load(open(f'backups/{backup_filepath}', 'rb'))
+
+    for round_object in test_object.rounds:
+        round_object.test_object_getter = test_object_getter
+
+    backupper.previous_test_object = test_object
+    test_object.restricted_parent_children_to_remove = restricted_parent_children_to_remove
+    test_object.dpg_window_for_round_previews = dpg_window_for_round_previews
+    test_object.regenerate_round_previews()
+    dpg.delete_item(load_backup_window)
+
+
 def open_test_maker():
+    def change_test_name(new_test_name: str):
+        test_object.name = new_test_name
+
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
     viewport_size = (833, 700)
@@ -67,7 +94,7 @@ def open_test_maker():
             CyrillicSupport(font)
 
     with dpg.value_registry():
-        dpg.add_string_value(tag='test_creator_test_name', default_value='my test')
+        dpg.add_string_value(tag='test_creator_load_backup_mtime')
 
     with dpg.theme() as global_theme:
         with dpg.theme_component(dpg.mvButton, enabled_state=False):
@@ -105,7 +132,7 @@ def open_test_maker():
 
         with dpg.group(horizontal=True):
             dpg.add_text('Name of your test: ')
-            dpg.add_input_text(source='test_creator_test_name', width=150)
+            dpg.add_input_text(default_value=test_object.name, width=150, callback=lambda _, new_name: change_test_name(new_name))
             dpg.add_button(label='Save', callback=lambda: save(modules_classes))
 
         dpg.add_separator()
@@ -116,10 +143,50 @@ def open_test_maker():
         dpg.add_separator()
         test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]
 
+        # check for unexpected creator crush and propose to load backup
+        load_backup_window = None
+        if os.path.exists(LOCK_FILENAME):
+            backups_dict = {time.ctime(os.path.getmtime(f'backups/{i}')): i for i in reversed(os.listdir('backups'))}
+            pos = (
+                int(dpg.get_viewport_width() / 2 - 500 / 2),
+                int(dpg.get_viewport_height() / 2 - 300 / 2)
+            )
+
+            with dpg.window(
+                    label='Unexpected crush', no_resize=True, pos=pos,
+                    on_close=lambda: dpg.delete_item(load_backup_window)
+            ) as load_backup_window:
+                dpg.add_text(
+                    'It looks like the test creator was shut down unexpectedly.\n'
+                    'You can use one of the saved backups:'
+                )
+
+                with dpg.group(horizontal=True):
+                    dpg.add_combo(items=list(backups_dict.keys()), source='test_creator_load_backup_mtime')
+                    dpg.add_button(
+                        label='Load selected',
+                        callback=lambda: load_backup(
+                            backups_dict.get(dpg.get_value('test_creator_load_backup_mtime')),
+                            load_backup_window
+                        )
+                    )
+
+                dpg.add_button(label='No, thanks', callback=lambda: dpg.delete_item(load_backup_window))
+
     dpg.set_primary_window(window, True)
     # drag_and_drop_setup.setup()
+    backupper.setup()
+    auto_backup_thread = threading.Thread(
+        target=lambda: backupper.test_auto_backupper(test_object_getter, load_backup_window),
+        daemon=True
+    )
+    auto_backup_thread.start()
+
+    file = open(LOCK_FILENAME, 'w')
 
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.start_dearpygui()
     dpg.destroy_context()
+    file.close()
+    os.remove(LOCK_FILENAME)

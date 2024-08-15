@@ -1,9 +1,11 @@
+from typing import Callable, Any
 from dataclasses import dataclass, field
 import dearpygui.dearpygui as dpg
 
 
 class Round:
     registry_id: str
+    test_object_getter: Callable[[], Any]
 
     def preview(self, parent_item_tag: str | int):
         pass
@@ -14,6 +16,7 @@ class Round:
 
 @dataclass
 class Test:
+    name: str = field(default_factory=lambda: 'my test')
     rounds: list[Round] = field(default_factory=lambda: [])
     dpg_window_for_round_previews: str | int = field(default_factory=lambda: 0)
     restricted_parent_children_to_remove: list[str | int] = field(default_factory=lambda: [])

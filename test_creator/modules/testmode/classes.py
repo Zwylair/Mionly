@@ -15,7 +15,6 @@ class TestModeRound(classes.Round):
     answers: list[str]
     correct_answer_index: int | None
     points_per_correct_answer: float
-    dpg_window_creator_tag: str | int | None
 
     def open_round_editor(self):
         from test_creator.modules.testmode.round_creator import open_round_creator

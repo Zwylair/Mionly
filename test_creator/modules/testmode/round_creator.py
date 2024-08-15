@@ -40,7 +40,6 @@ def open_round_creator(from_round: Any = None):
             answers=['wings', 'claws', 'meat'],
             correct_answer_index=0,
             points_per_correct_answer=1.0,
-            dpg_window_creator_tag=None,
         )
     else:
         from_round: TestModeRound
@@ -91,7 +90,6 @@ def open_round_creator(from_round: Any = None):
         round_object.round_text = round_text
         round_object.correct_answer = correct_answer
         round_object.points_per_correct_answer = points_per_correct_answer
-        round_object.dpg_window_creator_tag = round_creator_window
 
         # check if round already in test (user edits existing round) and refreshing it
         same_round = test_object.get_round_with_id(round_object.registry_id)
