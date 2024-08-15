@@ -49,3 +49,38 @@ class Test:
 
     def find_round_with_id(self, round_id: str):
         return [i for i in self.rounds if i.test_creator_registry_id == round_id][0]
+
+    def move_up_test_with_id(self, round_id: str):
+        round_in_test_object = self.find_round_with_id(round_id)
+        round_index = self.rounds.index(round_in_test_object)
+
+        if round_index == 0:
+            return
+
+        self.rounds.insert(round_index - 1, round_in_test_object)
+        self.rounds.pop(round_index + 1)
+        self.update_round_list()
+
+    def move_down_test_with_id(self, round_id: str):
+        if not self.is_there_saved_round_with_id(round_id):
+            return
+
+        dummy = Round()
+        round_in_test_object = self.find_round_with_id(round_id)
+        round_index = self.rounds.index(round_in_test_object)
+        self.rounds.append(dummy)
+
+        try:
+            self.rounds[round_index + 2]
+        except IndexError:
+            self.rounds.remove(dummy)
+            return
+        except ValueError:
+            self.rounds.append(round_in_test_object)
+            self.rounds.pop(round_index)
+        else:
+            self.rounds.insert(round_index + 2, round_in_test_object)
+            self.rounds.pop(round_index)
+
+        self.rounds.remove(dummy)
+        self.update_round_list()

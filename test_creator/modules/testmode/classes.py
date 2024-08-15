@@ -43,8 +43,14 @@ class TestModeRound(classes.Round):
                 callback=lambda: self.test_object.show_hidden_round_creator(self.dpg_window_creator_tag)
             )
             remove_button = dpg.add_button(label='Delete', callback=self.show_remove_request)
-            arrow_button_up = dpg.add_button(arrow=True, direction=dpg.mvDir_Up, callback=self.move_up_this_test)
-            arrow_button_down = dpg.add_button(arrow=True, direction=dpg.mvDir_Down, callback=self.move_down_this_test)
+            arrow_button_up = dpg.add_button(
+                arrow=True, direction=dpg.mvDir_Up,
+                callback=lambda: self.test_object.move_up_test_with_id(self.test_creator_registry_id)
+            )
+            arrow_button_down = dpg.add_button(
+                arrow=True, direction=dpg.mvDir_Down,
+                callback=lambda: self.test_object.move_down_test_with_id(self.test_creator_registry_id)
+            )
 
             dpg.bind_item_font(title_object, 'nunito_titles')
             dpg.render_dearpygui_frame()
@@ -140,41 +146,3 @@ class TestModeRound(classes.Round):
             with dpg.group(horizontal=True):
                 dpg.add_button(label='Yes', callback=lambda: self.remove(remove_round_window))
                 dpg.add_button(label='No', callback=lambda: dpg.delete_item(remove_round_window))
-
-    def move_up_this_test(self):
-        if not self.test_object.is_there_saved_round_with_id(self.test_creator_registry_id):
-            return
-
-        round_in_test_object = self.test_object.find_round_with_id(self.test_creator_registry_id)
-        round_index = self.test_object.rounds.index(round_in_test_object)
-
-        if round_index == 0:
-            return
-
-        self.test_object.rounds.insert(round_index - 1, round_in_test_object)
-        self.test_object.rounds.pop(round_index + 1)
-        self.test_object.update_round_list()
-
-    def move_down_this_test(self):
-        if not self.test_object.is_there_saved_round_with_id(self.test_creator_registry_id):
-            return
-
-        dummy = TestModeRound.init_empty()
-        round_in_test_object = self.test_object.find_round_with_id(self.test_creator_registry_id)
-        round_index = self.test_object.rounds.index(round_in_test_object)
-        self.test_object.rounds.append(dummy)
-
-        try:
-            self.test_object.rounds[round_index + 2]
-        except IndexError:
-            self.test_object.rounds.remove(dummy)
-            return
-        except ValueError:
-            self.test_object.rounds.append(round_in_test_object)
-            self.test_object.rounds.pop(round_index)
-        else:
-            self.test_object.rounds.insert(round_index + 2, round_in_test_object)
-            self.test_object.rounds.pop(round_index)
-
-        self.test_object.rounds.remove(dummy)
-        self.test_object.update_round_list()

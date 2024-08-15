@@ -73,11 +73,11 @@ def open_test_maker():
         test_object.dpg_window_for_round_previews = window
         modules = {
             'testmode': testmode.setup,
-            # 'drag_testmode':  drag_testmode.setup,
+            'drag_testmode':  drag_testmode.setup,
         }
         modules_classes = {
             testmode.TestModeRound: 'testmode',
-            # drag_testmode.DragTestModeRound: 'drag_testmode',
+            drag_testmode.DragTestModeRound: 'drag_testmode',
         }
 
         with dpg.group(horizontal=True):
