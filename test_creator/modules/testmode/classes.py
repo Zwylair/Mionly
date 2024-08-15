@@ -66,6 +66,7 @@ class TestModeRound(classes.Round):
                 pos=[dpg.get_viewport_width() - 37 - edit_button_size[0] - remove_button_size[0] - 5, title_object_pos[1]]
             )
 
+            dpg.bind_item_theme(remove_button, 'red_button_theme')
             dpg.configure_item(
                 remove_button,
                 pos=[dpg.get_viewport_width() - 37 - remove_button_size[0], title_object_pos[1]]
@@ -138,5 +139,7 @@ class TestModeRound(classes.Round):
             dpg.add_text(default_value='Are you sure to delete this round?')
 
             with dpg.group(horizontal=True):
-                dpg.add_button(label='Yes', callback=lambda: self.remove(remove_round_window))
-                dpg.add_button(label='No', callback=lambda: dpg.delete_item(remove_round_window))
+                yes_button = dpg.add_button(label='Yes', callback=lambda: self.remove(remove_round_window))
+                no_button = dpg.add_button(label='No', callback=lambda: dpg.delete_item(remove_round_window))
+                dpg.bind_item_theme(yes_button, 'red_button_theme')
+                dpg.bind_item_theme(no_button, 'green_button_theme')

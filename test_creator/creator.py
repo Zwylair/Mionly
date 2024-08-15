@@ -69,6 +69,29 @@ def open_test_maker():
     with dpg.value_registry():
         dpg.add_string_value(tag='test_creator_test_name', default_value='my test')
 
+    with dpg.theme() as global_theme:
+        with dpg.theme_component(dpg.mvButton, enabled_state=False):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (48, 48, 50), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (48, 48, 50), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (48, 48, 50), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (168, 168, 168), category=dpg.mvThemeCat_Core)
+
+    with dpg.theme(tag='red_button_theme'):
+        with dpg.theme_component(dpg.mvButton):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (87, 47, 63), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (118, 44, 34), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (78, 38, 38), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (255, 255, 255), category=dpg.mvThemeCat_Core)
+
+    with dpg.theme(tag='green_button_theme'):
+        with dpg.theme_component(dpg.mvButton):
+            dpg.add_theme_color(dpg.mvThemeCol_Button, (51, 77, 55), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (44, 118, 34), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_ButtonActive, (34, 88, 24), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_color(dpg.mvThemeCol_Text, (255, 255, 255), category=dpg.mvThemeCat_Core)
+
+    dpg.bind_theme(global_theme)
+
     with dpg.window(no_title_bar=True, no_resize=True, no_close=True, no_move=True) as window:
         test_object.dpg_window_for_round_previews = window
         modules = {
@@ -84,19 +107,6 @@ def open_test_maker():
             dpg.add_text('Name of your test: ')
             dpg.add_input_text(source='test_creator_test_name', width=150)
             dpg.add_button(label='Save', callback=lambda: save(modules_classes))
-
-        dpg.add_separator()
-
-        # debug buttons
-        with dpg.group(horizontal=True):
-            dpg.add_button(
-                label='print rounds',
-                callback=lambda: print(f'rounds:\n{test_object.rounds}')
-            )
-            dpg.add_button(
-                label='print unsaved_rounds',
-                callback=lambda: print(f'unsaved_rounds:\n{test_object.unsaved_rounds}')
-            )
 
         dpg.add_separator()
 

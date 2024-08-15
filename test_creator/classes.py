@@ -5,10 +5,6 @@ import dearpygui.dearpygui as dpg
 class Round:
     registry_id: str
 
-    @staticmethod
-    def init_empty():
-        pass
-
     def preview(self, parent_item_tag: str | int):
         pass
 
