@@ -1,4 +1,5 @@
 import webbrowser
+from colorama import init
 from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
@@ -6,6 +7,8 @@ import uvicorn
 from settings import *
 import web_managing
 import db
+
+init(convert=True)
 
 web_temp_dir = f'{WEB_DIR}/temp'
 app = FastAPI()
