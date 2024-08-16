@@ -1,3 +1,4 @@
+import sys
 import time
 import pickle
 import os.path
@@ -141,16 +142,14 @@ def open_languages_window(lock_file: TextIO):
     def set_lang():
         def apply_lang():
             language.set_language(new_lang)
-            is_script = os.path.splitext(__file__)[1] == '.py'
 
-            if is_script:
-                py_path = os.path.join(ROOT_DIR, 'venv/scripts/python.exe').replace('/', '\\')
-                path = os.path.join(ROOT_DIR, 'test_maker.py').replace('/', '\\')
-                logger.debug(f'Restart command: "{py_path}" "{path}"')
-                subprocess.Popen(f'"{py_path}" "{path}"')
+            if getattr(sys, 'frozen', False):
+                logger.debug(f'Restart command: {sys.executable}')
+                subprocess.Popen(sys.executable)
             else:
-                logger.debug(f'Restart command: {__file__}')
-                subprocess.Popen(__file__)
+                py_path = os.path.join(os.path.dirname(TEST_MAKER_ROOT_FILE), 'venv/scripts/python.exe').replace('/', '\\')
+                logger.debug(f'Restart command: "{py_path}" "{TEST_MAKER_ROOT_FILE}"')
+                subprocess.Popen(f'"{py_path}" "{TEST_MAKER_ROOT_FILE}"')
             exit_mionly(lock_file)
 
         new_lang = dpg.get_value('test_creator_picked_lang')
