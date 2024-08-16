@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOGGING_FORMAT)
 logger.setLevel(LOGGING_LEVEL)
 previous_test_object: Test | None = None
-BACKUPPER_TIMEOUT_SECONDS = 5
+BACKUPPER_TIMEOUT_SECONDS = 60 * 2
 MAX_BACKUPS_COUNT = 5
 
 
