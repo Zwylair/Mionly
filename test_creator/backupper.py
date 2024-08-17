@@ -7,7 +7,7 @@ import threading
 from typing import Callable
 from datetime import datetime
 import dearpygui.dearpygui as dpg
-from test_creator import classes, animator
+from test_creator import classes, animator, messageboxes
 from test_creator.language import loc
 from settings import *
 
@@ -52,7 +52,13 @@ def load_backup(backup_filepath: str, load_backup_window: str | int):
 
     restricted_parent_children_to_remove = test_object.restricted_parent_children_to_remove
     dpg_window_for_round_previews = test_object.dpg_window_for_round_previews
-    test_object = pickle.load(open(f'backups/{backup_filepath}', 'rb'))
+
+    try:
+        test_object = pickle.load(open(f'backups/{backup_filepath}', 'rb'))
+    except Exception as e:
+        logger.exception('An error occurred:', exc_info=e)
+        messageboxes.spawn_warning(loc('backupper.error_when_loading_backup'))
+        return
 
     for round_object in test_object.rounds:
         round_object.test_object_getter = TEST_OBJECT_GETTER
@@ -133,4 +139,4 @@ def test_auto_backupper(load_backup_window_tag: str | int | None):
             previous_test_object = copy.deepcopy(new_test_object)
             pickle.dump(previous_test_object, open(new_backup_filepath, 'wb'))
         except Exception as e:
-            logger.error(format_exception(e))
+            logger.exception('An error occurred:', exc_info=e)

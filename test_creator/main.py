@@ -1,4 +1,5 @@
 import os.path
+import shutil
 from typing import Type
 import screeninfo
 import dearpygui.dearpygui as dpg
@@ -29,15 +30,23 @@ def test_object_getter():
     return test_object
 
 
-def save(modules_classes: dict[Type[classes.Round], str]):
+def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = False):
     logger.debug('Save test function called')
     test_name = dpg.get_value('test_creator_test_name')
     test_name_decoded = decode_string(test_name)
 
-    if test_name in os.listdir('tests'):
-        logger.debug('There is another test with same name')
-        messageboxes.spawn_warning(loc('creator.test_already_exists'))
-        return
+    if test_name_decoded in os.listdir('tests'):
+        logger.debug(f'There is another test with same name')
+
+        if not exists_ok:
+            messageboxes.spawn_yes_no_window(
+                text=loc('creator.duplicate_test_name'),
+                yes_button_callback=lambda: save(modules_classes, exists_ok=True)
+            )
+            return
+
+        logger.debug(f'exists_ok={exists_ok}. Overwriting')
+        shutil.rmtree(f'tests/{test_name_decoded}', ignore_errors=True)
 
     os.makedirs(f'tests/{test_name_decoded}', exist_ok=True)
     logger.debug('Filtering rounds by its type...')
@@ -184,7 +193,7 @@ def open_test_maker(main_executable: str):
     dpg.set_primary_window(window, True)
     # logger.debug('Setting up dearpygui drag&drop')
     # drag_and_drop_setup.setup()
-    logger.debug(f'Creating and locking lockfile ({TEST_CREATOR_LOCK_FILENAME})')
+    logger.debug(f'Creating and locking {TEST_CREATOR_LOCK_FILENAME}')
     lock_file = open(TEST_CREATOR_LOCK_FILENAME, 'w')
 
     dpg.setup_dearpygui()
