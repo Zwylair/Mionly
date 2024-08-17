@@ -2,10 +2,9 @@ import string
 import random
 from typing import Any, Callable
 import dearpygui.dearpygui as dpg
-from test_creator import classes
+from test_creator import classes, animator
 from test_creator.messageboxes import spawn_warning
 from test_creator.language import loc
-from test_creator.creator import animator
 from settings import *
 
 logger = logging.getLogger(__name__)

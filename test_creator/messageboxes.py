@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg
 from test_creator.language import loc
-from test_creator.creator.animator import show_item
+from test_creator import animator
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ def spawn_warning(text: str):
                 int(dpg.get_viewport_height() / 2 - dpg.get_item_height(window) / 2)
             ]
         )
-    show_item(window)
+    animator.show_item(window)
 
 
 def spawn_info(text: str):
@@ -37,4 +37,4 @@ def spawn_info(text: str):
                 int(dpg.get_viewport_height() / 2 - dpg.get_item_height(window) / 2)
             ]
         )
-    show_item(window)
+    animator.show_item(window)

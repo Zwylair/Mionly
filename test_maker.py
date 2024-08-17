@@ -1,3 +1,3 @@
-import test_creator.creator
+import test_creator.main
 
-test_creator.creator.open_test_maker(__file__)
+test_creator.main.open_test_maker(__file__)
