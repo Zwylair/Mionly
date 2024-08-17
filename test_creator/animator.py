@@ -18,6 +18,17 @@ def hide_item(dpg_tag: str | int):
     animate.add('opacity', dpg_tag, 0, 1, [.57, .06, .61, .86], 1)
 
 
-def show_item(dpg_tag: str | int):
+def show_item(dpg_tag: str | int, spawn_at_center: bool = True):
     dpg.show_item(dpg_tag)
     animate.add('opacity', dpg_tag, 0, 1, [.57, .06, .61, .86], 10)
+
+    if spawn_at_center and dpg.get_item_pos(dpg_tag) == [0, 0]:
+        dpg.render_dearpygui_frame()
+        dpg.render_dearpygui_frame()
+        dpg.set_item_pos(
+            dpg_tag,
+            pos=[
+                int(dpg.get_viewport_width() / 2 - dpg.get_item_width(dpg_tag) / 2),
+                int(dpg.get_viewport_height() / 2 - dpg.get_item_height(dpg_tag) / 2 - 50)
+            ]
+        )

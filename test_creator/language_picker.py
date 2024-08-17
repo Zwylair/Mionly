@@ -2,7 +2,7 @@ import sys
 import subprocess
 from typing import TextIO
 import dearpygui.dearpygui as dpg
-from test_creator import animator, exit, language
+from test_creator import animator, exit, language, messageboxes
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -26,20 +26,10 @@ def set_lang(lock_file: TextIO, main_executable: str):
     if new_lang == language.chosen_language:
         return
 
-    with dpg.window(on_close=animator.close_item) as pick_language_confirmation:
-        dpg.add_text(language.loc('creator.exit_confirmation'))
-
-        with dpg.group(horizontal=True):
-            yes_button = dpg.add_button(
-                label=language.loc('creator.exit_confirmation_yes_button'),
-                callback=lambda: apply_lang(new_lang, lock_file, main_executable)
-            )
-            dpg.add_button(
-                label=language.loc('creator.cancel'),
-                callback=lambda: animator.close_item(pick_language_confirmation)
-            )
-        dpg.bind_item_theme(yes_button, 'red_button_theme')
-    animator.show_item(pick_language_confirmation)
+    messageboxes.spawn_yes_no_window(
+        text=language.loc('creator.exit_confirmation'),
+        yes_button_callback=lambda: apply_lang(new_lang, lock_file, main_executable)
+    )
 
 
 def apply_lang(new_lang: str, lock_file: TextIO, main_executable: str):

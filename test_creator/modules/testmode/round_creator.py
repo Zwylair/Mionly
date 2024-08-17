@@ -198,7 +198,7 @@ def open_round_creator(from_round: Any = None):
             dpg.add_separator()
 
             with dpg.group(horizontal=True):
-                dpg.add_button(label=loc('testmode.rc.save'), callback=save)
+                dpg.add_button(label=loc('creator.save'), callback=save)
 
     logger.debug('Setting up registry...')
     with dpg.value_registry(tag=f'{registry_prefix}_registry'):
@@ -209,16 +209,6 @@ def open_round_creator(from_round: Any = None):
         dpg.add_string_value(tag=f'{registry_prefix}_new_answer')
         dpg.add_string_value(tag=f'{registry_prefix}_remove_answer')
 
-    window_size = (630, 370)
-    viewport_size = (dpg.get_viewport_width(), dpg.get_viewport_height())
-
-    with dpg.window(
-            label=loc('testmode.rc.add_round'), on_close=hide,
-            width=window_size[0], height=window_size[1],
-            pos=[
-                int(viewport_size[0] / 2 - window_size[0] / 2),
-                int(viewport_size[1] / 2 - window_size[1] / 2 - 50)
-            ]
-    ) as round_creator_window:
+    with dpg.window(label=loc('testmode.rc.add_round'), on_close=hide) as round_creator_window:
         setup_window_interface()
     animator.show_item(round_creator_window)
