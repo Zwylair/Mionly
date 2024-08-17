@@ -5,6 +5,7 @@ import dearpygui.dearpygui as dpg
 from test_creator import classes
 from test_creator.messageboxes import spawn_warning
 from test_creator.language import loc
+from test_creator.creator import animator
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -28,7 +29,7 @@ def delete_all_item_children(item_tag: str | int):
 
 def open_round_creator(from_round: Any = None):
     from test_creator.modules.testmode import TestModeRound
-    logger.debug('Opened creator.')
+    logger.debug('Opened creator')
     test_object = test_object_getter()
 
     if from_round is None:
@@ -36,8 +37,8 @@ def open_round_creator(from_round: Any = None):
         unsaved_round_window = test_object.unsaved_rounds.get('testmode')
 
         if unsaved_round_window is not None:
-            logger.debug('There is not saved round. Showing creator window.')
-            dpg.show_item(unsaved_round_window)
+            logger.debug('There is not saved round. Showing creator window')
+            animator.show_item(unsaved_round_window)
             return
 
         logger.debug('Setting up round template...')
@@ -121,7 +122,7 @@ def open_round_creator(from_round: Any = None):
         logger.debug('Closing...')
         delete_all_item_children(f'{registry_prefix}_registry')
         dpg.delete_item(f'{registry_prefix}_registry')
-        dpg.delete_item(round_creator_window)
+        animator.close_item(round_creator_window)
 
     def hide():
         logger.debug('Hiding creator window.')
@@ -131,7 +132,7 @@ def open_round_creator(from_round: Any = None):
             return
 
         test_object.unsaved_rounds['testmode'] = round_creator_window
-        dpg.hide_item(round_creator_window)
+        animator.hide_item(round_creator_window)
 
     def setup_window_interface():
         logger.debug('Refreshing creator window interface')
@@ -221,3 +222,4 @@ def open_round_creator(from_round: Any = None):
             ]
     ) as round_creator_window:
         setup_window_interface()
+    animator.show_item(round_creator_window)

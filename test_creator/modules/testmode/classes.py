@@ -7,6 +7,7 @@ import dearpygui.dearpygui as dpg
 from test_creator import classes
 from cyrillic_support import decode_string
 from test_creator.language import loc
+from test_creator.creator import animator
 from settings import *
 
 logger = logging.getLogger(__name__)
@@ -168,27 +169,21 @@ class TestModeRound(classes.Round):
         test_object = self.test_object_getter()
         this_round_in_test_object = test_object.get_round_with_id(self.registry_id)
 
-        dpg.delete_item(remove_round_window)
+        animator.close_item(remove_round_window)
         test_object.rounds.remove(this_round_in_test_object)
         test_object.regenerate_round_previews()
 
     def show_remove_request(self):
         logger.debug(f'[Registry ID: {self.registry_id}] Showed remove request.')
 
-        with dpg.window(label=loc('testmode.classes.round_deletion_label'), no_resize=True) as remove_round_window:
+        with dpg.window(
+                label=loc('testmode.classes.round_deletion_label'),
+                no_resize=True, on_close=animator.close_item
+        ) as remove_round_window:
             dpg.add_text(default_value=loc('testmode.classes.round_deletion_text'))
 
             with dpg.group(horizontal=True):
                 yes_button = dpg.add_button(label=loc('testmode.classes.yes'), callback=lambda: self.remove(remove_round_window))
-                no_button = dpg.add_button(label=loc('testmode.classes.no'), callback=lambda: dpg.delete_item(remove_round_window))
+                no_button = dpg.add_button(label=loc('testmode.classes.no'), callback=lambda: animator.close_item(remove_round_window))
                 dpg.bind_item_theme(yes_button, 'red_button_theme')
                 dpg.bind_item_theme(no_button, 'green_button_theme')
-
-            dpg.render_dearpygui_frame()
-            dpg.set_item_pos(
-                remove_round_window,
-                pos=[
-                    int(dpg.get_viewport_width() / 2 - dpg.get_item_width(remove_round_window) / 2),
-                    int(dpg.get_viewport_height() / 2 - dpg.get_item_height(remove_round_window) / 2)
-                ]
-            )

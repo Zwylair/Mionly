@@ -7,10 +7,13 @@ import subprocess
 from typing import Type, TextIO
 import screeninfo
 import dearpygui.dearpygui as dpg
+import dearpygui_animate as animate
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
 from test_creator.modules import testmode, drag_testmode
-from test_creator import spawn_warning, spawn_info, classes, backupper
+from test_creator.messageboxes import spawn_warning, spawn_info
+from test_creator import classes, backupper
+from test_creator.creator import animator
 from cyrillic_support import CyrillicSupport, FontPreset, decode_string
 from test_creator.language import loc
 from test_creator import language
@@ -127,7 +130,7 @@ def load_backup(backup_filepath: str, load_backup_window: str | int):
     test_object.restricted_parent_children_to_remove = restricted_parent_children_to_remove
     test_object.dpg_window_for_round_previews = dpg_window_for_round_previews
     test_object.regenerate_round_previews()
-    dpg.delete_item(load_backup_window)
+    animator.close_item(load_backup_window)
     logger.debug('Backup loaded.')
 
 
@@ -136,58 +139,45 @@ def sync_test_name_with_dpg():
     logger.debug(f'Test name synced with dearpygui: {test_object.name}')
 
 
-def open_languages_window(lock_file: TextIO):
+def open_languages_window(lock_file: TextIO, main_executable: str):
     logger.debug('Opened language pick window')
 
     def set_lang():
         def apply_lang():
             language.set_language(new_lang)
 
-            if getattr(sys, 'frozen', False):
-                logger.debug(f'Restart command: {sys.executable}')
-                subprocess.Popen(sys.executable)
+            if getattr(sys, 'frozen', True):
+                logger.debug('Mionly is not frozen. Restart via launching script')
+                logger.debug(f'Restart command: "{sys.executable}" "{main_executable}"')
+                subprocess.Popen(f'"{sys.executable}" "{main_executable}"')
             else:
-                py_path = os.path.join(os.path.dirname(TEST_MAKER_ROOT_FILE), 'venv/scripts/python.exe').replace('/', '\\')
-                logger.debug(f'Restart command: "{py_path}" "{TEST_MAKER_ROOT_FILE}"')
-                subprocess.Popen(f'"{py_path}" "{TEST_MAKER_ROOT_FILE}"')
+                logger.debug('Mionly is frozen. Restart via launching exe file')
+                logger.debug(f'Restart command: "{sys.executable}"')
+                subprocess.Popen(f'{sys.executable}')
             exit_mionly(lock_file)
 
         new_lang = dpg.get_value('test_creator_picked_lang')
         if new_lang == language.chosen_language:
             return
 
-        with dpg.window() as pick_language_confirmation:
+        with dpg.window(on_close=animator.close_item) as pick_language_confirmation:
             dpg.add_text(loc('creator.exit_confirmation'))
 
             with dpg.group(horizontal=True):
                 yes_button = dpg.add_button(label=loc('creator.exit_confirmation_yes_button'), callback=lambda: apply_lang())
-                dpg.add_button(label=loc('creator.cancel'), callback=lambda: dpg.delete_item(pick_language_confirmation))
+                dpg.add_button(label=loc('creator.cancel'), callback=lambda: animator.close_item(pick_language_confirmation))
             dpg.bind_item_theme(yes_button, 'red_button_theme')
-            dpg.render_dearpygui_frame()
-            dpg.set_item_pos(
-                pick_language_confirmation,
-                pos=[
-                    int(dpg.get_viewport_width() / 2 - dpg.get_item_width(pick_language_confirmation) / 2),
-                    int(dpg.get_viewport_height() / 2 - dpg.get_item_height(pick_language_confirmation) / 2)
-                ]
-            )
+        animator.show_item(pick_language_confirmation)
 
-    with dpg.window(label=loc('creator.languages'), no_resize=True) as lang_window:
+    with dpg.window(label=loc('creator.languages'), no_resize=True, on_close=animator.close_item) as lang_window:
         with dpg.group(horizontal=True):
             dpg.add_combo(items=language.get_available_languages(), source='test_creator_picked_lang')
             dpg.add_button(label=loc('creator.apply'), callback=lambda: set_lang())
         dpg.add_text(loc('creator.reboot_warning'), color=(140, 140, 140))
-        dpg.render_dearpygui_frame()
-        dpg.set_item_pos(
-            lang_window,
-            pos=[
-                int(dpg.get_viewport_width() / 2 - dpg.get_item_width(lang_window) / 2),
-                int(dpg.get_viewport_height() / 2 - dpg.get_item_height(lang_window) / 2)
-            ]
-        )
+    animator.show_item(lang_window)
 
 
-def open_test_maker():
+def open_test_maker(main_executable: str):
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
     viewport_size = (833, 700)
@@ -257,7 +247,7 @@ def open_test_maker():
 
         dpg.add_image_button(
             texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],
-            callback=lambda: open_languages_window(lock_file)
+            callback=lambda: open_languages_window(lock_file, main_executable)
         )
 
         with dpg.group(horizontal=True):
@@ -289,7 +279,7 @@ def open_test_maker():
 
             with dpg.window(
                     label=loc('creator.crush_window_label'), pos=pos, width=size[0], height=size[1],
-                    on_close=lambda: dpg.delete_item(load_backup_window)
+                    on_close=animator.close_item
             ) as load_backup_window:
                 dpg.add_text(loc('creator.crush_window_text'))
 
@@ -303,7 +293,7 @@ def open_test_maker():
                         )
                     )
 
-                dpg.add_button(label=loc('creator.no_thanks'), callback=lambda: dpg.delete_item(load_backup_window))
+                dpg.add_button(label=loc('creator.no_thanks'), callback=lambda: animator.close_item(load_backup_window))
 
     dpg.set_primary_window(window, True)
     # logger.debug('Setting up dearpygui drag&drop')
@@ -321,5 +311,7 @@ def open_test_maker():
 
     dpg.setup_dearpygui()
     dpg.show_viewport()
-    dpg.start_dearpygui()
+    while dpg.is_dearpygui_running():
+        animate.run()
+        dpg.render_dearpygui_frame()
     exit_mionly(lock_file)

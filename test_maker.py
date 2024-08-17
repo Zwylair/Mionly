@@ -1,4 +1,3 @@
-import test_creator
+import test_creator.creator
 
-TEST_MAKER_ROOT_FILE = __file__
-test_creator.open_test_maker()
+test_creator.creator.open_test_maker(__file__)
