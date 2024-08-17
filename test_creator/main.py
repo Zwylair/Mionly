@@ -190,8 +190,10 @@ def open_test_maker(main_executable: str):
         dpg.add_separator()
 
         logger.debug('Initializing modules')
-        for initialiser in MODULES.values():
-            initialiser(test_object_getter)
+
+        with dpg.group(horizontal=True):
+            for initialiser in MODULES.values():
+                initialiser(test_object_getter)
 
         dpg.add_separator()
         test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]

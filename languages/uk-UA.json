@@ -24,7 +24,6 @@
   "testmode.classes.delete": "Видалити",
   "testmode.classes.edit": "Редагувати",
   "testmode.classes.points_for_correct_answer_hint": "[{} балів за правильну відповідь]",
-  "testmode.classes.round_deletion_label": "Видалення раунду",
   "testmode.classes.round_deletion_text": "Ви впевнені, що хочете видалити раунд?",
   "testmode.rc.add": "Додати",
   "testmode.rc.add_answer_field": "Додати поле для відповіді",

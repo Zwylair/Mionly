@@ -24,7 +24,6 @@
   "testmode.classes.delete": "Delete",
   "testmode.classes.edit": "Edit",
   "testmode.classes.points_for_correct_answer_hint": "[{} points per correct answer]",
-  "testmode.classes.round_deletion_label": "Round deletion",
   "testmode.classes.round_deletion_text": "Are you sure to delete this round?",
   "testmode.rc.add": "Add",
   "testmode.rc.add_answer_field": "Add field for answer",

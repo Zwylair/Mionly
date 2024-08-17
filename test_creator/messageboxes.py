@@ -32,6 +32,9 @@ def spawn_yes_no_window(
         no_button_text: str = loc('messagebox.no'),
         no_button_callback: Callable[[], Any] | None = None
 ):
+    """Creates message window with "yes" and "no" buttons with re-defining callbacks
+     and button's texts. Gives window's tag as first argument to yes_button_callback"""
+
     with dpg.window(on_close=animator.close_item) as window:
         if no_button_callback is None:
             def no_button_callback():
@@ -40,7 +43,7 @@ def spawn_yes_no_window(
         dpg.add_text(text)
 
         with dpg.group(horizontal=True):
-            yes_button = dpg.add_button(label=yes_button_text, callback=yes_button_callback)
+            yes_button = dpg.add_button(label=yes_button_text, callback=lambda: yes_button_callback(window))
             dpg.add_button(label=no_button_text, callback=no_button_callback)
         dpg.bind_item_theme(yes_button, 'red_button_theme')
     animator.show_item(window)

@@ -4,7 +4,7 @@ import random
 from typing import Callable
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
-from test_creator import classes, animator
+from test_creator import classes, animator, messageboxes
 from test_creator.cyrillic_support import decode_string
 from test_creator.language import loc
 from settings import *
@@ -175,15 +175,7 @@ class TestModeRound(classes.Round):
     def show_remove_request(self):
         logger.debug(f'[Registry ID: {self.registry_id}] Showed remove request.')
 
-        with dpg.window(
-                label=loc('testmode.classes.round_deletion_label'),
-                no_resize=True, on_close=animator.close_item
-        ) as remove_round_window:
-            dpg.add_text(default_value=loc('testmode.classes.round_deletion_text'))
-
-            with dpg.group(horizontal=True):
-                yes_button = dpg.add_button(label=loc('testmode.classes.yes'), callback=lambda: self.remove(remove_round_window))
-                no_button = dpg.add_button(label=loc('testmode.classes.no'), callback=lambda: animator.close_item(remove_round_window))
-            dpg.bind_item_theme(yes_button, 'red_button_theme')
-            dpg.bind_item_theme(no_button, 'green_button_theme')
-        animator.show_item(remove_round_window)
+        messageboxes.spawn_yes_no_window(
+            text=loc('testmode.classes.round_deletion_text'),
+            yes_button_callback=lambda tag: self.remove(tag)
+        )
