@@ -8,6 +8,7 @@
 
 ### test creator
 
+- rounding reward points as .2f
 - dragtestmode
 - audio round
 - quickstart test by link http://127.0.0.1/index.html?testname={}&rand-rounds=1&rand-answers=1
