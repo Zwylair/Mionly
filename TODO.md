@@ -9,7 +9,6 @@
 ### test creator
 
 - fix crush bug: when clicking on item in animator's closing window
-- rounding reward points as .2f
 - dragtestmode round
 - audio round (+ adding unlimited audios to round)
 - quickstart test by link http://127.0.0.1/index.html?testname={}&rand-rounds=1|0&rand-answers=1|0
