@@ -52,7 +52,7 @@ function setupDragTestMode(answers, round_text) {
     const answersContainer = document.getElementById('answers_container');
 
     // spawn the target containers
-    const parts = round_text.split('/');
+    const parts = round_text.split('___');
     const textTag = document.createElement('pa');
 
     for (var part of parts.slice(0, parts.length - 1)) {
@@ -189,7 +189,7 @@ async function processDragTestModeAnswers(roundInfo) {
     ).then(response => response.json());
 
     const textTag = document.getElementById('bottom-div-round-text');
-    const parts = roundInfo.round_text.split('/');
+    const parts = roundInfo.round_text.split('___');
 
     // sort right answers by position
     var items = Object.keys(checkingResults.correct_answers).map((key) => [key, checkingResults.correct_answers[key]]);
