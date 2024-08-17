@@ -1,6 +1,7 @@
 import os.path
 import shutil
 from typing import Type
+import faulthandler
 import screeninfo
 import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
@@ -11,6 +12,8 @@ from test_creator.cyrillic_support import CyrillicSupport, FontPreset, decode_st
 from test_creator.language import loc, chosen_language
 from test_creator.modules import testmode, drag_testmode
 from settings import *
+
+faulthandler.enable()
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOGGING_FORMAT)
@@ -140,6 +143,10 @@ def open_test_maker(main_executable: str):
         dpg.add_static_texture(width=width, height=height, default_value=data, tag='texture__language')
 
     with dpg.theme() as global_theme:
+        with dpg.theme_component(dpg.mvAll):
+            dpg.add_theme_style(dpg.mvStyleVar_WindowTitleAlign, 0.5, 0.5, category=dpg.mvThemeCat_Core)
+            dpg.add_theme_style(dpg.mvStyleVar_WindowRounding, 7, category=dpg.mvThemeCat_Core)
+
         with dpg.theme_component(dpg.mvButton, enabled_state=False):
             dpg.add_theme_color(dpg.mvThemeCol_Button, (48, 48, 50), category=dpg.mvThemeCat_Core)
             dpg.add_theme_color(dpg.mvThemeCol_ButtonHovered, (48, 48, 50), category=dpg.mvThemeCat_Core)
