@@ -110,7 +110,8 @@ def open_round_creator(from_round: Any = None):
         round_object.points_per_correct_answer = points_per_correct_answer
 
         # check if round already in test (user edits existing round) and refreshing it
-        logger.debug('Checking if does the round already exists. And refresh if it does.')
+        logger.debug('Checking if does the round already exists. And refresh if it does')
+
         same_round = test_object.get_round_with_id(round_object.registry_id)
         test_object.add_round(round_object) if same_round is None else test_object.refresh_round(round_object)
         test_object.unsaved_rounds.pop('testmode') if test_object.unsaved_rounds.get('testmode') == round_creator_window else None
@@ -149,30 +150,30 @@ def open_round_creator(from_round: Any = None):
             dpg.add_text(loc('testmode.rc.answers'))
 
             for answer_index, answer_text in enumerate(round_object.answers):
+                marked_as_correct = answer_index == round_object.correct_answer_index
+
+                def create_input_callback(index: int):
+                    return lambda _, new_text: change_answer(index, new_text)
+
+                def create_mark_button_callback(index: int):
+                    def callback():
+                        logger.debug(f'Marked "{round_object.answers[index]}" as correct')
+                        round_object.correct_answer_index = index
+                        setup_window_interface()
+
+                    return callback
+
+                def create_delete_button_callback(index: int):
+                    def callback():
+                        logger.debug(f'Delete "{round_object.answers[index]}" answer')
+                        if index == round_object.correct_answer_index:
+                            round_object.correct_answer_index = 0
+                        round_object.answers.pop(index)
+                        setup_window_interface()
+
+                    return callback
+
                 with dpg.group(horizontal=True):
-                    marked_as_correct = answer_index == round_object.correct_answer_index
-
-                    def create_input_callback(index):
-                        return lambda _, new_text: change_answer(index, new_text)
-
-                    def create_mark_button_callback(index):
-                        def callback():
-                            logger.debug(f'Marked "{round_object.answers[index]}" as correct')
-                            round_object.correct_answer_index = index
-                            setup_window_interface()
-
-                        return callback
-
-                    def create_delete_button_callback(index):
-                        def callback():
-                            logger.debug(f'Delete "{round_object.answers[index]}" answer')
-                            if index == round_object.correct_answer_index:
-                                round_object.correct_answer_index = 0
-                            round_object.answers.pop(index)
-                            setup_window_interface()
-
-                        return callback
-
                     dpg.add_input_text(
                         default_value=answer_text,
                         width=250,
@@ -186,7 +187,7 @@ def open_round_creator(from_round: Any = None):
                     )
 
                     remove_answer_button = dpg.add_button(label='X', callback=create_delete_button_callback(answer_index))
-                    dpg.bind_item_theme(remove_answer_button, 'red_button_theme')
+                dpg.bind_item_theme(remove_answer_button, 'red_button_theme')
 
             with dpg.group(horizontal=True):
                 dpg.add_input_text(source=f'{registry_prefix}_new_answer', width=250)
@@ -194,11 +195,7 @@ def open_round_creator(from_round: Any = None):
 
             dpg.add_text(loc('testmode.rc.points_for_correct_answer_hint'))
             dpg.add_input_float(source=f'{registry_prefix}_points_per_correct_answer', width=250, format='%.2f')
-
-            dpg.add_separator()
-
-            with dpg.group(horizontal=True):
-                dpg.add_button(label=loc('creator.save'), callback=save)
+            dpg.add_button(label=loc('creator.save'), callback=save)
 
     logger.debug('Setting up registry...')
     with dpg.value_registry(tag=f'{registry_prefix}_registry'):

@@ -24,18 +24,30 @@ def gen_random_id():
 
 
 @dataclass
-class TestModeRound(classes.Round):
+class Answer:
+    text: str
+    position: int | None
+
+    def dumps(self):
+        return {self.text: [self.position is not None, 0 if self.position is None else self.position]}
+
+    @staticmethod
+    def loads(text: str, data: list):
+        return Answer(text, None if not data[0] else data[1])
+
+
+@dataclass
+class DragTestModeRound(classes.Round):
     registry_id: str
     test_object_getter: Callable[[], classes.Test]
     title: str
     round_text: str
-    answers: list[str]
-    correct_answer_index: int | None
+    answers: list[Answer]
     points_per_correct_answer: float
 
     def open_round_editor(self):
         logger.debug(f'[Registry ID: {self.registry_id}] Clicked "Edit" button. Opening editor.')
-        from test_creator.modules.testmode.round_creator import open_round_creator
+        from test_creator.modules.drag_testmode.round_creator import open_round_creator
         open_round_creator(self)
 
     def preview(self, parent_item_tag: str | int):
@@ -48,15 +60,15 @@ class TestModeRound(classes.Round):
 
             dpg.add_text(self.round_text)
             dpg.add_spacer(height=7)
-            dpg.add_text(loc('testmode.rc.answers') + ', '.join(self.answers))
-            correct_answer_object = dpg.add_text(loc('testmode.classes.correct_answer') + self.answers[self.correct_answer_index])
+            dpg.add_text(loc('testmode.rc.answers') + ', '.join([i.text for i in self.answers]))
+            correct_answer_object = dpg.add_text(loc('drag_testmode.classes.correct_answers') + ', '.join([i.text for i in self.answers if i.position is not None]))
             dpg.add_spacer(height=7)
             last_object = dpg.add_text(
                 default_value=loc('testmode.classes.points_for_correct_answer_hint').format(self.points_per_correct_answer),
                 color=(210, 210, 210)
             )
 
-            debug_text = dpg.add_text(default_value=f'[testmode] [{self.registry_id}]', color=(140, 140, 140))
+            debug_text = dpg.add_text(default_value=f'[drag_testmode] [{self.registry_id}]', color=(140, 140, 140))
             edit_button = dpg.add_button(label=loc('testmode.classes.edit'), callback=self.open_round_editor)
             remove_button = dpg.add_button(label=loc('testmode.classes.delete'), callback=self.show_remove_request)
             arrow_button_up = dpg.add_button(
@@ -130,7 +142,7 @@ class TestModeRound(classes.Round):
         Template:
             title: str
             round_text: str
-            answers: dict['answer1': True|False, 'answer2': True|False]
+            answers: dict['answer1': [True|False, pos], 'answer2': [False, 0], 'answer3': [True, 1]]
             points_per_correct_answer: float = 1.0
         """
         logger.debug(f'[Registry ID: {self.registry_id}] Dumping round.')
@@ -138,7 +150,7 @@ class TestModeRound(classes.Round):
         return json.dumps({
             'title': decode_string(self.title),
             'round_text': decode_string(self.round_text),
-            'answers': {decode_string(answer): index == self.correct_answer_index for index, answer in enumerate(self.answers)},
+            'answers': {**{k: v for answer in self.answers for k, v in answer.dumps().items()}},
             'points_per_correct_answer': self.points_per_correct_answer,
         }, indent=2)
 
@@ -149,19 +161,18 @@ class TestModeRound(classes.Round):
         Template:
             title: str
             round_text: str
-            answers: dict['answer1': True|False, 'answer2': True|False]
+            answers: dict['answer1': [True|False, pos], 'answer2': [False, 0], 'answer3': [True, 1]]
             points_per_correct_answer: float = 1.0"""
 
         registry_id = gen_random_id()
         logger.debug(f'[Registry ID: {registry_id}] Loading round from file entry...')
         loaded_round: dict = json.loads(file_entry)
-        round_object = TestModeRound(
+        round_object = DragTestModeRound(
             registry_id=registry_id,
             test_object_getter=test_object_getter,
             title=loaded_round.get('title'),
             round_text=loaded_round.get('round_text'),
-            answers=list(loaded_round.get('answers').keys()),
-            correct_answer_index=next(iter([index for index, is_correct in enumerate(loaded_round.get('answers').values()) if is_correct]), None),
+            answers=[Answer.loads(text, data) for text, data in loaded_round.get('answers').items()],
             points_per_correct_answer=loaded_round.get('points_per_correct_answer'),
         )
         logger.debug(f'Loaded round data: {round_object}')

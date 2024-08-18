@@ -1,6 +1,0 @@
-{
-  "title": "Complete the sentence",
-  "round_text": "A bee flies and has ___.",
-  "answers": {"claws": false, "wings": true, "feather": false},
-  "points_per_correct_answer": 1
-}

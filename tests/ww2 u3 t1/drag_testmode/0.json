@@ -1,0 +1,23 @@
+{
+  "title": "Complete the sentence",
+  "round_text": "A bee flies and has ___ and collects ___.",
+  "answers": {
+    "claws": [
+      false,
+      0
+    ],
+    "wings": [
+      true,
+      1
+    ],
+    "pollen": [
+      true,
+      2
+    ],
+    "feather": [
+      false,
+      0
+    ]
+  },
+  "points_per_correct_answer": 1.0
+}
