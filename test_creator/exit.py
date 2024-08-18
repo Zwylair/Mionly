@@ -1,18 +1,18 @@
 import os
-import sys
-from typing import TextIO
+import typing
 import dearpygui.dearpygui as dpg
 from settings import *
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOGGING_FORMAT)
 logger.setLevel(LOGGING_LEVEL)
+lockfile: typing.TextIO | None = None
 
 
-def exit_mionly(lock_file: TextIO):
-    logger.debug(f'Unlocking {TEST_CREATOR_LOCK_FILENAME}. Deleting')
-    lock_file.close()
+def exit_mionly():
+    logger.debug(f'Unlocking {TEST_CREATOR_LOCK_FILENAME}')
+    lockfile.close()
     os.remove(TEST_CREATOR_LOCK_FILENAME)
-    logger.debug('Destroying context. Closing')
-    dpg.destroy_context()
-    sys.exit(0)
+
+    logger.debug('Stopping DearPyGui')
+    dpg.stop_dearpygui()

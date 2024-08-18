@@ -28,7 +28,7 @@ def show_item(dpg_tag: str | int, spawn_at_center: bool = True):
         dpg.set_item_pos(
             dpg_tag,
             pos=[
-                int(dpg.get_viewport_width() / 2 - dpg.get_item_width(dpg_tag) / 2),
+                int(dpg.get_viewport_width() / 2 - dpg.get_item_width(dpg_tag) / 2 - 9),
                 int(dpg.get_viewport_height() / 2 - dpg.get_item_height(dpg_tag) / 2 - 50)
             ]
         )

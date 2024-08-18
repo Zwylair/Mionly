@@ -1,5 +1,5 @@
-import os.path
 import shutil
+import os.path
 from typing import Type
 import faulthandler
 import screeninfo
@@ -114,7 +114,7 @@ def sync_test_name_with_dpg():
 def open_test_maker(main_executable: str):
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
-    viewport_size = (833, 700)
+    viewport_size = (873, 700)
 
     dpg.create_context()
     # dpg_dnd.initialize()
@@ -182,7 +182,7 @@ def open_test_maker(main_executable: str):
         dpg.add_image_button(
             texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],
             tag='test_creator__language_button',
-            callback=lambda: language_picker.open_languages_window(lock_file, main_executable)
+            callback=lambda: language_picker.open_languages_window(main_executable)
         )
 
         with dpg.group(horizontal=True):
@@ -199,19 +199,18 @@ def open_test_maker(main_executable: str):
                 initialiser(test_object_getter)
 
         dpg.add_separator()
-        test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]
+    test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]
 
     dpg.set_primary_window(window, True)
-    backupper.setup(test_object_getter)
-    viewport_resize_handler.setup()
     # logger.debug('Setting up dearpygui drag&drop')
     # drag_and_drop_setup.setup()
-    logger.debug(f'Creating and locking {TEST_CREATOR_LOCK_FILENAME}')
-    lock_file = open(TEST_CREATOR_LOCK_FILENAME, 'w')
-
     dpg.setup_dearpygui()
     dpg.show_viewport()
+
+    backupper.setup(test_object_getter)
+    viewport_resize_handler.setup()
+    exit.lockfile = open(TEST_CREATOR_LOCK_FILENAME, 'w')
+
     while dpg.is_dearpygui_running():
         animate.run()
         dpg.render_dearpygui_frame()
-    exit.exit_mionly(lock_file)
