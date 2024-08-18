@@ -15,7 +15,7 @@
   "creator.save": "Сохранить",
   "creator.test_name_label": "Название вашего теста: ",
   "creator.test_saved": "{} был сохранен!",
-  "drag_testmode.__init__.add_round_button": "Создать testmode раунд, где ответы перетаскиваются",
+  "drag_testmode.__init__.add_round_button": "Создать перетаскиваемый testmode раунд",
   "drag_testmode.classes.correct_answers": "Правильные ответы: ",
   "drag_testmode.rc.answer_pos_label": "Позиция: ",
   "drag_testmode.rc.too_much_answer_fields": "Полей для ответов больше, чем отмеченных ответов!",

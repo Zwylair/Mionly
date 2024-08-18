@@ -7,7 +7,7 @@ import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
-from test_creator import classes, messageboxes, backupper, language_picker, exit, animator
+from test_creator import classes, messageboxes, backupper, language_picker, exit, animator, viewport_resize_handler
 from test_creator.cyrillic_support import CyrillicSupport, FontPreset, decode_string
 from test_creator.language import loc, chosen_language
 from test_creator.modules import testmode, drag_testmode
@@ -181,6 +181,7 @@ def open_test_maker(main_executable: str):
 
         dpg.add_image_button(
             texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],
+            tag='test_creator__language_button',
             callback=lambda: language_picker.open_languages_window(lock_file, main_executable)
         )
 
@@ -199,9 +200,10 @@ def open_test_maker(main_executable: str):
 
         dpg.add_separator()
         test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]
-        backupper.setup(test_object_getter)
 
     dpg.set_primary_window(window, True)
+    backupper.setup(test_object_getter)
+    viewport_resize_handler.setup()
     # logger.debug('Setting up dearpygui drag&drop')
     # drag_and_drop_setup.setup()
     logger.debug(f'Creating and locking {TEST_CREATOR_LOCK_FILENAME}')

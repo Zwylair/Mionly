@@ -2,12 +2,16 @@ import sys
 import subprocess
 from typing import TextIO
 import dearpygui.dearpygui as dpg
-from test_creator import animator, exit, language, messageboxes
+from test_creator import animator, exit, language, messageboxes, viewport_resize_handler
 from settings import *
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOGGING_FORMAT)
 logger.setLevel(LOGGING_LEVEL)
+
+
+def configure_language_changer_button():
+    dpg.configure_item('test_creator__language_button', pos=[dpg.get_viewport_width() - 64, 7])
 
 
 def open_languages_window(lock_file: TextIO, main_executable: str):
@@ -44,3 +48,6 @@ def apply_lang(new_lang: str, lock_file: TextIO, main_executable: str):
         logger.debug(f'Restart command: "{sys.executable}"')
         subprocess.Popen(f'{sys.executable}')
     exit.exit_mionly(lock_file)
+
+
+viewport_resize_handler.add_handler(configure_language_changer_button)
