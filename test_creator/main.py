@@ -7,7 +7,7 @@ import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
-from test_creator import classes, messageboxes, backupper, language_picker, exit
+from test_creator import classes, messageboxes, backupper, language_picker, exit, animator
 from test_creator.cyrillic_support import CyrillicSupport, FontPreset, decode_string
 from test_creator.language import loc, chosen_language
 from test_creator.modules import testmode, drag_testmode
@@ -33,7 +33,7 @@ def test_object_getter():
     return test_object
 
 
-def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = False):
+def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = False, confirm_window_tag: str | int = None):
     logger.debug('Save test function called')
     test_name = dpg.get_value('test_creator_test_name')
     test_name_decoded = decode_string(test_name)
@@ -44,12 +44,14 @@ def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = Fals
         if not exists_ok:
             messageboxes.spawn_yes_no_window(
                 text=loc('creator.duplicate_test_name'),
-                yes_button_callback=lambda: save(modules_classes, exists_ok=True)
+                yes_button_callback=lambda window_tag: save(modules_classes, exists_ok=True, confirm_window_tag=window_tag)
             )
             return
 
         logger.debug(f'exists_ok={exists_ok}. Overwriting')
         shutil.rmtree(f'tests/{test_name_decoded}', ignore_errors=True)
+        if dpg.does_item_exist(confirm_window_tag):
+            animator.close_item(confirm_window_tag)
 
     os.makedirs(f'tests/{test_name_decoded}', exist_ok=True)
     logger.debug('Filtering rounds by its type...')
