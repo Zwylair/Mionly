@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import TextIO
 import dearpygui.dearpygui as dpg
 from settings import *
@@ -14,3 +15,4 @@ def exit_mionly(lock_file: TextIO):
     os.remove(TEST_CREATOR_LOCK_FILENAME)
     logger.debug('Destroying context. Closing')
     dpg.destroy_context()
+    sys.exit(0)

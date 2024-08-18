@@ -1,3 +1,4 @@
+import inspect
 from typing import Callable, Any
 import dearpygui.dearpygui as dpg
 from test_creator.language import loc
@@ -7,6 +8,13 @@ from settings import *
 logger = logging.getLogger(__name__)
 logging.basicConfig(format=LOGGING_FORMAT)
 logger.setLevel(LOGGING_LEVEL)
+
+
+def get_arg_count(func: Callable[[], Any]):
+    signature = inspect.signature(func)
+    parameters = signature.parameters
+    return len([param for param in parameters.values()
+                if param.kind in (param.POSITIONAL_ONLY, param.POSITIONAL_OR_KEYWORD)])
 
 
 def spawn_warning(text: str):
@@ -40,10 +48,13 @@ def spawn_yes_no_window(
             def no_button_callback():
                 animator.close_item(window)
 
+            def local_yes_button_callback():
+                return yes_button_callback(window) if get_arg_count(yes_button_callback) == 1 else yes_button_callback()
+
         dpg.add_text(text)
 
         with dpg.group(horizontal=True):
-            yes_button = dpg.add_button(label=yes_button_text, callback=lambda: yes_button_callback(window))
+            yes_button = dpg.add_button(label=yes_button_text, callback=local_yes_button_callback)
             dpg.add_button(label=no_button_text, callback=no_button_callback)
         dpg.bind_item_theme(yes_button, 'red_button_theme')
     animator.show_item(window)
