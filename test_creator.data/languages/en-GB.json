@@ -5,6 +5,7 @@
   "creator.crush_window_text": "It looks like the test creator was shut down unexpectedly.\nYou can use one of the saved backups:",
   "creator.duplicate_test_name": "A test with the same name already exists.\n\nAre you sure you want to overwrite it?",
   "creator.empty_test": "Chosen test is empty!",
+  "creator.error_when_loading_test": "An error occurred when loading the test.\n\nIt looks like it was made in an incompatible version of Mionly,\nor the test file was corrupted.\n\n(The test was loaded partly)",
   "creator.exit_confirmation": "To apply new language Mionly need to be reloaded.\n\nAll unsaved progress will be lost.\nAre you sure to continue?",
   "creator.languages": "Languages",
   "creator.load_selected": "Load selected",

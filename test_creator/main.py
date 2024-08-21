@@ -1,7 +1,9 @@
-import shutil
+import json
 import os.path
-from typing import Any
+import pathlib
+import zipfile
 import faulthandler
+from typing import Any
 import screeninfo
 import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
@@ -37,8 +39,9 @@ def save(exists_ok: bool = False, confirm_window_tag: str | int = None):
     logger.debug('Save test function called')
     test_name = dpg.get_value('test_creator_test_name')
     test_name_decoded = decode_string(test_name)
+    output_test_file_path = os.path.join('tests', f'{test_name_decoded}.mionly')
 
-    if test_name_decoded in os.listdir('tests'):
+    if os.path.exists(output_test_file_path):
         logger.debug(f'There is another test with same name')
 
         if not exists_ok:
@@ -49,61 +52,82 @@ def save(exists_ok: bool = False, confirm_window_tag: str | int = None):
             return
 
         logger.debug(f'exists_ok={exists_ok}. Overwriting')
-        shutil.rmtree(f'tests/{test_name_decoded}', ignore_errors=True)
+        os.remove(output_test_file_path)
         if dpg.does_item_exist(confirm_window_tag):
             animator.close_item(confirm_window_tag)
 
-    os.makedirs(f'tests/{test_name_decoded}', exist_ok=True)
-    logger.debug('Filtering rounds by its type...')
+    output_test_file = zipfile.ZipFile(output_test_file_path, mode='w', compression=zipfile.ZIP_DEFLATED)
 
-    rounds_by_type = {}
+    round_count_by_type = {}
     for test_round in test_object.rounds:
         test_round: Any  # actually will always be a subclass of Round
         round_type = MODULES_CLASSES.get(test_round.__class__)
+        round_count_by_type[round_type] = round_count_by_type.get(round_type, -1) + 1
 
-        if round_type not in rounds_by_type:
-            rounds_by_type[round_type] = []
-        rounds_by_type[round_type].append(test_round)
+        output_test_file.writestr(
+            zipfile.ZipInfo(f'{round_type}/{round_count_by_type[round_type]}.json'),
+            test_round.dumps()
+        )
 
-    logger.debug('Creating round types folders and dumping them...')
-    for test_round_type, rounds in rounds_by_type.items():
-        os.makedirs(f'tests/{test_name_decoded}/{test_round_type}', exist_ok=True)
-
-        for index, test_round in enumerate(rounds):
-            with open(f'tests/{test_name_decoded}/{test_round_type}/{index}.json', 'w') as file:
-                file.write(test_round.dumps())
+    output_test_file.writestr(
+        zipfile.ZipInfo('test_creator_info.json'),
+        json.dumps(
+            {
+                'round_types': list(round_count_by_type.keys())
+            }
+        )
+    )
 
     messageboxes.spawn_info(loc('creator.test_saved').format(test_name))
-    logger.debug(f'Test {test_name_decoded} was saved.')
+    logger.debug(f'Test {test_name_decoded} was saved')
+    output_test_file.close()
 
 
 def load_test():
     global test_object
-
     test_name = dpg.get_value('test_creator_test_name_to_open')
 
     if not test_name:
         return
 
-    round_types = os.listdir(f'tests/{test_name}/')
+    logger.debug(f'Opening test "{test_name}"')
+
+    dpg.set_value('test_creator_test_name', test_name)
+    reversed_modules_classes = {v: k for k, v in MODULES_CLASSES.items()}
+    has_loading_round_error = False
+
+    test_file_path = os.path.join('tests', f'{test_name}.mionly')
+    test_file = zipfile.ZipFile(test_file_path, 'r')
+    test_info = json.loads(test_file.read('test_creator_info.json'))
+    round_types = test_info.get('round_types', [])
 
     if not round_types:
         messageboxes.spawn_warning(loc('creator.empty_test'))
         return
 
-    logger.debug(f'Opening test "{test_name}"')
-    dpg.set_value('test_creator_test_name', test_name)
+    for file in test_file.filelist:
+        if file.is_dir():
+            continue
+
+        round_type = os.path.dirname(file.filename).split('/')[0]
+
+        if round_type not in round_types:  # other dir like 'media' etc.
+            continue
+
+        try:
+            test_object.rounds.append(
+                reversed_modules_classes[round_type].loads(
+                    test_file.read(file),
+                    test_object_getter
+                )
+            )
+        except json.JSONDecodeError:
+            has_loading_round_error = True
+
+    if has_loading_round_error:
+        messageboxes.spawn_warning(loc('creator.error_when_loading_test'))
+    test_file.close()
     sync_test_name_with_dpg()
-    reversed_modules_classes = {v: k for k, v in MODULES_CLASSES.items()}
-
-    for round_type in round_types:
-        for round_name in os.listdir(f'tests/{test_name}/{round_type}/'):
-            if round_type not in reversed_modules_classes:
-                logger.info(f'Unknown round mode: {round_type} ("{test_name}" test)')
-                break
-
-            with open(f'tests/{test_name}/{round_type}/{round_name}', 'r') as file:
-                test_object.add_round(reversed_modules_classes[round_type].loads(file.read(), test_object_getter))
     test_object.regenerate_round_previews()
 
 
@@ -174,10 +198,11 @@ def open_test_maker(main_executable: str):
 
     with dpg.window(no_title_bar=True, no_resize=True, no_close=True, no_move=True) as window:
         test_object.dpg_window_for_round_previews = window
+        available_tests_to_open = [pathlib.Path(i).stem for i in os.listdir('tests') if i.endswith('.mionly')]
 
         with dpg.group(horizontal=True):
             dpg.add_text(loc('creator.open_test'))
-            dpg.add_combo(items=os.listdir('tests'), width=350, source='test_creator_test_name_to_open')
+            dpg.add_combo(items=available_tests_to_open, width=350, source='test_creator_test_name_to_open')
             dpg.add_button(label=loc('creator.open'), callback=lambda: load_test())
 
         dpg.add_image_button(
