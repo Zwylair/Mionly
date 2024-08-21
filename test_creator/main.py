@@ -1,6 +1,6 @@
 import shutil
 import os.path
-from typing import Type
+from typing import Any
 import faulthandler
 import screeninfo
 import dearpygui.dearpygui as dpg
@@ -33,7 +33,7 @@ def test_object_getter():
     return test_object
 
 
-def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = False, confirm_window_tag: str | int = None):
+def save(exists_ok: bool = False, confirm_window_tag: str | int = None):
     logger.debug('Save test function called')
     test_name = dpg.get_value('test_creator_test_name')
     test_name_decoded = decode_string(test_name)
@@ -44,7 +44,7 @@ def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = Fals
         if not exists_ok:
             messageboxes.spawn_yes_no_window(
                 text=loc('creator.duplicate_test_name'),
-                yes_button_callback=lambda window_tag: save(modules_classes, exists_ok=True, confirm_window_tag=window_tag)
+                yes_button_callback=lambda window_tag: save(exists_ok=True, confirm_window_tag=window_tag)
             )
             return
 
@@ -58,9 +58,10 @@ def save(modules_classes: dict[Type[classes.Round], str], exists_ok: bool = Fals
 
     rounds_by_type = {}
     for test_round in test_object.rounds:
-        round_type = modules_classes[test_round.__class__]
+        test_round: Any  # actually will always be a subclass of Round
+        round_type = MODULES_CLASSES.get(test_round.__class__)
 
-        if rounds_by_type.get(round_type) is None:
+        if round_type not in rounds_by_type:
             rounds_by_type[round_type] = []
         rounds_by_type[round_type].append(test_round)
 
@@ -119,19 +120,19 @@ def open_test_maker(main_executable: str):
     dpg.create_context()
     # dpg_dnd.initialize()
     dpg.create_viewport(
-        title="Mionly v2.0: test creator", large_icon='icon.ico',
+        title='Mionly v2.0: test creator', large_icon=os.path.join(TEST_CREATOR_DATA_PATH, 'icon.ico'),
         width=viewport_size[0], height=viewport_size[1],
         x_pos=int(monitor_size[0] / 2 - viewport_size[0] / 2),
         y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
     )
 
-    fonts = [
-        # FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=28, id='nunito_titles', bind_font_as_default=False),
-        FontPreset(path='web/fonts/nunito/Nunito-Regular.ttf', size=24, id='nunito', bind_font_as_default=True),
-    ]
     with dpg.font_registry():
-        for font in fonts:
-            CyrillicSupport(font)
+        CyrillicSupport(
+            FontPreset(
+                path=os.path.join(TEST_CREATOR_DATA_PATH, 'fonts/nunito/Nunito-Regular.ttf'),
+                size=24, id='nunito', bind_font_as_default=True
+            )
+        )
 
     with dpg.value_registry():
         dpg.add_string_value(tag='test_creator_load_backup_mtime')
@@ -140,7 +141,7 @@ def open_test_maker(main_executable: str):
         dpg.add_string_value(tag='test_creator_picked_lang', default_value=chosen_language)
 
     logger.debug('Loading textures')
-    width, height, channels, data = dpg.load_image('web/images/language.png')
+    width, height, channels, data = dpg.load_image(os.path.join(TEST_CREATOR_DATA_PATH, 'images/language.png'))
     with dpg.texture_registry():
         dpg.add_static_texture(width=width, height=height, default_value=data, tag='texture__language')
 
@@ -188,7 +189,7 @@ def open_test_maker(main_executable: str):
         with dpg.group(horizontal=True):
             dpg.add_text(loc('creator.test_name_label'))
             dpg.add_input_text(source='test_creator_test_name', width=350, callback=lambda: sync_test_name_with_dpg())
-            dpg.add_button(label=loc('creator.save'), callback=lambda: save(MODULES_CLASSES))
+            dpg.add_button(label=loc('creator.save'), callback=lambda: save())
 
         dpg.add_separator()
 
@@ -214,3 +215,4 @@ def open_test_maker(main_executable: str):
     while dpg.is_dearpygui_running():
         animate.run()
         dpg.render_dearpygui_frame()
+    exit.stop_mionly(do_exit=True)

@@ -2,8 +2,8 @@ import os
 import shutil
 import subprocess
 
-include_dirs = ['tests', 'web', 'languages']
-include_files = ['icon.ico']
+include_dirs = ['tests', 'web', 'test_creator.data']
+include_files = []
 
 shutil.rmtree('build', ignore_errors=True)
 shutil.rmtree('dist', ignore_errors=True)

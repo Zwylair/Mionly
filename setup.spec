@@ -46,7 +46,7 @@ main_exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['icon.ico'],
+    icon=['test_creator.data/icon.ico'],
 )
 test_maker_exe = EXE(
     test_maker_pyz,
@@ -64,7 +64,7 @@ test_maker_exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['icon.ico'],
+    icon=['test_creator.data/icon.ico'],
 )
 test_maker_debug_exe = EXE(
     test_maker_pyz,
@@ -82,7 +82,7 @@ test_maker_debug_exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['icon.ico'],
+    icon=['test_creator.data/icon.ico'],
 )
 
 main_coll = COLLECT(

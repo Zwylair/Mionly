@@ -37,7 +37,7 @@ def set_lang(main_executable: str):
 
 def apply_lang(new_lang: str, main_executable: str):
     language.set_language(new_lang)
-    exit.exit_mionly()
+    exit.stop_mionly()
 
     if getattr(sys, 'frozen', True):
         logger.debug('Mionly is not frozen. Restart via launching script')
@@ -47,7 +47,7 @@ def apply_lang(new_lang: str, main_executable: str):
         logger.debug('Mionly is frozen. Restart via launching exe file')
         logger.debug(f'Restart command: "{sys.executable}"')
         subprocess.run(f'{sys.executable}', start_new_session=True)
-    sys.exit(0)
+    exit.exit_app()
 
 
 viewport_resize_handler.add_handler(configure_language_changer_button)
