@@ -222,8 +222,6 @@ def open_round_creator(from_round: Any = None):
                 def create_delete_button_callback(index: int):
                     def callback():
                         logger.debug(f'Delete "{round_object.answers[index]}" answer')
-                        if index == round_object.correct_answer_index:
-                            round_object.correct_answer_index = 0
                         round_object.answers.pop(index)
                         setup_window_interface()
 

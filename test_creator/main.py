@@ -120,7 +120,7 @@ def open_test_maker(main_executable: str):
     dpg.create_context()
     # dpg_dnd.initialize()
     dpg.create_viewport(
-        title='Mionly v2.0: test creator', large_icon=os.path.join(TEST_CREATOR_DATA_PATH, 'icon.ico'),
+        title='Mionly v2.0: test creator', large_icon=os.path.join(TEST_CREATOR_DATA_PATH, 'images/icon.ico'),
         width=viewport_size[0], height=viewport_size[1],
         x_pos=int(monitor_size[0] / 2 - viewport_size[0] / 2),
         y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
