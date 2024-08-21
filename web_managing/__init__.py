@@ -75,7 +75,6 @@ def start_test(chosen_test: ChosenTest):
         opened_rounds_count=0,
         test_root=test_root,
     )
-    print(db.STORAGE)
 
     return next_round()
 
