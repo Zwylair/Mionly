@@ -67,13 +67,6 @@ def open_round_creator(from_round: Any = None):
         add = '___ ' if round_text.endswith(' ') else ' ___ '
         dpg.set_value(f'{registry_prefix}_round_text', round_text + add)
 
-    def sort_answers():
-        # sort answers by position
-        round_object.answers = sorted(
-            round_object.answers,
-            key=lambda _answer: (_answer.position is None, _answer.position)
-        )
-
     def add_answer():
         new_answer = dpg.get_value(f'{registry_prefix}_new_answer')
 
@@ -88,7 +81,6 @@ def open_round_creator(from_round: Any = None):
         dpg.set_value(f'{registry_prefix}_new_answer', '')
 
         logger.debug(f'Added new answer: "{new_answer}"')
-        sort_answers()
         setup_window_interface()
 
     def change_answer(answer_index: int, new_answer_text: str):
@@ -218,13 +210,11 @@ def open_round_creator(from_round: Any = None):
                     def mark_callback():
                         logger.debug(f'Marked "{round_object.answers[index]}" as correct')
                         round_object.answers[index].position = 0
-                        sort_answers()
                         setup_window_interface()
 
                     def unmark_callback():
                         logger.debug(f'Unmarked "{round_object.answers[index]}" as correct')
                         round_object.answers[index].position = None
-                        sort_answers()
                         setup_window_interface()
 
                     return unmark_callback if marked_as_correct else mark_callback
@@ -258,8 +248,6 @@ def open_round_creator(from_round: Any = None):
                                 break
 
                         changing_answer.position = new_position
-                        sort_answers()
-
                         setup_window_interface()
                     return callback
 
