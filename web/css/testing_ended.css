@@ -30,8 +30,16 @@ h1 {
     border: none;
     cursor: pointer;
 }
-.back-button-image {
+
+:root {
+    --back-icon-background-image: url('/images/next_dark.svg');
+}
+
+[data-theme='dark'] {
+    --back-icon-background-image: url('/images/next_light.svg');
+}
+
+.back-icon {
     transform: scale(-1, 1);
-    height: 48px;
-    width: 48px;
+    background: var(--back-icon-background-image) no-repeat center/100% 100%;
 }

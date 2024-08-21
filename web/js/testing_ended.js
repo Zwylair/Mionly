@@ -48,4 +48,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     for (let element of highchartsCredits) {
         element.remove();
     }
+
+    const highchartsBackground = document.getElementsByClassName('highcharts-background');
+    for (let element of highchartsBackground) {
+        element.setAttribute('fill', '#ffffff00');
+    }
+
+    const highchartsTextOutline = document.getElementsByClassName('highcharts-text-outline');
+        for (let element of highchartsTextOutline) {
+            element.setAttribute('stroke', '#ffffff00');
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+        const highchartsText = document.querySelectorAll('text');
+        for (let element of highchartsText) {
+            element.style = 'color: rgb(255, 255, 255); font-size: 0.7em; font-weight: bold; fill: rgb(255, 255, 255);';
+        }
+    }
 });

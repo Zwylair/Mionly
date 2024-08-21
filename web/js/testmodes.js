@@ -85,7 +85,7 @@ async function sendAnswers() {
         audio.volume = 0.4;
 
         const iconObject = document.getElementById('bottom-div-title-icon');
-        iconObject.src = isAllRight ? '/images/right.svg' : '/images/wrong.svg';
+        iconObject.classList.add(isAllRight ? 'right-icon' : 'wrong-icon');
 
         // complete the bottom container
         const bottomDiv = document.getElementById('bottom_div');
@@ -96,7 +96,7 @@ async function sendAnswers() {
 
         // complete "next" button
         const nextIconObject = document.getElementById('continue-button-image');
-        nextIconObject.src = '/images/next.svg';
+        nextIconObject.classList.add('next-icon');
 
         // if i remove hidden class and set the style at the same time, the transition won't work | 0.1s delay is not noticeable
         setTimeout(() => {

@@ -1,0 +1,7 @@
+input[type='text'], textarea {
+    background-color: var(--input-bg-color); 
+}
+
+.theme-icon {
+    background: var(--theme-icon-background-image) no-repeat center/100% 100%;
+}

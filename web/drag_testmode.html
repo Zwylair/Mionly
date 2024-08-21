@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon32.png">
     <title>Mionly: drag testmode</title>
+    <script type="text/javascript" src="/js/theme_switcher.js"></script>
     <script type="module" src="/js/testmodes.js"></script>
     <!-- <script type="text/javascript" src="/js/restriction.js"></script> -->
     <link rel="stylesheet" type="text/css" href="/css/base.css">
@@ -18,16 +19,16 @@
     <div class="container" id="round_text"></div>
     <div id="answers_container" class="container-box"></div>
     <p></p>
-    <button onclick="sendAnswers()" id="submit-button">submit</button>
+    <button onclick="sendAnswers()" id="submit-button" class="new-button">submit</button>
     <div id="bottom_div" class="answer-container-after-submit hidden">
       <div class="bottom-div-titlebox">
-        <img class="bottom-div-title-icon" id="bottom-div-title-icon">
+        <div class="bottom-div-title-icon" style="width: 24px; height: 24px;" id="bottom-div-title-icon"></div>
         <h3 id="bottom-div-title-text" style="margin: 0;"></h3>
         <div class="got-points-text" id="got-points-text"></div>
       </div>
       <pa id="bottom-div-round-text"></pa>
       <button id="continue-button" class="continue-button" onclick="nextRound()">
-        <img id="continue-button-image">
+        <div id="continue-button-image" style="width: 24px; height: 24px;"></div>
       </button>
     </div>
   </body>

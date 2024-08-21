@@ -24,7 +24,7 @@
     width: 700px;
     height: 50px;
     margin-top: 30px;
-    border: 3px solid black;
+    border: 3px solid var(--text-color);
     border-radius: 7px;
     display: flex;
     flex-direction: row;
@@ -110,4 +110,28 @@
     top: 6px;
     right: 6px;
     color: #757575;
+}
+
+:root {
+    --wrong-icon-background-image: url('/images/right_dark.svg');
+    --next-icon-background-image: url('/images/next_dark.svg');
+    --right-icon-background-image: url('/images/right_dark.svg');
+}
+
+[data-theme='dark'] {
+    --wrong-icon-background-image: url('/images/right_light.svg');
+    --next-icon-background-image: url('/images/next_light.svg');
+    --right-icon-background-image: url('/images/right_light.svg');
+}
+
+.next-icon {
+    background: var(--next-icon-background-image) no-repeat center/100% 100%;
+}
+
+.right-icon {
+    background: var(--right-icon-background-image) no-repeat center/100% 100%;
+}
+
+.wrong-icon {
+    background: var(--wrong-icon-background-image) no-repeat center/100% 100%;
 }
