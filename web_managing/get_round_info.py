@@ -14,7 +14,7 @@ def get_full_round_info() -> dict:
         answers: dict['answer1': ..., 'answer2': ...]
         points_per_correct_answer: int = 1
     """
-    path = os.path.join('tests', db.STORAGE.chosen_test_name, db.STORAGE.round_type, db.STORAGE.chosen_round)
+    path = os.path.join(db.STORAGE.test_root, db.STORAGE.chosen_round)
 
     with open(path) as file:
         content = file.read()

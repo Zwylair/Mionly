@@ -165,3 +165,4 @@ test.*
 backups/*
 *.lock
 language.json
+cache

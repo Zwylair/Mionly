@@ -1,8 +1,13 @@
 import os
+import copy
 import random
+import shutil
+import pathlib
+import zipfile
 from fastapi import FastAPI
 from pydantic import BaseModel
 from web_managing import get_round_info, test_checking
+from settings import *
 import db
 
 
@@ -13,30 +18,41 @@ class ChosenTest(BaseModel):
 
 
 def available_tests():
-    return os.listdir('tests')
+    return [pathlib.Path(fn).stem for fn in os.listdir('tests') if fn.endswith('.mionly')]
 
 
 def start_test(chosen_test: ChosenTest):
+    is_test_from_external_storage = os.path.exists(chosen_test.name)
+    test_file_path = chosen_test.name if is_test_from_external_storage else os.path.join('tests', f'{chosen_test.name}.mionly')
+    test_root = os.path.join(
+        WEB_CACHE_PATH,
+        pathlib.Path(chosen_test.name).stem if is_test_from_external_storage else chosen_test.name
+    )
     all_rounds = []
     available_rounds = {}
     allowed_round_types = test_checking.VALID_ROUND_TYPES
 
-    for root, dirs, files in os.walk(f'tests/{chosen_test.name}'):
+    if os.path.exists(test_root):
+        shutil.rmtree(test_root, ignore_errors=True)
+
+    zipfile.ZipFile(test_file_path).extractall(test_root)
+
+    for root, dirs, files in os.walk(test_root):
         root = os.sep.join(root.split(os.sep)[1:])  # remove 'tests/' from path
         for file in files:
             all_rounds.append(os.path.join(root, file).replace(os.sep, '/'))
 
     for raw_round in all_rounds:
         raw_round = raw_round.split('/')
-        round_type = raw_round[0]
-        raw_round = '/'.join(raw_round[1:])
+        round_type = raw_round[-2]
+        raw_round = f'{round_type}/{raw_round[-1]}'
 
         if round_type not in available_rounds.keys():
             available_rounds[round_type] = [raw_round]
         else:
             available_rounds[round_type].append(raw_round)
 
-    for round_type in available_rounds.keys():
+    for round_type in copy.deepcopy(available_rounds).keys():
         if round_type not in allowed_round_types:
             available_rounds.pop(round_type)
 
@@ -57,7 +73,9 @@ def start_test(chosen_test: ChosenTest):
         points=0,
         max_points=0,
         opened_rounds_count=0,
+        test_root=test_root,
     )
+    print(db.STORAGE)
 
     return next_round()
 

@@ -19,7 +19,7 @@ class Storage:
     points: float = 0
     max_points: float = 0
     opened_rounds_count: int = 0
-    test_source_root: str | None = None
+    test_root: str | None = None
 
 
 STORAGE: Storage | None = None
@@ -38,12 +38,13 @@ def get_storage():
 
 async def upload_file(file: UploadFile):
     os.makedirs(WEB_CACHE_PATH, exist_ok=True)
+    file_path = os.path.join(WEB_CACHE_PATH, file.filename)
 
-    with open(os.path.join(WEB_CACHE_PATH, file.filename), 'wb') as f:
+    with open(file_path, 'wb') as f:
         content = await file.read()
         f.write(content)
 
-    return JSONResponse({'filename': file.filename})
+    return JSONResponse({'filename': file.filename, 'file_path': file_path})
 
 
 def setup(app: FastAPI):
