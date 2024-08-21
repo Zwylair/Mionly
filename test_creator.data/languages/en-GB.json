@@ -18,6 +18,7 @@
   "drag_testmode.__init__.add_round_button": "Add drag testmode round",
   "drag_testmode.classes.correct_answers": "Correct answers: ",
   "drag_testmode.rc.answer_pos_label": "Pos: ",
+  "drag_testmode.rc.incorrect_positions": "Incorrect positions issued!",
   "drag_testmode.rc.too_much_answer_fields": "There is more answer fields than marked answers!",
   "drag_testmode.rc.too_much_answer_fields2": "There is more answer fields than answers with set position!",
   "drag_testmode.rc.too_much_correct_answers": "Not all marked answers have positions!",

@@ -95,10 +95,12 @@ def open_round_creator(from_round: Any = None):
         answers_marked_as_correct_count = len([answer for answer in round_object.answers if answer.position is not None])
         all_answer_positions = list(range(1, len(round_object.answers) + 1))
         valid_answers = 0
+        valid_answers_positions = []
 
         for answer in round_object.answers:
             if answer.position in all_answer_positions:
                 valid_answers += 1
+                valid_answers_positions.append(answer.position)
 
         if len(round_object.answers) == 0:
             logger.debug('Nah, there are no answers')
@@ -123,6 +125,15 @@ def open_round_creator(from_round: Any = None):
         if answer_field_count > answers_marked_as_correct_count:
             logger.debug('Nah, there are more answer fields than "correct" answers')
             spawn_warning(loc('drag_testmode.rc.too_much_answer_fields'))
+            return
+
+        if sorted(valid_answers_positions) != list(range(1, valid_answers + 1)):
+            # valid_answers_positions = [2, 4, 5]
+            # valid_answers = 3
+            # if [2, 4, 5] == [1, 2, 3]
+
+            logger.debug('Nah, there are some incorrect set positions')
+            spawn_warning(loc('drag_testmode.rc.incorrect_positions'))
             return
 
         round_object.title = title

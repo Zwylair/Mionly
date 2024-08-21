@@ -1,10 +1,12 @@
-import os
 import json
+from settings import *
 
-for i in os.listdir('languages'):
-    lang: dict = json.load(open(f'languages/{i}', encoding='utf8'))
+root_dir = os.path.join(TEST_CREATOR_DATA_PATH, 'languages')
+
+for i in os.listdir(root_dir):
+    lang: dict = json.load(open(os.path.join(root_dir, i), encoding='utf8'))
     json.dump(
-        dict(sorted(lang.items())), open(f'languages/{i}', 'w', encoding='utf8'),
+        dict(sorted(lang.items())), open(os.path.join(root_dir, i), 'w', encoding='utf8'),
         ensure_ascii=False,
         indent=2
     )

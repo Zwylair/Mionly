@@ -18,6 +18,7 @@
   "drag_testmode.__init__.add_round_button": "Створити перетаскувальний testmode раунд",
   "drag_testmode.classes.correct_answers": "Правильні відповіді: ",
   "drag_testmode.rc.answer_pos_label": "Позиція: ",
+  "drag_testmode.rc.incorrect_positions": "Видано неправильні позиції",
   "drag_testmode.rc.too_much_answer_fields": "Полів для відповідей більше, ніж позначених відповідей!",
   "drag_testmode.rc.too_much_answer_fields2": "Полів для відповідей більше, ніж відповідей із заданою позицією!",
   "drag_testmode.rc.too_much_correct_answers": "Не у всіх позначених відповідей є позиції!",
