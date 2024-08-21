@@ -1,6 +1,7 @@
 {
   "backupper.error_when_loading_backup": "There was an error when loading the backup.\n\nIt looks like it was made in an old or too new version of Mionly",
   "creator.apply": "Apply",
+  "creator.browse": "Browse...",
   "creator.crush_window_label": "Unexpected crush",
   "creator.crush_window_text": "It looks like the test creator was shut down unexpectedly.\nYou can use one of the saved backups:",
   "creator.duplicate_test_name": "A test with the same name already exists.\n\nAre you sure you want to overwrite it?",
@@ -12,6 +13,7 @@
   "creator.no_thanks": "No, thanks",
   "creator.open": "Open",
   "creator.open_test": "Open existing test: ",
+  "creator.or": "OR",
   "creator.reboot_warning": "This action needs to reload Mionly",
   "creator.save": "Save",
   "creator.test_name_label": "Name of your test: ",

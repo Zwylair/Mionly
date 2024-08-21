@@ -3,6 +3,7 @@ import os.path
 import pathlib
 import zipfile
 import faulthandler
+from tkinter import filedialog
 from typing import Any
 import screeninfo
 import dearpygui.dearpygui as dpg
@@ -83,9 +84,10 @@ def save(exists_ok: bool = False, confirm_window_tag: str | int = None):
     output_test_file.close()
 
 
-def load_test():
+def load_test(from_file: str = None):
     global test_object
-    test_name = dpg.get_value('test_creator_test_name_to_open')
+
+    test_name = pathlib.Path(from_file).stem if from_file else dpg.get_value('test_creator_test_name_to_open')
 
     if not test_name:
         return
@@ -96,7 +98,7 @@ def load_test():
     reversed_modules_classes = {v: k for k, v in MODULES_CLASSES.items()}
     has_loading_round_error = False
 
-    test_file_path = os.path.join('tests', f'{test_name}.mionly')
+    test_file_path = from_file if from_file else os.path.join('tests', f'{test_name}.mionly')
     test_file = zipfile.ZipFile(test_file_path, 'r')
     test_info = json.loads(test_file.read('test_creator_info.json'))
     round_types = test_info.get('round_types', [])
@@ -200,10 +202,22 @@ def open_test_maker(main_executable: str):
         test_object.dpg_window_for_round_previews = window
         available_tests_to_open = [pathlib.Path(i).stem for i in os.listdir('tests') if i.endswith('.mionly')]
 
-        with dpg.group(horizontal=True):
-            dpg.add_text(loc('creator.open_test'))
-            dpg.add_combo(items=available_tests_to_open, width=350, source='test_creator_test_name_to_open')
-            dpg.add_button(label=loc('creator.open'), callback=lambda: load_test())
+        with dpg.group(horizontal=True, horizontal_spacing=15):
+            with dpg.group(horizontal=True):
+                dpg.add_text(loc('creator.open_test'))
+                dpg.add_combo(items=available_tests_to_open, width=350, source='test_creator_test_name_to_open')
+                dpg.add_button(label=loc('creator.open'), callback=lambda: load_test())
+
+            dpg.add_text(loc('creator.or'))
+
+            dpg.add_button(
+                label=loc('creator.browse'),
+                callback=lambda: load_test(
+                    from_file=filedialog.askopenfilename(
+                        filetypes=[('Mionly tests', '*.mionly')]
+                    )
+                )
+            )
 
         dpg.add_image_button(
             texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],

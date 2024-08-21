@@ -1,6 +1,7 @@
 {
   "backupper.error_when_loading_backup": "Виникла помилка при завантаженні резервної копії.\n\nСхоже, це було зроблено в старій або занадто новій версії Mionly",
   "creator.apply": "Застосувати",
+  "creator.browse": "Вибрати файл...",
   "creator.crush_window_label": "Непередбачене завершення роботи",
   "creator.crush_window_text": "Схоже, що роботу створювалки тестів було несподівано припинено.\nНижче ви можете завантажити одну зі збережених резервних копій:",
   "creator.duplicate_test_name": "Тест з такою ж назвою вже існує.\n\nВи впевнені, що хочете перезаписати його?",
@@ -12,6 +13,7 @@
   "creator.no_thanks": "Ні, дякую",
   "creator.open": "Відкрити",
   "creator.open_test": "Відкрити існуючий тест:",
+  "creator.or": "АБО",
   "creator.reboot_warning": "Ця дія потребує перезавантаження Mionly",
   "creator.save": "Зберегти",
   "creator.test_name_label": "Назва вашого тесту: ",
