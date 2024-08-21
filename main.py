@@ -1,16 +1,13 @@
+import shutil
 import webbrowser
-from colorama import init
-from fastapi import FastAPI, Request
-from fastapi.responses import Response
-from fastapi.staticfiles import StaticFiles
 import uvicorn
+import colorama
+from fastapi import FastAPI, Request, Response
+from fastapi.staticfiles import StaticFiles
 from settings import *
 import web_managing
 import db
 
-init(convert=True)
-
-web_temp_dir = f'{WEB_DIR}/temp'
 app = FastAPI()
 
 
@@ -24,9 +21,13 @@ async def disable_cache_middleware(request: Request, call_next):
 
 
 if __name__ == '__main__':
+    colorama.init(convert=True)
+    shutil.rmtree(WEB_CACHE_PATH, ignore_errors=True)
+    os.makedirs(WEB_CACHE_PATH, exist_ok=True)
+
     db.setup(app)
     web_managing.setup(app)
 
     app.mount('/', StaticFiles(directory=WEB_DIR, html=True), name='web')
-    webbrowser.open_new(f'http://{HOST_URL}:{HOST_PORT}/index.html')
+    webbrowser.open_new('http://{}:{}/index.html'.format(HOST_URL, HOST_PORT))
     uvicorn.run(app, host=HOST_URL, port=HOST_PORT)

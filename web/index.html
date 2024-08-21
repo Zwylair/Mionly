@@ -6,18 +6,27 @@
     <title>Mionly</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon32.png">
-    <script type="text/javascript" src="/js/index.js"></script>
     <!-- <script type="text/javascript" src="/js/restriction.js"></script> -->
-    <link rel="stylesheet" type="text/css" href="css/base.css">
-    <link rel="stylesheet" type="text/css" href="/css/restriction.css">
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/file_dialog.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/css/restriction.css"> -->
   </head>
   <body>
-    <label for="chosen_test">Choose a test:</label>
-    <input type="text" list="test_list" id="chosen_test">
-    <datalist id="test_list"></datalist><br>
+    <span>
+      <label for="chosen_test">Choose a test:</label>
+      <input type="text" list="test_list" id="chosen_test">
+      <span style="margin-left: 15px; margin-right: 15px;">OR</span>
+      <div class="file-input-container">
+        <label for="file_input" class="file-label">Browse...</label>
+        <input type="file" id="file_input" name="file" class="file-input" onchange="uploadFile()">
+      </div>
+    </span><br>
+
+    <datalist id="test_list"></datalist>
     <input id="randomize_rounds_checkbox" type="checkbox">
     <label for="randomize_rounds_checkbox">Randomize questions position</label><br>
     <input id="randomize_answers_checkbox" type="checkbox">
     <label for="randomize_answers_checkbox">Randomize answers position</label>
+    <script type="text/javascript" src="/js/index.js"></script>
   </body>
 </html>

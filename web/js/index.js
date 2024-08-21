@@ -1,3 +1,17 @@
+async function uploadFile() {
+    const formData = new FormData();
+    const fileInput = document.getElementById('file_input');
+    formData.append('file', fileInput.files[0]);
+
+    const response = await fetch('db/upload_file', {
+        method: 'POST',
+        body: formData
+    });
+
+    const result = await response.json();
+    console.log(result);
+}
+ 
 async function fetchJson(url) {
     const response = await fetch(url);
     return response.json();
