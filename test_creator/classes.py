@@ -2,10 +2,10 @@ from typing import Callable, Any
 from dataclasses import dataclass, field
 import dearpygui.dearpygui as dpg
 from settings import *
+import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=LOGGING_FORMAT)
-logger.setLevel(LOGGING_LEVEL)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
 
 
 class Round:

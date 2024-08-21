@@ -3,10 +3,10 @@ import subprocess
 import dearpygui.dearpygui as dpg
 from test_creator import animator, exit, language, messageboxes, viewport_resize_handler
 from settings import *
+import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=LOGGING_FORMAT)
-logger.setLevel(LOGGING_LEVEL)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
 
 
 def configure_language_changer_button():
@@ -42,11 +42,20 @@ def apply_lang(new_lang: str, main_executable: str):
     if getattr(sys, 'frozen', True):
         logger.debug('Mionly is not frozen. Restart via launching script')
         logger.debug(f'Restart command: "{sys.executable}" "{main_executable}"')
-        subprocess.run(f'"{sys.executable}" "{main_executable}"', start_new_session=True)
+        subprocess.Popen(
+            [sys.executable, main_executable],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
     else:
         logger.debug('Mionly is frozen. Restart via launching exe file')
         logger.debug(f'Restart command: "{sys.executable}"')
-        subprocess.run(f'{sys.executable}', start_new_session=True)
+        subprocess.Popen(
+            [sys.executable],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+
     exit.exit_app()
 
 

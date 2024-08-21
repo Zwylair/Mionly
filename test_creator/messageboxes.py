@@ -4,10 +4,10 @@ import dearpygui.dearpygui as dpg
 from test_creator.language import loc
 from test_creator import animator
 from settings import *
+import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=LOGGING_FORMAT)
-logger.setLevel(LOGGING_LEVEL)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
 
 
 def get_arg_count(func: Callable[[], Any]):

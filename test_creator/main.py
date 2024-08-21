@@ -12,12 +12,12 @@ from test_creator.cyrillic_support import CyrillicSupport, FontPreset, decode_st
 from test_creator.language import loc, chosen_language
 from test_creator.modules import testmode, drag_testmode
 from settings import *
+import log
 
 faulthandler.enable()
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=LOGGING_FORMAT)
-logger.setLevel(LOGGING_LEVEL)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
 test_object = classes.Test()
 MODULES = {
     'testmode': testmode.setup,

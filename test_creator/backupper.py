@@ -10,10 +10,10 @@ import dearpygui.dearpygui as dpg
 from test_creator import classes, animator, messageboxes
 from test_creator.language import loc
 from settings import *
+import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=LOGGING_FORMAT)
-logger.setLevel(LOGGING_LEVEL)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
 previous_test_object: classes.Test | None = None
 TEST_OBJECT_GETTER: Callable[[], classes.Test] | None = None
 BACKUPPER_TIMEOUT_SECONDS = 60 * 2

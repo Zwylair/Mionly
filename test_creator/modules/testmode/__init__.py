@@ -3,10 +3,10 @@ from test_creator.modules.testmode.round_creator import *
 from test_creator import classes
 from test_creator.language import loc
 from settings import *
+import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=LOGGING_FORMAT)
-logger.setLevel(LOGGING_LEVEL)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
 
 
 def setup(test_object_getter_func: Callable[[], classes.Test]):
