@@ -3,8 +3,8 @@ import os.path
 import pathlib
 import zipfile
 import faulthandler
-from tkinter import filedialog
 from typing import Any
+from tkinter import filedialog
 import screeninfo
 import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
@@ -202,6 +202,7 @@ def open_test_maker(main_executable: str):
         test_object.dpg_window_for_round_previews = window
         available_tests_to_open = [pathlib.Path(i).stem for i in os.listdir('tests') if i.endswith('.mionly')]
 
+        # open test items
         with dpg.group(horizontal=True, horizontal_spacing=15):
             with dpg.group(horizontal=True):
                 dpg.add_text(loc('creator.open_test'))
