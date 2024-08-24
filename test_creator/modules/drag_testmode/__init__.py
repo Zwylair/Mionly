@@ -6,7 +6,7 @@ from settings import *
 import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
+logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 
 
 def setup(test_object_getter_func: Callable[[], classes.Test]):

@@ -15,7 +15,7 @@ import log
 colorama.init(convert=True)
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
+logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()] if 'PYCHARM_HOSTED' in os.environ else None)
 app = FastAPI()
 
 

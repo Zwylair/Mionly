@@ -1,4 +1,9 @@
+import sys
 from settings import *
+
+
+def get_handler_for_me():
+    return [ColorHandler()]
 
 
 class ColorHandler(logging.StreamHandler):
@@ -14,6 +19,9 @@ class ColorHandler(logging.StreamHandler):
         self.setFormatter(logging.Formatter(fmt=LOGGING_FORMAT))
 
     def emit(self, record):
+        if sys.stdout is None:
+            return
+
         # We don't use white for any logging, to help distinguish from user print statements
         level_color_map = {
             logging.DEBUG: self.GRAY8,
@@ -27,3 +35,15 @@ class ColorHandler(logging.StreamHandler):
         message = self.format(record)
 
         self.stream.write(f'{csi}{color}m{message}{csi}m\n')
+
+
+class LogHandler(logging.StreamHandler):
+    def __init__(self):
+        super().__init__()
+        self.setFormatter(logging.Formatter(fmt=LOGGING_FORMAT))
+
+    def emit(self, record):
+        if sys.stdout is None:
+            return
+
+        self.stream.write(self.format(record))

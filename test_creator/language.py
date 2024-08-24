@@ -5,7 +5,7 @@ from settings import *
 import log
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
+logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 
 
 def get_available_languages():
