@@ -1,27 +1,34 @@
 import os
-import shutil
 import subprocess
 
+icon_path = 'test_creator.data/images/icon.ico'
 include_dirs = ['tests', 'web', 'test_creator.data']
 include_files = []
 
-shutil.rmtree('build', ignore_errors=True)
-shutil.rmtree('dist', ignore_errors=True)
-
 subprocess.run('py -m pip install -r requirements.txt')
-subprocess.run('py -m pip install pyinstaller')
-subprocess.run('pyinstaller setup.spec')
 
-for i in os.listdir('dist'):
-    if i == 'Main':
-        continue
+try:
+    from cx_Freeze import setup, Executable
+except ImportError:
+    subprocess.run('py -m pip install cx_Freeze')
+    from cx_Freeze import setup, Executable
 
-    shutil.copytree(f'dist/{i}/', f'dist/Main/', dirs_exist_ok=True)
-    shutil.rmtree(f'dist/{i}', ignore_errors=True)
-shutil.rmtree('build', ignore_errors=True)
+setup(
+    author='Zwylair',
+    description='Mionly',
+    name='Mionly',
+    version='2.0',
+    executables=[
+        Executable('main.py', icon=icon_path, target_name='Mionly', base='Win32GUI'),
+        Executable('main.py', icon=icon_path, target_name='Mionly DEBUG'),
+        Executable('test_maker.py', icon=icon_path, target_name='Test maker', base='Win32GUI'),
+        Executable('test_maker.py', icon=icon_path, target_name='Test maker DEBUG'),
+    ],
+    options={
+        'build_exe': {
+            'include_files': [f'{i}/' for i in include_dirs] + include_files
+        }
+    }
+)
 
-for directory in include_dirs:
-    shutil.copytree(directory, f'dist/Main/{directory}', dirs_exist_ok=True)
-
-for file in include_files:
-    shutil.copy(file, f'dist/Main/{file}')
+os.remove('build/exe.win-amd64-3.12/test_creator.data/test_creator.lock')
