@@ -1,8 +1,8 @@
 import json
 import os.path
 import pathlib
+import sys
 import zipfile
-import faulthandler
 from typing import Any
 from tkinter import filedialog
 import screeninfo
@@ -17,10 +17,12 @@ from test_creator.modules import testmode, drag_testmode
 from settings import *
 import log
 
-faulthandler.enable()
+if sys.stdout is not None:
+    import faulthandler
+    faulthandler.enable()
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()])
+logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 test_object = classes.Test()
 MODULES = {
     'testmode': testmode.setup,
@@ -141,7 +143,7 @@ def sync_test_name_with_dpg():
 def open_test_maker(main_executable: str):
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
-    viewport_size = (873, 700)
+    viewport_size = (1000, 700)
 
     dpg.create_context()
     # dpg_dnd.initialize()
@@ -223,7 +225,7 @@ def open_test_maker(main_executable: str):
         dpg.add_image_button(
             texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],
             tag='test_creator__language_button',
-            callback=lambda: language_picker.open_languages_window(main_executable)
+            callback=lambda: language_picker.open_languages_window()
         )
 
         with dpg.group(horizontal=True):
@@ -251,8 +253,9 @@ def open_test_maker(main_executable: str):
     backupper.setup(test_object_getter)
     viewport_resize_handler.setup()
     exit.lockfile = open(TEST_CREATOR_LOCK_FILENAME, 'w')
+    exit.main_executable = main_executable
 
     while dpg.is_dearpygui_running():
         animate.run()
         dpg.render_dearpygui_frame()
-    exit.stop_mionly(do_exit=True)
+    exit.stop_mionly()
