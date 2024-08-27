@@ -3,7 +3,7 @@ from settings import *
 
 
 def get_handler_for_me():
-    return [ColorHandler()]
+    return [FileLogHandler('log.log') if sys.stdout is None else ColorHandler()]
 
 
 class ColorHandler(logging.StreamHandler):
@@ -13,37 +13,33 @@ class ColorHandler(logging.StreamHandler):
     ORANGE = '33'
     RED = '31'
     WHITE = '0'
+    LEVEL_COLOR_MAP = {
+        logging.DEBUG: GRAY8,
+        logging.INFO: GRAY7,
+        logging.WARNING: ORANGE,
+        logging.ERROR: RED,
+    }
 
     def __init__(self):
         super().__init__()
         self.setFormatter(logging.Formatter(fmt=LOGGING_FORMAT))
 
     def emit(self, record):
-        if sys.stdout is None:
-            return
+        csi = f'{chr(27)}['
+        color = self.LEVEL_COLOR_MAP.get(record.levelno, self.WHITE)
 
-        # We don't use white for any logging, to help distinguish from user print statements
-        level_color_map = {
-            logging.DEBUG: self.GRAY8,
-            logging.INFO: self.GRAY7,
-            logging.WARNING: self.ORANGE,
-            logging.ERROR: self.RED,
-        }
-
-        csi = f'{chr(27)}['  # control sequence introducer
-        color = level_color_map.get(record.levelno, self.WHITE)
-        message = self.format(record)
-
-        self.stream.write(f'{csi}{color}m{message}{csi}m\n')
+        try:
+            message = self.format(record)
+            stream = self.stream
+            stream.write(f'{csi}{color}m{message}{csi}m' + self.terminator)
+            self.flush()
+        except RecursionError:
+            raise
+        except Exception:
+            self.handleError(record)
 
 
-class LogHandler(logging.StreamHandler):
-    def __init__(self):
-        super().__init__()
+class FileLogHandler(logging.FileHandler):
+    def __init__(self, filename: str):
+        super().__init__(filename)
         self.setFormatter(logging.Formatter(fmt=LOGGING_FORMAT))
-
-    def emit(self, record):
-        if sys.stdout is None:
-            return
-
-        self.stream.write(self.format(record))

@@ -1,23 +1,13 @@
-.shake {
-    animation: shake 0.3s;
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
 }
 
-@keyframes shake {
-    0% {
-        transform: translateX(0);
-    }
-    25% {
-        transform: translateX(-5px);
-    }
-    50% {
-        transform: translateX(5px);
-    }
-    75% {
-        transform: translateX(-5px);
-    }
-    100% {
-        transform: translateX(0);
-    }
+.shake {
+    animation: shake 0.3s;
 }
 
 .container-box {
@@ -31,12 +21,11 @@
 }
 
 .draggable {
-    max-width: 150px;
-    height: 25px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background-color: var(--button-bg-color);
     cursor: pointer;
     margin: auto auto;
-
-    /* center text align */
     text-align: center;
     display: flex; 
     align-items: center;
@@ -48,17 +37,14 @@
     align-items: center;
 }
 
-.draggable > p {
-    margin: 3px 3px;
-}
-
 #target {
     height: 25px;
-    border: 3px solid #4E83DD;
+    border: 3px solid #4e83dd;
     border-radius: 7px;
     margin-left: 3px;
     margin-right: 3px;
     display: inline-block;
+    overflow: hidden;
 }
 
 .answer-container-after-submit {
@@ -66,7 +52,7 @@
     bottom: -105px;
     width: 94%;
     height: 80px;
-    border: 3px solid #7af47a;
+    border: 4px solid #000;
     border-radius: 7px;
     padding: 10px;
 }
@@ -76,10 +62,10 @@
     margin-bottom: 12px;
 }
 .green-border {
-    border-color: #7af47a;
+    border-color: var(--right-color);
 }
 .red-border {
-    border-color: #f47a7a;
+    border-color: var(--wrong-color);
 }
 .continue-button {
     position: absolute;
@@ -113,15 +99,19 @@
 }
 
 :root {
-    --wrong-icon-background-image: url('/images/right_dark.svg');
+    --wrong-icon-background-image: url('/images/wrong_dark.svg');
     --next-icon-background-image: url('/images/next_dark.svg');
     --right-icon-background-image: url('/images/right_dark.svg');
+    --right-color: #2fcc2f;
+    --wrong-color: #f47a7a;
 }
 
 [data-theme='dark'] {
-    --wrong-icon-background-image: url('/images/right_light.svg');
+    --wrong-icon-background-image: url('/images/wrong_light.svg');
     --next-icon-background-image: url('/images/next_light.svg');
     --right-icon-background-image: url('/images/right_light.svg');
+    --right-color: #38be38;
+    --wrong-color: #ce4242;
 }
 
 .next-icon {

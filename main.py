@@ -15,7 +15,7 @@ import log
 colorama.init(convert=True)
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=LOGGING_LEVEL, handlers=[log.ColorHandler()] if 'PYCHARM_HOSTED' in os.environ else None)
+logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 app = FastAPI()
 
 
@@ -23,7 +23,7 @@ def check_and_create_association():
     extension = '.mionly'
     program_id = 'Zwylair.Mionly'
     description = 'Mionly Test File'
-    executable_path = f'"{sys.executable}" "{__file__}"' if getattr(sys, 'frozen', True) else f'"{sys.executable}"'
+    executable_path = f'"{sys.executable}" "{__file__}"' if getattr(sys, 'frozen', False) else f'"{sys.executable}"'
     run_command = f'{executable_path} "%1"'
 
     try:
@@ -63,17 +63,18 @@ if __name__ == '__main__':
     if not ctypes.windll.shell32.IsUserAnAdmin():
         logger.info('Ran not as admin, rerunning')
 
-        arguments = [__file__] + sys.argv[1:]
+        mionly_args = sys.argv[1:]
+        arguments = [__file__] + mionly_args
         arguments = ' '.join(['"' + i + '"' for i in arguments])
-        arguments = arguments if getattr(sys, 'frozen', True) else None
+        arguments = (mionly_args if mionly_args else None) if getattr(sys, 'frozen', False) else arguments
 
         ctypes.windll.shell32.ShellExecuteW(None, 'runas', sys.executable, arguments, None, 1)
-        exit(0)
+        sys.exit(0)
 
     logger.info('Ran as admin')
 
     # moving to main directory (changes when opened by test file)
-    os.chdir(os.path.dirname(__file__ if getattr(sys, 'frozen', True) else sys.executable))
+    os.chdir(os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__))
 
     shutil.rmtree(WEB_CACHE_PATH, ignore_errors=True)
     os.makedirs(WEB_CACHE_PATH, exist_ok=True)
@@ -94,5 +95,5 @@ if __name__ == '__main__':
     else:
         webbrowser.open_new('http://{}:{}/index.html'.format(HOST_URL, HOST_PORT))
 
-    app.mount('/', StaticFiles(directory=WEB_DIR, html=True), name='web')
-    uvicorn.run(app, host=HOST_URL, port=HOST_PORT)
+    app.mount('/', StaticFiles(directory=WEB_DIR, html=True), name=WEB_DIR)
+    uvicorn.run(app, host=HOST_URL, port=HOST_PORT, use_colors=getattr(sys, 'frozen', False))

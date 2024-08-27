@@ -1,17 +1,9 @@
 import os
-import subprocess
+from cx_Freeze import setup, Executable
 
 icon_path = 'test_creator.data/images/icon.ico'
 include_dirs = ['tests', 'web', 'test_creator.data']
 include_files = []
-
-subprocess.run('py -m pip install -r requirements.txt')
-
-try:
-    from cx_Freeze import setup, Executable
-except ImportError:
-    subprocess.run('py -m pip install cx_Freeze')
-    from cx_Freeze import setup, Executable
 
 setup(
     author='Zwylair',
@@ -26,9 +18,11 @@ setup(
     ],
     options={
         'build_exe': {
-            'include_files': [f'{i}/' for i in include_dirs] + include_files
+            'include_files': [f'{i}/' for i in include_dirs] + include_files,
+            'packages': ['uvicorn'],
         }
     }
 )
 
-os.remove('build/exe.win-amd64-3.12/test_creator.data/test_creator.lock')
+if os.path.exists('build/exe.win-amd64-3.12/test_creator.data/test_creator.lock'):
+    os.remove('build/exe.win-amd64-3.12/test_creator.data/test_creator.lock')

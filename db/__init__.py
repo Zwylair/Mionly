@@ -1,4 +1,5 @@
 import os
+import shutil
 from dataclasses import dataclass
 from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
@@ -28,6 +29,15 @@ STORAGE: Storage | None = None
 def wipe_storage():
     global STORAGE
     STORAGE = None
+
+    for root, dirs, files in os.walk(WEB_CACHE_PATH, topdown=False):
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            os.remove(file_path)
+
+        for dir_name in dirs:
+            dir_path = os.path.join(root, dir_name)
+            shutil.rmtree(dir_path)
 
 
 def get_storage():

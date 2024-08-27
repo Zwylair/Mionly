@@ -1,5 +1,12 @@
 input[type='text'], textarea {
-    background-color: var(--input-bg-color); 
+    border-radius: 6px;
+    border: 2px solid var(--text-color, #555);
+    background-color: var(--input-bg-color);
+    text-decoration: none;
+}
+
+input:focus {
+    outline: none;
 }
 
 .theme-icon {

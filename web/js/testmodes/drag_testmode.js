@@ -2,8 +2,8 @@ import { setupDragAndDrop } from '../setup_dnd.js';
 
 export function doDragTestModeHasEmptyAnswers() {
     const answersDivs = document.querySelectorAll('div#target');
-    const formattedAnswers = Array.from(answersDivs).map(element => !!element.children.length);
-    return !formattedAnswers.includes(true);
+    const formattedAnswers = Array.from(answersDivs).filter(e => !!e.children.length);
+    return formattedAnswers.length !== answersDivs.length;
 }
 
 export async function processDragTestModeAnswers(roundInfo) {
@@ -85,11 +85,7 @@ export function setupDragTestMode(answers, round_text) {
         answerDiv.name = answer;
         answerDiv.classList = 'draggable';
         answerDiv.draggable = true;
-
-        const answerDivText = document.createElement('p');
-        answerDivText.textContent = answer;
-
-        answerDiv.appendChild(answerDivText);
+        answerDiv.textContent = answer;
         answersContainer.appendChild(answerDiv);
     }
 
