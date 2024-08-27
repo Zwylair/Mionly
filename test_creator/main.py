@@ -1,12 +1,12 @@
+import sys
 import json
 import os.path
 import pathlib
-import sys
 import zipfile
 import threading
 from typing import Any
-from tkinter import filedialog
 import screeninfo
+import filedialpy
 import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
 # import DearPyGui_DragAndDrop as dpg_dnd
@@ -217,8 +217,9 @@ def open_test_maker(main_executable: str):
             dpg.add_button(
                 label=loc('creator.browse'),
                 callback=lambda: load_test(
-                    from_file=filedialog.askopenfilename(
-                        filetypes=[('Mionly tests', '*.mionly')]
+                    from_file=filedialpy.openFile(
+                        title='Select Mionly test file',
+                        filter=['*.mionly']
                     )
                 )
             )
