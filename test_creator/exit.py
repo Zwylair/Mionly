@@ -1,6 +1,6 @@
 import os
 import sys
-import signal
+import time
 import typing
 import subprocess
 import dearpygui.dearpygui as dpg
@@ -13,10 +13,18 @@ lockfile: typing.TextIO | None = None
 main_executable: str | None = None
 
 
-def stop_mionly():
-    if not lockfile.closed:
-        logger.debug(f'Unlocking {TEST_CREATOR_LOCK_FILENAME}')
+def setup(main_filename: str):
+    global lockfile, main_executable
 
+    time.sleep(1)
+
+    lockfile = open(TEST_CREATOR_LOCK_FILENAME, 'w')
+    main_executable = main_filename
+
+
+def stop_mionly():
+    if lockfile is not None and not lockfile.closed:
+        logger.debug(f'Unlocking {TEST_CREATOR_LOCK_FILENAME}')
         lockfile.close()
         os.remove(TEST_CREATOR_LOCK_FILENAME)
 
@@ -24,28 +32,15 @@ def stop_mionly():
     dpg.stop_dearpygui()
 
 
-def exit_app():
-    os.kill(os.getpid(), signal.SIGINT)
-
-
 def rerun():
     stop_mionly()
 
     if getattr(sys, 'frozen', False):
-        # not works in frozen console version
-
         logger.debug('Mionly is frozen. Restart via launching exe file')
-        logger.debug(f'Restart command: "{sys.executable}"')
-        subprocess.Popen(
-            sys.executable,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
+        launch_options = [sys.executable]
     else:
         logger.debug('Mionly is not frozen. Restart via launching script')
-        logger.debug(f'Restart command: "{sys.executable}" "{main_executable}"')
-        subprocess.Popen(
-            [sys.executable, main_executable],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
+        launch_options = [sys.executable, main_executable]
+
+    logger.debug(f'Restart command: {launch_options}')
+    subprocess.run(launch_options)

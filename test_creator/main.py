@@ -3,6 +3,7 @@ import os.path
 import pathlib
 import sys
 import zipfile
+import threading
 from typing import Any
 from tkinter import filedialog
 import screeninfo
@@ -252,8 +253,8 @@ def open_test_maker(main_executable: str):
 
     backupper.setup(test_object_getter)
     viewport_resize_handler.setup()
-    exit.lockfile = open(TEST_CREATOR_LOCK_FILENAME, 'w')
-    exit.main_executable = main_executable
+    setup_exit_thread = threading.Thread(target=lambda: exit.setup(main_executable), daemon=True)
+    setup_exit_thread.start()
 
     while dpg.is_dearpygui_running():
         animate.run()
