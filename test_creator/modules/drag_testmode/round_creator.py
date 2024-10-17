@@ -162,7 +162,7 @@ def open_round_creator(from_round: Any = None):
             close()
             return
 
-        test_object.unsaved_rounds['testmode'] = round_creator_window
+        test_object.unsaved_rounds['drag_testmode'] = round_creator_window
         animator.hide_item(round_creator_window)
 
     def setup_window_interface():
