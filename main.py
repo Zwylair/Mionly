@@ -65,8 +65,11 @@ def run_server():
         args = sys.argv[1:]
         # open_browser()  # browser should be opened from server/runner.py
 
+    startup_info = subprocess.STARTUPINFO()
+    startup_info.dwFlags = 1
+    startup_info.wShowWindow = 0
     run_args = (['server.exe'] if getattr(sys, 'frozen', False) else [sys.executable, 'server/runner.py']) + args
-    server_process = subprocess.Popen(run_args)
+    server_process = subprocess.Popen(run_args, startupinfo=startup_info)
     server_pid = server_process.pid
     dpg.set_value('server__server_status', loc('server.running'))
 
