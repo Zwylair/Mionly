@@ -56,7 +56,7 @@ def open_round_creator(from_round: Any = None):
         registry_id = round_object.registry_id
 
         logger.debug(f'Editor opened with given round id: {registry_id}')
-    registry_prefix = f'testmode_{registry_id}'
+    registry_prefix = f'drag_testmode_{registry_id}'
 
     logger.debug(f'Registry id for new round: {registry_id}')
     logger.debug('Initializing window...')
