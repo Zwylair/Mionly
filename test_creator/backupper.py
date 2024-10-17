@@ -17,7 +17,7 @@ logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 previous_test_object: classes.Test | None = None
 TEST_OBJECT_GETTER: Callable[[], classes.Test] | None = None
 TEST_OBJECT_SETTER: Callable[[classes.Test], None] | None = None
-BACKUPPER_TIMEOUT_SECONDS = 4  # 60 * 2
+BACKUPPER_TIMEOUT_SECONDS = 60 * 2
 MAX_BACKUPS_COUNT = 5
 
 

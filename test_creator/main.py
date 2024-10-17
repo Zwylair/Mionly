@@ -39,6 +39,11 @@ def test_object_getter():
     return test_object
 
 
+def test_object_setter(local_test_object: classes.Test):
+    global test_object
+    test_object = local_test_object
+
+
 def save(exists_ok: bool = False, confirm_window_tag: str | int = None):
     logger.debug('Save test function called')
     test_name = dpg.get_value('test_creator_test_name')
@@ -122,7 +127,7 @@ def load_test(from_file: str = None):
         try:
             test_object.rounds.append(
                 reversed_modules_classes[round_type].loads(
-                    test_file.read(file),
+                    test_file.read(file).decode(),
                     test_object_getter
                 )
             )
@@ -240,8 +245,8 @@ def open_test_maker(main_executable: str):
         logger.debug('Initializing modules')
 
         with dpg.group(horizontal=True):
-            for initialiser in MODULES.values():
-                initialiser(test_object_getter)
+            for initializer in MODULES.values():
+                initializer(test_object_getter)
 
         dpg.add_separator()
     test_object.restricted_parent_children_to_remove = dpg.get_item_children(window)[1]
@@ -252,7 +257,7 @@ def open_test_maker(main_executable: str):
     dpg.setup_dearpygui()
     dpg.show_viewport()
 
-    backupper.setup(test_object_getter)
+    backupper.setup(test_object_getter, test_object_setter)
     viewport_resize_handler.setup()
     setup_exit_thread = threading.Thread(target=lambda: exit.setup(main_executable), daemon=True)
     setup_exit_thread.start()
