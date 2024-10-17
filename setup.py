@@ -1,8 +1,8 @@
-import os
 from cx_Freeze import setup, Executable
+from settings import *
 
 icon_path = 'test_creator.data/images/icon.ico'
-include_dirs = ['tests', 'web', 'test_creator.data']
+include_dirs = ['tests', 'web', SHARED_FOLDER_PATH]
 include_files = []
 
 setup(
