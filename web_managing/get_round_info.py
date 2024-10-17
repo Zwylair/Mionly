@@ -42,12 +42,19 @@ def get_round_info() -> dict:
         round_counter_text: str
     """
     content = get_full_round_info()
+    answers = content.get('answers')
+
+    if isinstance(answers, dict):
+        answers = list(answers.keys())
+    elif isinstance(answers, list):
+        pass  # answers = answers
+
     return_content = {
         'round_type': db.STORAGE.round_type,
         'title': content.get('title'),
         'round_text': content.get('round_text'),
         'randomize_answers': db.STORAGE.randomize_answers,
-        'answers': list(content.get('answers').keys()),
+        'answers': answers,
         'round_counter_text': f'{db.STORAGE.opened_rounds_count}/{db.STORAGE.total_rounds_count}',
     }
 

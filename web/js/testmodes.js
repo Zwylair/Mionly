@@ -1,19 +1,23 @@
 import { doTestModeHasEmptyAnswers, processTestModeAnswers, setupTestMode } from './testmodes/testmode.js';
 import { doDragTestModeHasEmptyAnswers, processDragTestModeAnswers, setupDragTestMode } from './testmodes/drag_testmode.js';
+import { doInputTestModeHasEmptyAnswers, processInputTestModeAnswers, setupInputTestMode } from './testmodes/input_testmode.js';
 
 const roundTypeHandlers = {
     testmode: setupTestMode,
     drag_testmode: setupDragTestMode,
+    input_testmode: setupInputTestMode,
 };
 
 const roundTypeEmptyAnswersHandlers = {
     testmode: doTestModeHasEmptyAnswers,
     drag_testmode: doDragTestModeHasEmptyAnswers,
+    input_testmode: doInputTestModeHasEmptyAnswers,
 };
 
 const roundTypeAnswerProcessors = {
     testmode: processTestModeAnswers,
     drag_testmode: processDragTestModeAnswers,
+    input_testmode: processInputTestModeAnswers,
 };
 
 function handleRoundType(roundType, answers, roundText) {

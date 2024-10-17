@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <title>Mionly: input testmode</title>
+    <script type="module" src="/js/theme_switcher.js"></script>
+    <script type="module" src="/js/testmodes.js"></script>
+    <!-- <script type="text/javascript" src="/js/restriction.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/testmodes.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/css/restriction.css">
+  </head>
+  <body>
+    <p style="position: absolute; right: 14px; top: -40px; font-size: 50px;" id="round_counter"></p>
+    <h2 id="round_title"></h2>
+    <p id="round_text"></p>
+    <div id="answers_container"></div>
+    <p></p>
+    <button onclick="sendAnswers()" id="submit-button" class="new-button">submit</button>
+    <div id="bottom_div" class="answer-container-after-submit hidden">
+      <div class="bottom-div-titlebox">
+        <div class="bottom-div-title-icon" style="width: 24px; height: 24px;" id="bottom-div-title-icon"></div>
+        <h3 id="bottom-div-title-text" style="margin: 0;"></h3>
+        <div class="got-points-text" id="got-points-text"></div>
+      </div>
+      <pa id="bottom-div-round-text"></pa>
+      <button id="continue-button" class="continue-button" onclick="nextRound()">
+        <div id="continue-button-image" style="width: 24px; height: 24px;"></div>
+      </button>
+    </div>
+  </body>
+</html>

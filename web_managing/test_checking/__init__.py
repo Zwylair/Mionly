@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from web_managing.test_checking import testmode, drag_testmode
+from web_managing.test_checking import testmode, drag_testmode, input_testmode
 import db
 
 ROUND_CHECKS = {
     'testmode': testmode.check,
     'drag_testmode': drag_testmode.check,
+    'input_testmode': input_testmode.check,
 }
 VALID_ROUND_TYPES = tuple(ROUND_CHECKS.keys())
 
