@@ -16,13 +16,15 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 previous_test_object: classes.Test | None = None
 TEST_OBJECT_GETTER: Callable[[], classes.Test] | None = None
-BACKUPPER_TIMEOUT_SECONDS = 60 * 2
+TEST_OBJECT_SETTER: Callable[[classes.Test], None] | None = None
+BACKUPPER_TIMEOUT_SECONDS = 4  # 60 * 2
 MAX_BACKUPS_COUNT = 5
 
 
-def setup(test_object_getter: Callable[[], classes.Test]):
-    global TEST_OBJECT_GETTER
+def setup(test_object_getter: Callable[[], classes.Test], test_object_setter: Callable[[classes.Test], None]):
+    global TEST_OBJECT_GETTER, TEST_OBJECT_SETTER
     TEST_OBJECT_GETTER = test_object_getter
+    TEST_OBJECT_SETTER = test_object_setter
 
     logger.debug(f'Auto backup timeout: {BACKUPPER_TIMEOUT_SECONDS}s. Max backups count: {MAX_BACKUPS_COUNT}')
     os.makedirs('backups', exist_ok=True)
@@ -59,6 +61,7 @@ def load_backup(backup_filepath: str, load_backup_window: str | int):
         logger.exception('An error occurred:', exc_info=e)
         messageboxes.spawn_warning(loc('backupper.error_when_loading_backup'))
         return
+    logger.debug(f"loaded backup rounds: {test_object.rounds}")
 
     for round_object in test_object.rounds:
         round_object.test_object_getter = TEST_OBJECT_GETTER
@@ -68,6 +71,7 @@ def load_backup(backup_filepath: str, load_backup_window: str | int):
     test_object.dpg_window_for_round_previews = dpg_window_for_round_previews
     test_object.regenerate_round_previews()
     animator.close_item(load_backup_window)
+    TEST_OBJECT_SETTER(test_object)
     logger.debug('Backup loaded')
 
 
