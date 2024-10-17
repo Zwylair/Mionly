@@ -7,4 +7,5 @@ DearPyGui-DragAndDrop==1.0.0
 screeninfo==0.8.1
 colorama~=0.4.6
 filedialpy~=1.2.0
-cx_Freeze
+cx_Freeze~=7.2.3
+psutil~=6.0.0
