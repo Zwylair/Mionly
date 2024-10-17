@@ -15,7 +15,7 @@ setup(
         Executable('main.py', icon=icon_path, target_name='Mionly DEBUG'),
         Executable('test_maker.py', icon=icon_path, target_name='Test maker', base='Win32GUI'),
         Executable('test_maker.py', icon=icon_path, target_name='Test maker DEBUG'),
-        Executable('server.py', target_name='server'),
+        Executable('server/runner.py', target_name='server'),
     ],
     options={
         'build_exe': {
