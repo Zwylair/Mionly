@@ -1,9 +1,10 @@
-import subprocess
 import sys
+import time
 import ctypes
 import winreg
 import shutil
 import threading
+import subprocess
 import webbrowser
 import psutil
 import colorama
@@ -22,6 +23,8 @@ colorama.init(convert=True)
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 server_pid: int | None = None
+server_env_key = 'mionly_server'.upper()
+ALIVE_CHECK_TIMEOUT = 4
 
 
 def check_and_create_association():
@@ -58,6 +61,11 @@ def check_and_create_association():
 def run_server():
     global server_pid
 
+    check_for_running_server()
+    if server_pid is not None:
+        spawn_warning(loc('server.server_is_already_running'))
+        return
+
     # ['.../executable.exe', 'path/to/test_file/test.mionly']
     args = []
     if len(sys.argv[1:]) > 0:
@@ -69,7 +77,7 @@ def run_server():
     startup_info.dwFlags = 1
     startup_info.wShowWindow = 0
     run_args = (['server.exe'] if getattr(sys, 'frozen', False) else [sys.executable, 'server/runner.py']) + args
-    server_process = subprocess.Popen(run_args, startupinfo=startup_info)
+    server_process = subprocess.Popen(run_args, startupinfo=startup_info, env=(dict(os.environ) | {server_env_key: "yes"}))
     server_pid = server_process.pid
     dpg.set_value('server__server_status', loc('server.running'))
 
@@ -85,16 +93,43 @@ def stop_server():
         logger.info('Server is not running')
         return
 
-    for process in psutil.process_iter(['pid']):
-        if process.info.get('pid') == server_pid:
+    for proc in psutil.process_iter(['pid']):
+        if proc.info.get('pid') == server_pid:
             try:
-                process.terminate()
+                proc.terminate()
                 logger.info(f'Server (PID: {server_pid}) was terminated')
                 dpg.set_value('server__server_status', loc('server.off'))
             except psutil.NoSuchProcess:
                 logger.info(f'Process was finished before i did it (PID: {server_pid})')
             except psutil.AccessDenied:
                 logger.info(f'Have no permission to terminate server process (PID: {server_pid})')
+
+
+def check_for_running_server():
+    global server_pid
+
+    if psutil.pid_exists(-1 if server_pid is None else server_pid):
+        return
+
+    for proc in psutil.process_iter(['pid', 'environ']):
+        if proc.info.get('environ') is None:
+            continue
+
+        if server_env_key in proc.info.get('environ'):
+            logger.info(f'Found ran mionly server with pid {proc.info.get("pid")}')
+            server_pid = proc.info.get('pid')
+            return
+    server_pid = None
+
+
+def alive_checker():
+    while True:
+        check_for_running_server()
+        dpg.set_value(
+            'server__server_status',
+            loc('server.off' if server_pid is None else 'server.running')
+        )
+        time.sleep(ALIVE_CHECK_TIMEOUT)
 
 
 def open_browser():
@@ -120,6 +155,7 @@ if __name__ == '__main__':
     shutil.rmtree(WEB_CACHE_PATH, ignore_errors=True)
     os.makedirs(WEB_CACHE_PATH, exist_ok=True)
     check_and_create_association()
+    check_for_running_server()
 
     # set up gui
     monitor = screeninfo.get_monitors()[0]
@@ -190,13 +226,23 @@ if __name__ == '__main__':
     if len(sys.argv[1:]) > 0:
         run_server()
 
+    alive_checker_thread = threading.Thread(target=alive_checker, daemon=True)
     setup_exit_thread = threading.Thread(
         target=lambda: exit.setup(__file__, SERVER_LOCK_FILENAME),
         daemon=True
     )
     setup_exit_thread.start()
+    alive_checker_thread.start()
 
     while dpg.is_dearpygui_running():
         animate.run()
         dpg.render_dearpygui_frame()
     exit.stop_mionly()
+    check_for_running_server()
+
+    if psutil.pid_exists(server_pid):
+        for process in psutil.process_iter(['pid']):
+            try:
+                if process.pid == server_pid: process.terminate()
+            except (psutil.AccessDenied, psutil.NoSuchProcess):
+                break

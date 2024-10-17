@@ -32,6 +32,7 @@
   "server.open_browser": "Відкрити браузер",
   "server.run_server": "Запустити сервер",
   "server.running": "Запущений",
+  "server.server_is_already_running": "Сервер вже запущено!",
   "server.server_is_not_running": "Сервер не запущено!",
   "server.server_status_label": "Статус серверу:",
   "server.stop_server": "Зупинити сервер",
