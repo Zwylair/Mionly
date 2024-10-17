@@ -41,6 +41,7 @@
   "shared.languages": "Языки",
   "shared.reboot_warning": "Это действие потребует перезагрузки Mionly",
   "testmode.__init__.add_round_button": "Создать testmode раунд",
+  "input_testmode.__init__.add_round_button": "Создать testmode раунд с возможностью написать ответ",
   "testmode.classes.correct_answer": "Правильный ответ: ",
   "testmode.classes.delete": "Удалить",
   "testmode.classes.edit": "Изменить",

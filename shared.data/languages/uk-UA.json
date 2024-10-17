@@ -16,6 +16,7 @@
   "creator.test_name_label": "Назва вашого тесту: ",
   "creator.test_saved": "{} був збережений!",
   "drag_testmode.__init__.add_round_button": "Створити перетаскувальний testmode раунд",
+  "input_testmode.__init__.add_round_button": "Створити testmode раунд із можливістю написати відповідь",
   "drag_testmode.classes.correct_answers": "Правильні відповіді: ",
   "drag_testmode.rc.answer_pos_label": "Позиція: ",
   "drag_testmode.rc.incorrect_positions": "Видано неправильні позиції",

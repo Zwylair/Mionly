@@ -15,7 +15,7 @@ from test_creator import classes, backupper, animator, viewport_resize_handler
 from test_creator.cyrillic_support import CyrillicSupport, FontPreset, decode_string
 from shared_funcs.language import loc, chosen_language
 from shared_funcs import language_picker, exit, messageboxes
-from test_creator.modules import testmode, drag_testmode
+from test_creator.modules import testmode, drag_testmode, input_testmode
 from settings import *
 import log
 
@@ -29,10 +29,12 @@ test_object = classes.Test()
 MODULES = {
     'testmode': testmode.setup,
     'drag_testmode': drag_testmode.setup,
+    'input_testmode': input_testmode.setup,
 }
 MODULES_CLASSES = {
     testmode.TestModeRound: 'testmode',
     drag_testmode.DragTestModeRound: 'drag_testmode',
+    input_testmode.InputTestModeRound: 'input_testmode',
 }
 
 

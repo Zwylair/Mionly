@@ -16,6 +16,7 @@
   "creator.test_name_label": "Name of your test: ",
   "creator.test_saved": "{} was saved!",
   "drag_testmode.__init__.add_round_button": "Add drag testmode round",
+  "input_testmode.__init__.add_round_button": "Add testmode round with input fields",
   "drag_testmode.classes.correct_answers": "Correct answers: ",
   "drag_testmode.rc.answer_pos_label": "Pos: ",
   "drag_testmode.rc.incorrect_positions": "Incorrect positions issued!",
