@@ -1,6 +1,6 @@
 fastapi==0.111.0
 uvicorn~=0.30.1
-starlette~=0.37.2
+starlette~=0.40.0
 pydantic~=2.7.4
 dearpygui==1.11.1
 DearPyGui-DragAndDrop==1.0.0
