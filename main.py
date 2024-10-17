@@ -240,7 +240,7 @@ if __name__ == '__main__':
     exit.stop_mionly()
     check_for_running_server()
 
-    if psutil.pid_exists(server_pid):
+    if psutil.pid_exists(-1 if server_pid is None else server_pid):
         for process in psutil.process_iter(['pid']):
             try:
                 if process.pid == server_pid: process.terminate()
