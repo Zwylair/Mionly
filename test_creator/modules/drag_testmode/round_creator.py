@@ -307,6 +307,6 @@ def open_round_creator(from_round: Any = None):
         dpg.add_float_value(tag=f'{registry_prefix}_points_per_correct_answer', default_value=round_object.points_per_correct_answer)
         dpg.add_string_value(tag=f'{registry_prefix}_new_answer')
 
-    with dpg.window(label=loc('testmode.rc.add_round'), on_close=hide) as round_creator_window:
+    with dpg.window(label=loc('drag_testmode.__init__.add_round_button'), on_close=hide) as round_creator_window:
         setup_window_interface()
     animator.show_item(round_creator_window)
