@@ -4,9 +4,10 @@ import random
 from typing import Callable
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
-from test_creator import classes, animator, messageboxes
+from test_creator import classes, animator
+from shared_funcs import messageboxes
 from test_creator.cyrillic_support import decode_string
-from test_creator.language import loc
+from shared_funcs.language import loc
 from settings import *
 import log
 

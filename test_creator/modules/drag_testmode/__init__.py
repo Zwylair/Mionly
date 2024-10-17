@@ -1,7 +1,7 @@
 from test_creator.modules.drag_testmode.classes import *
 from test_creator.modules.drag_testmode.round_creator import *
 from test_creator import classes
-from test_creator.language import loc
+from shared_funcs.language import loc
 from settings import *
 import log
 

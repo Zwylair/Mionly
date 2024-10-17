@@ -1,7 +1,7 @@
 import json
 from settings import *
 
-root_dir = os.path.join(TEST_CREATOR_DATA_PATH, 'languages')
+root_dir = os.path.join(SHARED_FOLDER_PATH, 'languages')
 
 for i in os.listdir(root_dir):
     lang: dict = json.load(open(os.path.join(root_dir, i), encoding='utf8'))

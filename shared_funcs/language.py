@@ -10,7 +10,7 @@ logging.basicConfig(level=LOGGING_LEVEL, handlers=log.get_handler_for_me())
 
 def get_available_languages():
     global all_languages_datas
-    languages_root_path = os.path.join(TEST_CREATOR_DATA_PATH, 'languages')
+    languages_root_path = os.path.join(SHARED_FOLDER_PATH, 'languages')
 
     try:
         all_languages_datas = {}

@@ -11,9 +11,10 @@ import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
 # import DearPyGui_DragAndDrop as dpg_dnd
 # import drag_and_drop_setup
-from test_creator import classes, messageboxes, backupper, language_picker, exit, animator, viewport_resize_handler
+from test_creator import classes, backupper, animator, viewport_resize_handler
 from test_creator.cyrillic_support import CyrillicSupport, FontPreset, decode_string
-from test_creator.language import loc, chosen_language
+from shared_funcs.language import loc, chosen_language
+from shared_funcs import language_picker, exit, messageboxes
 from test_creator.modules import testmode, drag_testmode
 from settings import *
 import log
@@ -154,7 +155,7 @@ def open_test_maker(main_executable: str):
     dpg.create_context()
     # dpg_dnd.initialize()
     dpg.create_viewport(
-        title='Mionly v2.0: test creator', large_icon=os.path.join(TEST_CREATOR_DATA_PATH, 'images/icon.ico'),
+        title='Mionly v2.0: test creator', large_icon=os.path.join(SHARED_FOLDER_PATH, 'images/icon.ico'),
         width=viewport_size[0], height=viewport_size[1],
         x_pos=int(monitor_size[0] / 2 - viewport_size[0] / 2),
         y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
@@ -163,7 +164,7 @@ def open_test_maker(main_executable: str):
     with dpg.font_registry():
         CyrillicSupport(
             FontPreset(
-                path=os.path.join(TEST_CREATOR_DATA_PATH, 'fonts/nunito/Nunito-Regular.ttf'),
+                path=os.path.join(SHARED_FOLDER_PATH, 'fonts/nunito/Nunito-Regular.ttf'),
                 size=24, id='nunito', bind_font_as_default=True
             )
         )
@@ -172,10 +173,10 @@ def open_test_maker(main_executable: str):
         dpg.add_string_value(tag='test_creator_load_backup_mtime')
         dpg.add_string_value(tag='test_creator_test_name_to_open')
         dpg.add_string_value(tag='test_creator_test_name', default_value=test_object.name)
-        dpg.add_string_value(tag='test_creator_picked_lang', default_value=chosen_language)
+        dpg.add_string_value(tag='shared__picked_lang', default_value=chosen_language)
 
     logger.debug('Loading textures')
-    width, height, channels, data = dpg.load_image(os.path.join(TEST_CREATOR_DATA_PATH, 'images/language.png'))
+    width, height, channels, data = dpg.load_image(os.path.join(SHARED_FOLDER_PATH, 'images/language.png'))
     with dpg.texture_registry():
         dpg.add_static_texture(width=width, height=height, default_value=data, tag='texture__language')
 
@@ -231,7 +232,7 @@ def open_test_maker(main_executable: str):
 
         dpg.add_image_button(
             texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],
-            tag='test_creator__language_button',
+            tag='shared__language_button',
             callback=lambda: language_picker.open_languages_window()
         )
 
@@ -259,7 +260,10 @@ def open_test_maker(main_executable: str):
 
     backupper.setup(test_object_getter, test_object_setter)
     viewport_resize_handler.setup()
-    setup_exit_thread = threading.Thread(target=lambda: exit.setup(main_executable), daemon=True)
+    setup_exit_thread = threading.Thread(
+        target=lambda: exit.setup(main_executable, TEST_CREATOR_LOCK_FILENAME),
+        daemon=True
+    )
     setup_exit_thread.start()
 
     while dpg.is_dearpygui_running():

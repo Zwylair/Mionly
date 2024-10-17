@@ -1,7 +1,7 @@
 import inspect
 from typing import Callable, Any
 import dearpygui.dearpygui as dpg
-from test_creator.language import loc
+from shared_funcs.language import loc
 from test_creator import animator
 from settings import *
 import log

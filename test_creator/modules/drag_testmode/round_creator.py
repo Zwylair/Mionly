@@ -3,8 +3,8 @@ import random
 from typing import Any, Callable
 import dearpygui.dearpygui as dpg
 from test_creator import classes, animator
-from test_creator.messageboxes import spawn_warning
-from test_creator.language import loc
+from shared_funcs.messageboxes import spawn_warning
+from shared_funcs.language import loc
 from settings import *
 import log
 

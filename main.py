@@ -3,6 +3,7 @@ import sys
 import ctypes
 import winreg
 import shutil
+import threading
 import webbrowser
 import psutil
 import colorama
@@ -10,6 +11,9 @@ import screeninfo
 import dearpygui.dearpygui as dpg
 import dearpygui_animate as animate
 from test_creator.cyrillic_support import CyrillicSupport, FontPreset
+from shared_funcs.language import loc, chosen_language
+from shared_funcs.messageboxes import spawn_warning
+from shared_funcs import language_picker, exit
 from settings import *
 import log
 
@@ -64,14 +68,17 @@ def run_server():
     run_args = (['server.exe'] if getattr(sys, 'frozen', False) else [sys.executable, 'server/runner.py']) + args
     server_process = subprocess.Popen(run_args)
     server_pid = server_process.pid
-    dpg.set_value('server__server_status', 'Running')
-    open_browser()
+    dpg.set_value('server__server_status', loc('server.running'))
+
+    if len(args) == 0:
+        open_browser()
 
 
 def stop_server():
     global server_pid
 
     if server_pid is None:
+        spawn_warning(loc('server.server_is_not_running'))
         logger.info('Server is not running')
         return
 
@@ -80,7 +87,7 @@ def stop_server():
             try:
                 process.terminate()
                 logger.info(f'Server (PID: {server_pid}) was terminated')
-                dpg.set_value('server__server_status', 'Off')
+                dpg.set_value('server__server_status', loc('server.off'))
             except psutil.NoSuchProcess:
                 logger.info(f'Process was finished before i did it (PID: {server_pid})')
             except psutil.AccessDenied:
@@ -114,27 +121,33 @@ if __name__ == '__main__':
     # set up gui
     monitor = screeninfo.get_monitors()[0]
     monitor_size = (monitor.width, monitor.height)
-    viewport_size = (400, 300)
+    viewport_size = (600, 400)
 
     dpg.create_context()
     # dpg_dnd.initialize()
     dpg.create_viewport(
-        title='Mionly v2.0: server', large_icon=os.path.join(TEST_CREATOR_DATA_PATH, 'images/icon.ico'),
+        title='Mionly v2.0: server', large_icon=os.path.join(SHARED_FOLDER_PATH, 'images/icon.ico'),
         width=viewport_size[0], height=viewport_size[1],
         x_pos=int(monitor_size[0] / 2 - viewport_size[0] / 2),
         y_pos=int(monitor_size[1] / 2 - viewport_size[1] / 2)
     )
 
     with dpg.value_registry():
-        dpg.add_string_value(tag='server__server_status', default_value='Off')
+        dpg.add_string_value(tag='server__server_status', default_value=loc('server.off'))
+        dpg.add_string_value(tag='shared__picked_lang', default_value=chosen_language)
 
     with dpg.font_registry():
         CyrillicSupport(
             FontPreset(
-                path=os.path.join(TEST_CREATOR_DATA_PATH, 'fonts/nunito/Nunito-Regular.ttf'),
+                path=os.path.join(SHARED_FOLDER_PATH, 'fonts/nunito/Nunito-Regular.ttf'),
                 size=24, id='nunito', bind_font_as_default=True
             )
         )
+
+    logger.debug('Loading textures')
+    width, height, channels, data = dpg.load_image(os.path.join(SHARED_FOLDER_PATH, 'images/language.png'))
+    with dpg.texture_registry():
+        dpg.add_static_texture(width=width, height=height, default_value=data, tag='texture__language')
 
     with dpg.theme() as global_theme:
         with dpg.theme_component(dpg.mvAll):
@@ -150,13 +163,19 @@ if __name__ == '__main__':
     dpg.bind_theme(global_theme)
 
     with dpg.window(no_title_bar=True, no_resize=True, no_close=True, no_move=True) as window:
+        dpg.add_image_button(
+            texture_tag='texture__language', width=32, height=32, pos=[dpg.get_viewport_width() - 64, 7],
+            tag='shared__language_button',
+            callback=lambda: language_picker.open_languages_window()
+        )
+
         with dpg.group(horizontal=True):
-            dpg.add_button(label="Run server", callback=run_server)
-            dpg.add_button(label="Stop server", callback=stop_server)
-            dpg.add_button(label="Open browser", callback=open_browser)
+            dpg.add_button(label=loc('server.run_server'), callback=run_server)
+            dpg.add_button(label=loc('server.stop_server'), callback=stop_server)
+            dpg.add_button(label=loc('server.open_browser'), callback=open_browser)
 
         with dpg.group(horizontal=True, horizontal_spacing=7):
-            dpg.add_text('server.server_status_label:')
+            dpg.add_text(loc('server.server_status_label'))
             dpg.add_text(source='server__server_status')
 
         dpg.add_separator()
@@ -168,6 +187,13 @@ if __name__ == '__main__':
     if len(sys.argv[1:]) > 0:
         run_server()
 
+    setup_exit_thread = threading.Thread(
+        target=lambda: exit.setup(__file__, SERVER_LOCK_FILENAME),
+        daemon=True
+    )
+    setup_exit_thread.start()
+
     while dpg.is_dearpygui_running():
         animate.run()
         dpg.render_dearpygui_frame()
+    exit.stop_mionly()

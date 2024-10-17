@@ -7,8 +7,9 @@ import threading
 from typing import Callable
 from datetime import datetime
 import dearpygui.dearpygui as dpg
-from test_creator import classes, animator, messageboxes
-from test_creator.language import loc
+from test_creator import classes, animator
+from shared_funcs import messageboxes
+from shared_funcs.language import loc
 from settings import *
 import log
 
