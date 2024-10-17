@@ -1,7 +1,7 @@
 from cx_Freeze import setup, Executable
 from settings import *
 
-icon_path = 'test_creator.data/images/icon.ico'
+icon_path = os.path.join(SHARED_FOLDER_PATH, 'images/icon.ico')
 include_dirs = ['tests', 'web', SHARED_FOLDER_PATH]
 include_files = []
 
